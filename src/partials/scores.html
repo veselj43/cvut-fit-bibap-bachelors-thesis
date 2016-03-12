@@ -1,0 +1,19 @@
+<div class="container" ng-controller="Scores">
+
+    <h1>Výsledky</h1>
+
+    <form class="form">
+    	<div class="form-group">
+	        <select class="form-control" ng-model="scoreSelect.tournament"
+	        	ng-options="obj.id as obj.name for obj in scoreSelect.options">
+	        	<option value="">Vyberte turnaj</option>
+	        </select>
+	    </div>
+    </form>
+
+    <div>
+        {{scoreSelect.tournament | json}}
+    </div>
+
+</div>
+<!-- /.container -->

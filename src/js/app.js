@@ -1,10 +1,9 @@
 
-
 $(document).ready(function(){
 	//Handles menu drop down
-    $('.dropdown-menu').find('form').click(function (e) {
-        e.stopPropagation();
-    });
+	$('.dropdown-menu').find('form').click(function (e) {
+		e.stopPropagation();
+	});
 });
 
 /**
@@ -19,16 +18,21 @@ var app = angular.module('ufss', [
  * Configure the Routes
  */
 app.config(['$routeProvider', function ($routeProvider) {
+
+	var partPath = "partials/";
+
 	$routeProvider
 		// Home
-		.when("/", {templateUrl: "partials/home.html", controller: "PageCtrl"})
+		.when("/", {templateUrl: partPath + "home.html", controller: "PageCtrl"})
 		// Actions
-		.when("/scores", {templateUrl: "partials/scores.html", controller: "PageCtrl"})
+		.when("/newTournament", {templateUrl: partPath + "newTournament.html", controller: "PageCtrl"})
+		.when("/scoring", {templateUrl: partPath + "scoring.html", controller: "PageCtrl"})
+		.when("/scores", {templateUrl: partPath + "scores.html", controller: "PageCtrl"})
 		// Pages
-		.when("/faq", {templateUrl: "partials/faq.html", controller: "PageCtrl"})
+		.when("/faq", {templateUrl: partPath + "faq.html", controller: "PageCtrl"})
 		// else 404
-		// .when("/404", {templateUrl: "partials/404.html", controller: "PageCtrl"})
-		.otherwise({templateUrl: "partials/404.html", controller: "PageCtrl"});
+		// .when("/404", {templateUrl: partPath + "404.html", controller: "PageCtrl"})
+		.otherwise({templateUrl: partPath + "404.html", controller: "PageCtrl"});
 }]);
 
 /**
@@ -62,6 +66,30 @@ app.controller('Login', function($scope) {
 
 });
 
+app.controller('newTournament', function($scope) {
+
+	$scope.emptyRow = { id : "", name: "", group: "" };
+
+	$scope.master = {};
+
+	$scope.addRow = function() {
+		$scope.nt.table.push(angular.copy($scope.emptyRow));
+	};
+
+	$scope.update = function(nt) {
+		$scope.master = angular.copy(nt);
+	};
+
+	$scope.reset = function() {
+		$scope.nt = angular.copy($scope.master);
+	};
+
+	$scope.reset();
+
+	$scope.nt.table = [$scope.emptyRow];
+
+});
+
 app.controller("Scores", function($scope) {
 
 	$scope.scoreSelect = {};
@@ -73,7 +101,7 @@ app.controller("Scores", function($scope) {
 	];
 
 });
-  
+
 app.controller('TestForm', function($scope) {
 
 	$scope.master = {};

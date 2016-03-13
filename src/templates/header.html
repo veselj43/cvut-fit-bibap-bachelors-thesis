@@ -1,62 +1,62 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#/">UF skórování</a>
-    </div>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li ng-class="getActiveClass('/')"><a href="#/">Hlavní stánka</a></li>
-        <li ng-class="getActiveClass('/newTournament')"><a href="#/newTournament">Nový turnaj</a></li>
-        <li ng-class="getActiveClass('/scoring')"><a href="#/scoring">Skórování</a></li>
-        <li ng-class="getActiveClass('/scores')"><a href="#/scores">Výsledky</a></li>
-        <li class="dropdown">
-          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li class="dropdown-header">Nav header</li>
-            <li><a href="#">Separated link</a></li>
-            <li><a href="#">One more separated link</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-      	<li><button ng-click="dump()">SHOW ME</button></li>
-        <li class="dropdown">
-          <a href="" class="dropdown-toggle" data-toggle="dropdown">Přihlásit se <b class="caret"></b></a>
-          <ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
-            <li>
-              <div class="row" ng-controller="Login">
-                <div class="col-md-12">
-                  <form class="form" novalidate accept-charset="UTF-8" id="login-nav">
-                    <div class="form-group">
-                      <label class="sr-only" for="logName">Email address</label>
-                      <input ng-model="user.name" type="text" class="form-control" id="logName" placeholder="Název účtu" required>
-                    </div>
-                    <div class="form-group">
-                      <label class="sr-only" for="pass">Password</label>
-                      <input ng-model="user.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
-                    </div>
-                    <div class="form-group">
-                      <input type="submit" class="btn btn-primary" ng-click="send(user)" value="Přihlásit">
-                      <br>
-                      <a href="#">Forgot Password?</a>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div>
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#/">UF skórování</a>
+		</div>
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li ng-class="getActiveClass('/')"><a href="#/">Hlavní stánka</a></li>
+				<li ng-class="getActiveClass('/newTournament')"><a href="#/newTournament">Nový turnaj</a></li>
+				<li ng-class="getActiveClass('/scoring')"><a href="#/scoring">Skórování</a></li>
+				<li ng-class="getActiveClass('/scores')"><a href="#/scores">Výsledky</a></li>
+				<li class="dropdown">
+					<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Nav header</li>
+						<li><a href="#">Separated link</a></li>
+						<li><a href="#">One more separated link</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><button ng-click="dump()">SHOW ME</button></li>
+				<li class="dropdown">
+					<a href="" class="dropdown-toggle" data-toggle="dropdown">Přihlásit se <b class="caret"></b></a>
+					<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+						<li>
+							<div class="row" ng-controller="Login">
+								<div class="col-md-12">
+									<form class="form" novalidate accept-charset="UTF-8" id="login-nav">
+										<div class="form-group">
+											<label class="sr-only" for="logName">Email address</label>
+											<input ng-model="user.name" type="text" class="form-control" id="logName" placeholder="Název účtu" required>
+										</div>
+										<div class="form-group">
+											<label class="sr-only" for="pass">Password</label>
+											<input ng-model="user.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+										</div>
+										<div class="form-group">
+											<input type="submit" class="btn btn-primary" ng-click="send(user)" value="Přihlásit">
+											<br>
+											<a href="#">Forgot Password?</a>
+										</div>
+									</form>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
 </nav>

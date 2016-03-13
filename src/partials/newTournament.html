@@ -26,18 +26,18 @@
 
 		<div class="form-group row" ng-repeat="data in nt.table">
 			<div class="col-sm-2">
-				<input class="form-control" type="text" ng-model="data.id">
+				<input class="form-control" type="text" ng-model="data.id" placeholder="ID">
 			</div>
 			<div class="col-sm-5">
-				<input class="form-control" type="text" ng-model="data.name">
+				<input class="form-control" type="text" ng-model="data.name" placeholder="Název">
 			</div>
 			<div class="col-sm-5">
-				<input class="form-control" type="text" ng-model="data.group">
+				<input class="form-control" type="text" ng-model="data.group" placeholder="Skupina">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<button ng-click="addRow()">Přidat další</button>
+			<button class="btn btn-secondary" ng-click="addRow()">Přidat další</button>
 		</div>
 
 		<div class="form-group row">

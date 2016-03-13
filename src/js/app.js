@@ -10,8 +10,7 @@ $(document).ready(function(){
  * Main AngularJS Web Application
  */
 var app = angular.module('ufss', [
-	'ngRoute',
-	// 'ui.bootstrap.modal'
+	'ngRoute'
 ]);
 
 /**
@@ -68,12 +67,16 @@ app.controller('Login', function($scope) {
 
 app.controller('newTournament', function($scope) {
 
-	$scope.emptyRow = { id : "", name: "", group: "" };
+	$scope.emptyRow = function(last) {
+		return { id : last + 1, name: "", group: "" };
+	}
 
-	$scope.master = {};
+	$scope.nt = {};
+
+	$scope.nt.table = [$scope.emptyRow(0)];
 
 	$scope.addRow = function() {
-		$scope.nt.table.push(angular.copy($scope.emptyRow));
+		$scope.nt.table.push($scope.emptyRow($scope.nt.table.length));
 	};
 
 	$scope.update = function(nt) {
@@ -84,9 +87,19 @@ app.controller('newTournament', function($scope) {
 		$scope.nt = angular.copy($scope.master);
 	};
 
-	$scope.reset();
+	$scope.update($scope.nt);
 
-	$scope.nt.table = [$scope.emptyRow];
+});
+
+app.controller("Scoring", function($scope) {
+
+	$scope.scoreSelect = {};
+
+	$scope.scoreSelect.options = [
+		{ id : "Q12", name: "Nissan" },
+		{ id : "TR7", name: "Toyota" },
+		{ id : "D4R", name: "Fiat" },
+	];
 
 });
 

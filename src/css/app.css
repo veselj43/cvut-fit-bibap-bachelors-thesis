@@ -6,6 +6,10 @@
 	margin: 0;
 }
 
+.cursor-pointer {
+	cursor: pointer;
+}
+
 .score-btn {
 	font-size: 200%;
 }

@@ -1,7 +1,7 @@
 <div ng-controller="Scoring">
 	<div class="container">
 
-		<h1>Skórování</h1>
+		<h1>{{ data.home.name }} vs. {{ data.away.name }} <small>Skórování</small></h1>
 
 		<!-- <pre>{{actualScore | json}}</pre> -->
 
@@ -10,7 +10,7 @@
 			<div class="form-group row">
 				<div class="col-sm-6">
 					<div class="panel panel-primary">
-						<div class="panel-heading">{{data.home.name}}</div>
+						<div class="panel-heading">Domácí {{data.home.name}}</div>
 						<div class="panel-body">
 							<div class="text-center">
 								<h2>{{actualScore.home}}</h2>
@@ -22,7 +22,7 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="panel panel-primary">
-						<div class="panel-heading">{{data.away.name}}</div>
+						<div class="panel-heading">Hosté {{data.away.name}}</div>
 						<div class="panel-body">
 							<div class="text-center">
 								<h2>{{actualScore.away}}</h2>

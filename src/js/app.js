@@ -2,23 +2,23 @@
 $(document).ready(function(){
 	//Handles menu drop down
 	$('.dropdown-menu').find('form').click(function (e) {
-		e.stopPropagation();
-	});
-});
+		e.stopPropagation()
+	})
+})
 
 /**
  * Main AngularJS Web Application
  */
 var app = angular.module('ufss', [
 	'ngRoute'
-]);
+])
 
 /**
  * Configure the Routes
  */
 app.config(['$routeProvider', function ($routeProvider) {
 
-	var partPath = "partials/";
+	var partPath = "partials/"
 
 	$routeProvider
 		// Home
@@ -27,14 +27,14 @@ app.config(['$routeProvider', function ($routeProvider) {
 		.when("/login", {templateUrl: partPath + "login.html", controller: "PageCtrl"})
 		.when("/newTournament", {templateUrl: partPath + "newTournament.html", controller: "PageCtrl"})
 		.when("/selectTournament", {templateUrl: partPath + "selectTournament.html", controller: "PageCtrl"})
-		.when("/selectMatch/:TourID", {templateUrl: partPath + "selectMatch.html", controller: "PageCtrl"})
+		.when("/selectMatch/:TourID?", {templateUrl: partPath + "selectMatch.html", controller: "PageCtrl"})
 		.when("/scoring/:MatchID", {templateUrl: partPath + "scoring.html", controller: "PageCtrl"})
 		.when("/scores", {templateUrl: partPath + "scores.html", controller: "PageCtrl"})
 		// Pages
 		.when("/faq", {templateUrl: partPath + "faq.html", controller: "PageCtrl"})
 		// else 404
-		.otherwise({templateUrl: partPath + "404.html", controller: "PageCtrl"});
-}]);
+		.otherwise({templateUrl: partPath + "404.html", controller: "PageCtrl"})
+}])
 
 /**
  * Services and Factories
@@ -43,21 +43,272 @@ app.config(['$routeProvider', function ($routeProvider) {
 app.factory('Globals', function() {
     return {
         default : 'null'
-    };
-});
+    }
+})
 
-app.service('Storage', function() {
-	var data = [];
-
-	this.set = function(index, value) {
-		data[index] = value;
+app.service('Auth', function() {
+	let index = "login"
+	let roles = {
+		'team': 1,
+		'tournament': 2,
+		'admin': 3 
 	}
 
-	this.get = function(index = null) {
-		return (index === null) ? data : data[index];
+	function ok() {
+		return (typeof(Storage) !== "undefined") ? true : false
 	}
-});
 
+	function get() {
+		return JSON.parse(localStorage.getItem(index))
+	}
+
+	this.getAuthLvl = function() {
+		if (!ok()) return 0
+		return (get() === null) ? 0 : get().authLvl
+	}
+
+	this.getData = function() {
+		if (!ok()) return null
+		return (get() === null) ? null : get().data
+	}
+
+	this.check = function(authLvl) {
+		return (authLvl <= this.getAuthLvl())
+	}
+
+	this.login = function(type, data) {
+		if (typeof(roles[type]) === "undefined") return false
+
+		// check auth here
+
+		localStorage.setItem(index, JSON.stringify({"authLvl": roles[type], "data": data}))
+		return true
+	}
+
+	this.logout = function() {
+		localStorage.setItem(index, null)
+	}
+
+	this.lastTournament = function(TourID) {
+		if (TourID) localStorage.setItem("TourID", TourID)
+		else return localStorage.getItem("TourID")
+	}
+})
+
+/**
+ * Controllers
+ */
+app.controller('PageCtrl', function ($scope, $location, Auth) {
+	console.log("User auth level is: " + Auth.getAuthLvl())
+
+	$scope.getActiveClass = function (path) {
+		var current = $location.path().substr(0, path.length)
+		if (path !== '/') 
+			return (current === path) ? 'active' : ''
+		else 
+			return ($location.path() === '/') ? 'active' : ''
+	}
+
+	$scope.login = function(type, data, relog = true) {
+		if (relog || !$scope.logged()) Auth.login(type, data)
+
+		if (!angular.isObject(data)) {
+			// err
+			return
+		}
+
+		if (type === 'team') {
+			// TODO
+			// $scope.form[type].name
+			// $scope.form[type].password
+		}
+		else if (type === 'tournament') {
+			Auth.lastTournament(data.tournament)
+			// $scope.form[type].password
+			$location.path('/selectMatch/' + data.tournament)
+		}
+		else if (type === 'admin') {
+			// TODO
+			// $scope.form[type].name
+			// $scope.form[type].password
+		}
+	}
+
+	$scope.logout = function() {
+		Auth.logout()
+	}
+
+	$scope.logged = function(authLvl = 1) {
+		return Auth.check(authLvl)
+	}
+
+	$scope.getLoginData = function() {
+		Auth.getData()
+	}
+
+})
+
+app.controller('Login', function($scope, $location, API) {
+
+	$scope.form = {}
+
+	$scope.tournaments = API.getMatches
+
+})
+
+app.controller('newTournament', function($scope) {
+
+	$scope.emptyRow = function(last) {
+		return { id : last + 1, name: "", group: "" }
+	}
+
+	$scope.nt = {}
+
+	$scope.nt.table = [$scope.emptyRow(0)]
+
+	$scope.addRow = function() {
+		$scope.nt.table.push($scope.emptyRow($scope.nt.table.length))
+	}
+
+	$scope.parseDate = function(formDate) {
+		if (typeof(formDate) === "undefined") return
+		var parts = formDate.split('. ')
+		return parts[2] + '-' + parts[1] + '-' + parts[0]
+	}
+
+	$scope.update = function(nt) {
+		$scope.master = angular.copy(nt)
+		$scope.master.dbDate = $scope.parseDate($scope.master.date)
+	}
+
+	$scope.reset = function() {
+		$scope.nt = angular.copy($scope.master)
+	}
+
+	$scope.update($scope.nt)
+
+})
+
+app.controller("SelectTournament", function($scope, $location, API) {
+
+	$scope.selected = {}
+
+	$scope.data = API.getMatches
+
+})
+
+app.controller("SelectMatch", function($scope, $location, $routeParams, Auth, API) {
+
+	$scope.selected = {}
+
+	function TourID() {
+		if (Auth.getData().tournament) 
+			return Auth.getData().tournament
+		if ($routeParams.TourID)
+			return $routeParams.TourID
+		if (Auth.lastTournament()) 
+			return Auth.lastTournament()
+		return 0
+	}
+
+	$scope.data = API.getMatches[TourID()]
+
+	$scope.score = function(instant = false) {
+		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds()
+
+		if (angular.isObject($scope.selected.match)) {
+			// Storage.set("match", $scope.selected.match)
+		}
+		else {
+			// err
+		}
+
+		if (instant) {
+			$location.path('/scoring/' + $scope.selected.match.id)
+		}
+		else {
+			$location.path('/scoring/' + $scope.selected.match.id)
+		}
+	}
+
+})
+
+app.controller("Scoring", function($scope, $routeParams, Globals, API) {
+
+	$scope.data = API.getPlayers
+
+	$scope.db = []
+
+	$scope.actualScore = {
+		"home": 0,
+		"away": 0
+	}
+
+	$scope.scored = {}
+
+	function emptyTemp() {
+		$scope.scored = {
+			"point": Globals.default,
+			"assist": Globals.default
+		}
+	}
+
+	$scope.plus = function(team) {
+		$scope.scored.team = team
+	}
+
+	$scope.score = function(opt) {
+		if (opt) {
+			$scope.db.push(angular.copy($scope.scored))
+			$scope.actualScore[$scope.scored.team]++
+			$scope.stepBack()
+		}
+		emptyTemp()
+	}
+
+	$scope.stepBack = function(direction = true) {
+		if (direction) { // show "cancel last action" option
+			$('#stepBack').show()
+		}
+		else if ($scope.db.length) { // actually cancel last action
+			$scope.actualScore[$scope.db[$scope.db.length-1].team]--
+			$scope.db.splice($scope.db.length-1, 1)
+			$('#stepBack').hide()
+		}
+	}
+
+	$scope.compare = function(rid,sid) {
+		if (sid == "") return false
+		return rid == sid
+	}
+
+	$scope.disabled = function(rid,sid) {
+		return ($scope.compare(rid,sid)) ? "disabled" : ""
+	}
+
+	emptyTemp()
+
+	$('#scorePoint').on('hidden.bs.modal', function () {
+	    emptyTemp()
+	})
+
+})
+
+app.controller("Scores", function($scope) {
+
+	$scope.scoreSelect = {}
+
+	$scope.scoreSelect.options = [
+		{ id : "Q12", name: "Nissan" },
+		{ id : "TR7", name: "Toyota" },
+		{ id : "D4R", name: "Fiat" },
+	]
+
+})
+
+/**
+ * API - backend - db
+ */
 app.service('API', function() {
 	this.getMatches = [
 		{
@@ -285,7 +536,7 @@ app.service('API', function() {
 				}
 			]
 		}
-	];
+	]
 
 	this.getPlayers = {
 		"home": {
@@ -383,201 +634,5 @@ app.service('API', function() {
 			}
 			]
 		}
-	};
-});
-
-/**
- * Controls all other Pages
- */
-app.controller('PageCtrl', function ($scope, $location/*, $http */) {
-	console.log("Page Controller reporting for duty.");
-
-	$scope.getActiveClass = function (path) {
-		var current = $location.path().substr(0, path.length);
-		if (path !== '/') 
-			return (current === path) ? 'active' : '';
-		else 
-			return ($location.path() === '/') ? 'active' : '';
 	}
-
-	$scope.dump = function () {
-		alert($location.path());
-	}
-
-});
-
-app.controller('Login', function($scope, $location, API) {
-
-	$scope.form = {};
-
-	$scope.tournaments = API.getMatches;
-
-	$scope.send = function(type) {
-		if (!angular.isObject($scope.form[type])) {
-			// err
-			return;
-		}
-
-		if (type === 'team') {
-			// TODO
-			// $scope.form[type].name;
-			// $scope.form[type].password;
-		}
-		else if (type === 'tournament') {
-			// $scope.form[type].password;
-			$location.path('/selectMatch/' + $scope.form[type].tournament.id);
-		}
-		else if (type === 'admin') {
-			// TODO
-			// $scope.form[type].name;
-			// $scope.form[type].password;
-		}
-	};
-
-});
-
-app.controller('newTournament', function($scope) {
-
-	$scope.emptyRow = function(last) {
-		return { id : last + 1, name: "", group: "" };
-	}
-
-	$scope.nt = {};
-
-	$scope.nt.table = [$scope.emptyRow(0)];
-
-	$scope.addRow = function() {
-		$scope.nt.table.push($scope.emptyRow($scope.nt.table.length));
-	};
-
-	$scope.parseDate = function(formDate) {
-		if (typeof(formDate) === "undefined") return;
-		var parts = formDate.split('. ');
-		return parts[2] + '-' + parts[1] + '-' + parts[0];
-	}
-
-	$scope.update = function(nt) {
-		$scope.master = angular.copy(nt);
-		$scope.master.dbDate = $scope.parseDate($scope.master.date);
-	};
-
-	$scope.reset = function() {
-		$scope.nt = angular.copy($scope.master);
-	};
-
-	$scope.update($scope.nt);
-
-});
-
-app.controller("SelectTournament", function($scope, $location, Storage, API) {
-
-	$scope.selected = {};
-
-	$scope.data = API.getMatches;
-
-	$scope.send = function() {
-		if (angular.isObject($scope.selected.tournament)) {
-			// Storage.set("tournament", $scope.selected.tournament);
-			$location.path('/selectMatch/' + $scope.selected.tournament.id);
-		}
-		else {
-			// err
-		}
-	}
-
-});
-
-app.controller("SelectMatch", function($scope, $location, $routeParams, API) {
-
-	$scope.selected = {};
-
-	$scope.data = API.getMatches[$routeParams.TourID].matches;
-
-	$scope.score = function(instant = false) {
-		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds();
-
-		if (angular.isObject($scope.selected.match)) {
-			// Storage.set("match", $scope.selected.match);
-		}
-		else {
-			// err
-		}
-
-		if (instant) {
-			$location.path('/scoring/' + $scope.selected.match.id);
-		}
-		else {
-			$location.path('/scoring/' + $scope.selected.match.id);
-		}
-	}
-
-});
-
-app.controller("Scoring", function($scope, $routeParams, Globals, API) {
-
-	$scope.data = API.getPlayers;
-
-	$scope.db = [];
-
-	$scope.actualScore = {
-		"home": 0,
-		"away": 0
-	}
-
-	$scope.scored = {};
-
-	$scope.emptyTemp = function() {
-		$scope.scored = {
-			"point": Globals.default,
-			"assist": Globals.default
-		}
-	}
-
-	$scope.plus = function(team) {
-		$scope.scored.team = team;
-	}
-
-	$scope.score = function(opt) {
-		if (opt) {
-			$scope.db.push(angular.copy($scope.scored));
-			$scope.actualScore[$scope.scored.team]++;
-			$scope.stepBack();
-		}
-		$scope.emptyTemp();
-	}
-
-	$scope.stepBack = function(direction = true) {
-		if (direction) { // show cancel last action option
-			$('#stepBack').show();
-		}
-		else if ($scope.db.length) { // actually cancel last action
-			$scope.actualScore[$scope.db[$scope.db.length-1].team]--;
-			$scope.db.splice($scope.db.length-1, 1);
-			$('#stepBack').hide();
-		}
-	}
-
-	$scope.compare = function(rid,sid) {
-		if (sid == "") return false;
-		return rid == sid;
-	}
-
-	$scope.disabled = function(rid,sid) {
-		return ($scope.compare(rid,sid)) ? "disabled" : "";
-	}
-
-	$scope.emptyTemp();
-
-});
-
-app.controller("Scores", function($scope) {
-
-	$scope.scoreSelect = {};
-
-	$scope.scoreSelect.options = [
-		{ id : "Q12", name: "Nissan" },
-		{ id : "TR7", name: "Toyota" },
-		{ id : "D4R", name: "Fiat" },
-	];
-
-});
+})

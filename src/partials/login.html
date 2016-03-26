@@ -8,15 +8,15 @@
 					<form class="form">
 						<div class="form-group">
 							<label class="sr-only" for="logName">Název účtu</label>
-							<input ng-model="form.team.name" type="text" class="form-control" id="logName" placeholder="Název účtu" required>
+							<input ng-model="form.team.name" type="text" class="form-control" id="logName" placeholder="Název účtu">
 						</div>
 						<div class="form-group">
 							<label class="sr-only" for="pass">Heslo</label>
-							<input ng-model="form.team.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+							<input ng-model="form.team.password" type="password" class="form-control" id="pass" placeholder="Heslo">
 						</div>
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="send('team')" value="Přihlásit">
-							<p><a href="#">Zapomenuté heslo?</a></p>
+							<input type="submit" class="btn btn-primary" ng-click="login('team', form.team)" value="Přihlásit">
+							<a href="#">Zapomenuté heslo?</a>
 						</div>
 					</form>
 				</div>
@@ -31,17 +31,16 @@
 						<div class="form-group">
 							<label class="sr-only" for="logName">Název účtu</label>
 							<select class="form-control" id="tournament" ng-model="form.tournament.tournament"
-								ng-options="obj.name for obj in tournaments">
+								ng-options="obj.id as obj.name for obj in tournaments">
 								<option value="">Vyberte turnaj</option>
 							</select>
 						</div>
 						<div class="form-group">
 							<label class="sr-only" for="pass">Heslo</label>
-							<input ng-model="form.tournament.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+							<input ng-model="form.tournament.password" type="password" class="form-control" id="pass" placeholder="Heslo">
 						</div>
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="send('tournament')" value="Přihlásit">
-							<br>
+							<input type="submit" class="btn btn-primary" ng-click="login('tournament', form.tournament)" value="Přihlásit">
 							<a href="#">Zapomenuté heslo?</a>
 						</div>
 					</form>
@@ -57,15 +56,14 @@
 					<form class="form">
 						<div class="form-group">
 							<label class="sr-only" for="logName">Název účtu</label>
-							<input ng-model="form.admin.name" type="text" class="form-control" id="logName" placeholder="Název účtu" required>
+							<input ng-model="form.admin.name" type="text" class="form-control" id="logName" placeholder="Název účtu">
 						</div>
 						<div class="form-group">
 							<label class="sr-only" for="pass">Heslo</label>
-							<input ng-model="form.admin.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+							<input ng-model="form.admin.password" type="password" class="form-control" id="pass" placeholder="Heslo">
 						</div>
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="send('admin')" value="Přihlásit">
-							<br>
+							<input type="submit" class="btn btn-primary" ng-click="login('admin', form.admin)" value="Přihlásit">
 							<a href="#">Zapomenuté heslo?</a>
 						</div>
 					</form>

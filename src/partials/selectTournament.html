@@ -1,6 +1,6 @@
 <div class="container" ng-controller="SelectTournament">
 
-	<h1>Skórování</h1>
+	<h1>Výběr turnaje</h1>
 
 	<form class="form">
 		<div class="form-group row">
@@ -18,21 +18,22 @@
 				</div> -->
 
 				<select class="form-control" id="tournament" ng-model="selected.tournament"
-					ng-options="obj.name for obj in data | filter: serchFilter">
+					ng-options="obj.id as obj.name for obj in data | filter: serchFilter">
 					<option value="">Vyberte turnaj</option>
 				</select>
 			</div>
 		</div>
 
-		<div class="form-group row">
+		<div ng-show="check(3)" class="form-group row">
 			<label class="form-control-label col-sm-2" for="pass">Heslo:</label>
 			<div class="col-sm-10">
-				<input class="form-control" type="password" id="pass" ng-model="selected.pass">
+				<input class="form-control" type="password" id="pass" ng-model="selected.password" required>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<input class="btn btn-primary" type="button" ng-click="send()" value="Přihlásit se ke skórování" ng-disabled="!selected.tournament">
+			<input class="btn btn-primary" type="button" value="Přihlásit se ke skórování" 
+			ng-disabled="angular.isNumber(selected.tournament)" ng-click="login('tournament', selected, false)">
 		</div>
 	</form>
 

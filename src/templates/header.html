@@ -13,11 +13,13 @@
 			<ul class="nav navbar-nav">
 				<li ng-class="getActiveClass('/')"><a href="#/">Hlavní stánka</a></li>
 				<li ng-class="getActiveClass('/newTournament')"><a href="#/newTournament">Nový turnaj</a></li>
-				<li ng-class="getActiveClass('/selectTournament')"><a href="#/selectTournament">Skórovat</a></li>
+				<li ng-show="logged(3)" ng-class="getActiveClass('/selectTournament')"><a href="#/selectTournament">Vybrat turnaj</a></li>
+				<li ng-show="logged(1)" ng-class="getActiveClass('/selectMatch')"><a href="#/selectMatch">Vybrat zápas</a></li>
 				<li ng-class="getActiveClass('/scores')"><a href="#/scores">Výsledky</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-class="getActiveClass('/login')"><a href="#/login">Přihlásit se</a></li>
+				<li ng-hide="logged()" ng-class="getActiveClass('/login')"><a href="#/login">Přihlásit se</a></li>
+				<li ng-show="logged()" ng-click="logout()"><a class="cursor-pointer">Odhlásit se</a></li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>

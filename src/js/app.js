@@ -24,87 +24,42 @@ app.config(['$routeProvider', function ($routeProvider) {
 		// Home
 		.when("/", {templateUrl: partPath + "home.html", controller: "PageCtrl"})
 		// Actions
+		.when("/login", {templateUrl: partPath + "login.html", controller: "PageCtrl"})
 		.when("/newTournament", {templateUrl: partPath + "newTournament.html", controller: "PageCtrl"})
-		.when("/scoring", {templateUrl: partPath + "scoring.html", controller: "PageCtrl"})
+		.when("/selectTournament", {templateUrl: partPath + "selectTournament.html", controller: "PageCtrl"})
+		.when("/selectMatch/:TourID", {templateUrl: partPath + "selectMatch.html", controller: "PageCtrl"})
+		.when("/scoring/:MatchID", {templateUrl: partPath + "scoring.html", controller: "PageCtrl"})
 		.when("/scores", {templateUrl: partPath + "scores.html", controller: "PageCtrl"})
 		// Pages
 		.when("/faq", {templateUrl: partPath + "faq.html", controller: "PageCtrl"})
 		// else 404
-		// .when("/404", {templateUrl: partPath + "404.html", controller: "PageCtrl"})
 		.otherwise({templateUrl: partPath + "404.html", controller: "PageCtrl"});
 }]);
 
 /**
- * Controls all other Pages
+ * Services and Factories
  */
-app.controller('PageCtrl', function ($scope, $location/*, $http */) {
-	console.log("Page Controller reporting for duty.");
 
-	$scope.getActiveClass = function (path) {
-		var current = $location.path().substr(0, path.length);
-		if (path !== '/') 
-			return (current === path) ? 'active' : '';
-		else 
-			return ($location.path() === '/') ? 'active' : '';
-	}
-
-	$scope.dump = function () {
-		alert($location.path());
-	}
-
+app.factory('Globals', function() {
+    return {
+        default : 'null'
+    };
 });
 
-app.controller('Login', function($scope) {
+app.service('Storage', function() {
+	var data = [];
 
-	$scope.user = {};
-
-	$scope.send = function(user) {
-		$scope.user = angular.copy(user);
-		alert(JSON.stringify($scope.user));
-	};
-
-});
-
-app.controller('newTournament', function($scope) {
-
-	$scope.emptyRow = function(last) {
-		return { id : last + 1, name: "", group: "" };
+	this.set = function(index, value) {
+		data[index] = value;
 	}
 
-	$scope.nt = {};
-
-	$scope.nt.table = [$scope.emptyRow(0)];
-
-	$scope.addRow = function() {
-		$scope.nt.table.push($scope.emptyRow($scope.nt.table.length));
-	};
-
-	$scope.parseDate = function(formDate) {
-		if (typeof(formDate) === "undefined") return;
-		var parts = formDate.split('. ');
-		return parts[2] + '-' + parts[1] + '-' + parts[0];
+	this.get = function(index = null) {
+		return (index === null) ? data : data[index];
 	}
-
-	$scope.update = function(nt) {
-		$scope.master = angular.copy(nt);
-		$scope.master.dbDate = $scope.parseDate($scope.master.date);
-	};
-
-	$scope.reset = function() {
-		$scope.nt = angular.copy($scope.master);
-	};
-
-	$scope.update($scope.nt);
-
 });
 
-app.controller("Scoring", function($scope, $location) {
-
-	$scope.db = {};
-
-	$scope.selected = {};
-
-	$scope.data = [
+app.service('API', function() {
+	this.getMatches = [
 		{
 			"id": 0,
 			"name": "Netbook",
@@ -332,20 +287,286 @@ app.controller("Scoring", function($scope, $location) {
 		}
 	];
 
+	this.getPlayers = {
+		"home": {
+			"name": "Domácí",
+			"players": [
+			{
+				"id": 0,
+				"name": "Gretchen Murphy",
+				"number": 52
+			},
+			{
+				"id": 1,
+				"name": "Valentine Yates",
+				"number": 67
+			},
+			{
+				"id": 2,
+				"name": "Mcconnell Munoz",
+				"number": 16
+			},
+			{
+				"id": 3,
+				"name": "Hunt Calderon",
+				"number": 63
+			},
+			{
+				"id": 4,
+				"name": "Ava Colon",
+				"number": 77
+			},
+			{
+				"id": 5,
+				"name": "Esmeralda Baker",
+				"number": 4
+			},
+			{
+				"id": 6,
+				"name": "Laverne Potts",
+				"number": 27
+			},
+			{
+				"id": 7,
+				"name": "Cole Sampson",
+				"number": 94
+			}
+			]
+		},
+		"away": {
+			"name": "Hosté",
+			"players": [
+			{
+				"id": 0,
+				"name": "Webb Hebert",
+				"number": 32
+			},
+			{
+				"id": 1,
+				"name": "Elsa Duran",
+				"number": 71
+			},
+			{
+				"id": 2,
+				"name": "Joyce Brennan",
+				"number": 65
+			},
+			{
+				"id": 3,
+				"name": "Dorthy Gardner",
+				"number": 63
+			},
+			{
+				"id": 4,
+				"name": "Billie Webster",
+				"number": 26
+			},
+			{
+				"id": 5,
+				"name": "Tucker Slater",
+				"number": 70
+			},
+			{
+				"id": 6,
+				"name": "Letha Mercer",
+				"number": 52
+			},
+			{
+				"id": 7,
+				"name": "Tanisha Sandoval",
+				"number": 85
+			},
+			{
+				"id": 8,
+				"name": "Estelle Mason",
+				"number": 33
+			}
+			]
+		}
+	};
+});
 
-	$scope.db.match = {};
-	$scope.db.match.start = new Date();
+/**
+ * Controls all other Pages
+ */
+app.controller('PageCtrl', function ($scope, $location/*, $http */) {
+	console.log("Page Controller reporting for duty.");
 
-	$scope.timeUpdate = function(date) {
-		$scope.db.match.start = new Date();
+	$scope.getActiveClass = function (path) {
+		var current = $location.path().substr(0, path.length);
+		if (path !== '/') 
+			return (current === path) ? 'active' : '';
+		else 
+			return ($location.path() === '/') ? 'active' : '';
 	}
 
-	$scope.score = function() {
-		$scope.timeUpdate();
-		$scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds();
-
-		$location.path('/');
+	$scope.dump = function () {
+		alert($location.path());
 	}
+
+});
+
+app.controller('Login', function($scope, $location, API) {
+
+	$scope.form = {};
+
+	$scope.tournaments = API.getMatches;
+
+	$scope.send = function(type) {
+		if (!angular.isObject($scope.form[type])) {
+			// err
+			return;
+		}
+
+		if (type === 'team') {
+			// TODO
+			// $scope.form[type].name;
+			// $scope.form[type].password;
+		}
+		else if (type === 'tournament') {
+			// $scope.form[type].password;
+			$location.path('/selectMatch/' + $scope.form[type].tournament.id);
+		}
+		else if (type === 'admin') {
+			// TODO
+			// $scope.form[type].name;
+			// $scope.form[type].password;
+		}
+	};
+
+});
+
+app.controller('newTournament', function($scope) {
+
+	$scope.emptyRow = function(last) {
+		return { id : last + 1, name: "", group: "" };
+	}
+
+	$scope.nt = {};
+
+	$scope.nt.table = [$scope.emptyRow(0)];
+
+	$scope.addRow = function() {
+		$scope.nt.table.push($scope.emptyRow($scope.nt.table.length));
+	};
+
+	$scope.parseDate = function(formDate) {
+		if (typeof(formDate) === "undefined") return;
+		var parts = formDate.split('. ');
+		return parts[2] + '-' + parts[1] + '-' + parts[0];
+	}
+
+	$scope.update = function(nt) {
+		$scope.master = angular.copy(nt);
+		$scope.master.dbDate = $scope.parseDate($scope.master.date);
+	};
+
+	$scope.reset = function() {
+		$scope.nt = angular.copy($scope.master);
+	};
+
+	$scope.update($scope.nt);
+
+});
+
+app.controller("SelectTournament", function($scope, $location, Storage, API) {
+
+	$scope.selected = {};
+
+	$scope.data = API.getMatches;
+
+	$scope.send = function() {
+		if (angular.isObject($scope.selected.tournament)) {
+			// Storage.set("tournament", $scope.selected.tournament);
+			$location.path('/selectMatch/' + $scope.selected.tournament.id);
+		}
+		else {
+			// err
+		}
+	}
+
+});
+
+app.controller("SelectMatch", function($scope, $location, $routeParams, API) {
+
+	$scope.selected = {};
+
+	$scope.data = API.getMatches[$routeParams.TourID].matches;
+
+	$scope.score = function(instant = false) {
+		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds();
+
+		if (angular.isObject($scope.selected.match)) {
+			// Storage.set("match", $scope.selected.match);
+		}
+		else {
+			// err
+		}
+
+		if (instant) {
+			$location.path('/scoring/' + $scope.selected.match.id);
+		}
+		else {
+			$location.path('/scoring/' + $scope.selected.match.id);
+		}
+	}
+
+});
+
+app.controller("Scoring", function($scope, $routeParams, Globals, API) {
+
+	$scope.data = API.getPlayers;
+
+	$scope.db = [];
+
+	$scope.actualScore = {
+		"home": 0,
+		"away": 0
+	}
+
+	$scope.scored = {};
+
+	$scope.emptyTemp = function() {
+		$scope.scored = {
+			"point": Globals.default,
+			"assist": Globals.default
+		}
+	}
+
+	$scope.plus = function(team) {
+		$scope.scored.team = team;
+	}
+
+	$scope.score = function(opt) {
+		if (opt) {
+			$scope.db.push(angular.copy($scope.scored));
+			$scope.actualScore[$scope.scored.team]++;
+			$scope.stepBack();
+		}
+		$scope.emptyTemp();
+	}
+
+	$scope.stepBack = function(direction = true) {
+		if (direction) { // show cancel last action option
+			$('#stepBack').show();
+		}
+		else if ($scope.db.length) { // actually cancel last action
+			$scope.actualScore[$scope.db[$scope.db.length-1].team]--;
+			$scope.db.splice($scope.db.length-1, 1);
+			$('#stepBack').hide();
+		}
+	}
+
+	$scope.compare = function(rid,sid) {
+		if (sid == "") return false;
+		return rid == sid;
+	}
+
+	$scope.disabled = function(rid,sid) {
+		return ($scope.compare(rid,sid)) ? "disabled" : "";
+	}
+
+	$scope.emptyTemp();
 
 });
 

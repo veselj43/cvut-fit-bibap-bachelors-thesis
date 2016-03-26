@@ -1,0 +1,49 @@
+.no-padding {
+	padding: 0;
+}
+
+.no-margin {
+	margin: 0;
+}
+
+.score-btn {
+	font-size: 200%;
+}
+
+.modal div.radio {
+	margin: 0 -15px;
+	margin-right: -30px;
+	padding: 0 15px;
+	padding-right: 0;
+}
+
+.modal div.radio > label.radio {
+	margin: 0 -15px;
+	padding: 5px 30px;
+	padding-right: 0;
+}
+
+.modal div.radio > label.radio:hover {
+	box-shadow: 1px 0px 5px #66afe9;
+}
+
+.modal div.disabled > label {
+	opacity: 0.8;
+}
+
+.stepBack {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	display: none;
+	padding: 10px 15px;
+	color: #fff;
+	background-color: #000;
+	opacity: 0.9;
+}
+
+.stepBack .right-space {
+	margin-right: 1em;
+}

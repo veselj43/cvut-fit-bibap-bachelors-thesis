@@ -13,25 +13,20 @@
 			<ul class="nav navbar-nav">
 				<li ng-class="getActiveClass('/')"><a href="#/">Hlavní stánka</a></li>
 				<li ng-class="getActiveClass('/newTournament')"><a href="#/newTournament">Nový turnaj</a></li>
-				<li ng-class="getActiveClass('/scoring')"><a href="#/scoring">Skórování</a></li>
+				<li ng-class="getActiveClass('/selectTournament')"><a href="#/selectTournament">Skórovat</a></li>
 				<li ng-class="getActiveClass('/scores')"><a href="#/scores">Výsledky</a></li>
-				<li class="dropdown">
-					<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Action</a></li>
-						<li><a href="#">Another action</a></li>
-						<li><a href="#">Something else here</a></li>
-						<li role="separator" class="divider"></li>
-						<li class="dropdown-header">Nav header</li>
-						<li><a href="#">Separated link</a></li>
-						<li><a href="#">One more separated link</a></li>
-					</ul>
-				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><button ng-click="dump()">SHOW ME</button></li>
-				<li class="dropdown">
-					<a href="" class="dropdown-toggle" data-toggle="dropdown">Přihlásit se <b class="caret"></b></a>
+				<li ng-class="getActiveClass('/login')"><a href="#/login">Přihlásit se</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+
+
+				<!-- <li class="dropdown">
+					<a href="" class="dropdown-toggle" data-toggle="dropdown"  auto-close="outsideClick">Přihlásit se <b class="caret"></b></a>
 					<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
 						<li>
 							<div class="row" ng-controller="Login">
@@ -55,8 +50,4 @@
 							</div>
 						</li>
 					</ul>
-				</li>
-			</ul>
-		</div><!--/.nav-collapse -->
-	</div>
-</nav>
+				</li> -->

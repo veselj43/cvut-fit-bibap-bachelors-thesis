@@ -1,0 +1,42 @@
+<div class="container" ng-controller="SelectTournament">
+
+	<h1>Skórování</h1>
+
+	<form class="form">
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="tournament">Turnaj:</label>
+			<div class="col-sm-10">
+				<!-- <div class="dropdown pull-right makePaymentDropdownMainDiv" auto-close="outsideClick">
+					<button class="btn btn-default dropdown-toggle makePaymentDropdownBtn" type="button" id="individualDrop" data-toggle="dropdown">{{payment.entity}}<span class="caret pull-right"></span></button>
+					<span ng-show="submitted"><label class="error">Select an Individual</label></span>
+					<ul class="dropdown-menu makePaymentDropdownUlStyle" role="menu" aria-labelledby="individualDrop">
+						<input disable-auto-close type="search" ng-model="serchFilter" class="makePaymentDropdownSearchBox" placeholder="Search"></input>
+						<li role="presentation" ng-repeat="obj in data | filter: serchFilter">
+							<a role="menuitem" ng-click="selectEntity(obj)">{{obj.name}}</a>
+						</li>
+					</ul>
+				</div> -->
+
+				<select class="form-control" id="tournament" ng-model="selected.tournament"
+					ng-options="obj.name for obj in data | filter: serchFilter">
+					<option value="">Vyberte turnaj</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="pass">Heslo:</label>
+			<div class="col-sm-10">
+				<input class="form-control" type="password" id="pass" ng-model="selected.pass">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<input class="btn btn-primary" type="button" ng-click="send()" value="Přihlásit se ke skórování" ng-disabled="!selected.tournament">
+		</div>
+	</form>
+
+	<!-- <pre>{{selected | json}}</pre> -->
+	<!-- <pre>{{selected.match | json}}</pre> -->
+
+</div>

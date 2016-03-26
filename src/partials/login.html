@@ -1,0 +1,88 @@
+<div class="container" ng-controller="Login">
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Přihlásit se za tým</div>
+				<div class="panel-body">
+					<form class="form">
+						<div class="form-group">
+							<label class="sr-only" for="logName">Název účtu</label>
+							<input ng-model="form.team.name" type="text" class="form-control" id="logName" placeholder="Název účtu" required>
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="pass">Heslo</label>
+							<input ng-model="form.team.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+						</div>
+						<div class="form-group">
+							<input type="submit" class="btn btn-primary" ng-click="send('team')" value="Přihlásit">
+							<p><a href="#">Zapomenuté heslo?</a></p>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Přihlásit se ke skórování</div>
+				<div class="panel-body">
+					<form class="form">
+						<div class="form-group">
+							<label class="sr-only" for="logName">Název účtu</label>
+							<select class="form-control" id="tournament" ng-model="form.tournament.tournament"
+								ng-options="obj.name for obj in tournaments">
+								<option value="">Vyberte turnaj</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="pass">Heslo</label>
+							<input ng-model="form.tournament.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+						</div>
+						<div class="form-group">
+							<input type="submit" class="btn btn-primary" ng-click="send('tournament')" value="Přihlásit">
+							<br>
+							<a href="#">Zapomenuté heslo?</a>
+						</div>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Přihlásit se jako správce</div>
+				<div class="panel-body">
+					<form class="form">
+						<div class="form-group">
+							<label class="sr-only" for="logName">Název účtu</label>
+							<input ng-model="form.admin.name" type="text" class="form-control" id="logName" placeholder="Název účtu" required>
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="pass">Heslo</label>
+							<input ng-model="form.admin.password" type="password" class="form-control" id="pass" placeholder="Heslo" required>
+						</div>
+						<div class="form-group">
+							<input type="submit" class="btn btn-primary" ng-click="send('admin')" value="Přihlásit">
+							<br>
+							<a href="#">Zapomenuté heslo?</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- <div class="col-sm-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading"></div>
+				<div class="panel-body">
+					
+				</div>
+			</div>
+		</div> -->
+	</div>
+
+	<!-- <pre>{{ form | json }}</pre> -->
+
+</div>

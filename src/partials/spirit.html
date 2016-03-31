@@ -1,0 +1,30 @@
+<div class="container" ng-controller="Spirit">
+
+	<h1>Hodnotit spirit of the game</h1>
+
+	<form class="form">		
+		<div class="form-group">
+			<select class="form-control" ng-model="selected.match" 
+				ng-options="obj.team_home.name + ' vs. ' + obj.team_away.name for obj in data">
+				<option value="">Vyberte zápas</option>
+			</select>
+		</div>
+
+		<ul class="form-group list-inline" ng-hide="isEmpty(selected.match)">
+			<!-- <input class="form-control" type="number" 
+			ng-disabled="isEmpty(selected.match)" placeholder="Zde napište číselné hodnocení 1 až 10"> -->
+			<li ng-repeat="n in [] | range:10">
+				<input class="btn " ng-class="decider(((n+1)===selected.score), 'btn-info', 'btn-default')" type="button" value="{{n+1}}" ng-click="select(n+1)">
+			</li>
+		</ul>
+
+		<div class="form-group">
+			<input class="btn btn-primary" type="button" value="Uložit hodnocení" 
+			ng-disabled="isEmpty(selected.match)" ng-click="save()">
+		</div>
+	</form>
+
+	<pre>{{selected | json}}</pre>
+
+
+</div>

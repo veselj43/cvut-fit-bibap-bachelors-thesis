@@ -3,25 +3,22 @@
 	<h1>Výběr turnaje</h1>
 
 	<form class="form">
-		<div class="form-group row">
-			<label class="form-control-label col-sm-2" for="tournament">Turnaj:</label>
-			<div class="col-sm-10">
-				<!-- <div class="dropdown pull-right makePaymentDropdownMainDiv" auto-close="outsideClick">
-					<button class="btn btn-default dropdown-toggle makePaymentDropdownBtn" type="button" id="individualDrop" data-toggle="dropdown">{{payment.entity}}<span class="caret pull-right"></span></button>
-					<span ng-show="submitted"><label class="error">Select an Individual</label></span>
-					<ul class="dropdown-menu makePaymentDropdownUlStyle" role="menu" aria-labelledby="individualDrop">
-						<input disable-auto-close type="search" ng-model="serchFilter" class="makePaymentDropdownSearchBox" placeholder="Search"></input>
-						<li role="presentation" ng-repeat="obj in data | filter: serchFilter">
-							<a role="menuitem" ng-click="selectEntity(obj)">{{obj.name}}</a>
-						</li>
-					</ul>
-				</div> -->
+		<div class="form-group">
+			<!-- <div class="dropdown pull-right makePaymentDropdownMainDiv" auto-close="outsideClick">
+				<button class="btn btn-default dropdown-toggle makePaymentDropdownBtn" type="button" id="individualDrop" data-toggle="dropdown">{{payment.entity}}<span class="caret pull-right"></span></button>
+				<span ng-show="submitted"><label class="error">Select an Individual</label></span>
+				<ul class="dropdown-menu makePaymentDropdownUlStyle" role="menu" aria-labelledby="individualDrop">
+					<input disable-auto-close type="search" ng-model="serchFilter" class="makePaymentDropdownSearchBox" placeholder="Search"></input>
+					<li role="presentation" ng-repeat="obj in data | filter: serchFilter">
+						<a role="menuitem" ng-click="selectEntity(obj)">{{obj.name}}</a>
+					</li>
+				</ul>
+			</div> -->
 
-				<select class="form-control" id="tournament" ng-model="selected.tournament"
-					ng-options="obj.id as obj.name for obj in data | filter: serchFilter">
-					<option value="">Vyberte turnaj</option>
-				</select>
-			</div>
+			<select class="form-control" id="tournament" ng-model="selected.tournament"
+				ng-options="obj.id as obj.name for obj in data | filter: serchFilter">
+				<option value="">Vyberte turnaj</option>
+			</select>
 		</div>
 
 		<div ng-show="check(3)" class="form-group row">
@@ -33,7 +30,7 @@
 
 		<div class="form-group">
 			<input class="btn btn-primary" type="button" value="Přihlásit se ke skórování" 
-			ng-disabled="angular.isNumber(selected.tournament)" ng-click="login('tournament', selected, false)">
+			ng-disabled="isEmpty(selected.tournament)" ng-click="login('tournament', selected, false)">
 		</div>
 	</form>
 

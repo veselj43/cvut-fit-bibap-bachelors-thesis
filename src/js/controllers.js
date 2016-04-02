@@ -14,36 +14,78 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 	}
 
 	$scope.login = function(type, data, relog = true) {
-		if (relog || !$scope.logged()) Auth.login(type, data)
+		let nextLoc = ""
+		let succMsg = ""
 
 		if (!angular.isObject(data)) {
-			// err
+			flash('danger', 'Zadejte údaje pro přihlášení.')
 			return
 		}
 
 		if (type === 'team') {
-			// TODO
-			// $scope.form[type].name
-			// $scope.form[type].password
-			flash('success', 'Přihlášení týmu proběhlo úspěšně')
-			$location.path('/spirit/')
+
+			if ($rootScope.isEmpty(data.name)) {
+				flash('danger', 'Zadejte název týmu.')
+				return
+			}
+			if ($rootScope.isEmpty(data.password)) {
+				flash('danger', 'Zadejte heslo týmu.')
+				return
+			}
+
+			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
+			nextLoc = '/spirit/'
+
 		}
 		else if (type === 'tournament') {
+
+			if ($rootScope.isEmpty(data.tournament)) {
+				flash('danger', 'Zvolte turnaj.')
+				return
+			}
+			if ($rootScope.isEmpty(data.password)) {
+				flash('danger', 'Zadejte heslo turnaje.')
+				return
+			}
+
 			Auth.lastTournament(data.tournament)
-			// $scope.form[type].password
-			flash('success', 'Přihlášení k turnaji proběhlo úspěšně')
-			$location.path('/selectMatch/' + data.tournament)
+			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
+			nextLoc = '/selectMatch/' + data.tournament
+
 		}
 		else if (type === 'admin') {
-			// TODO
-			// $scope.form[type].name
-			// $scope.form[type].password
-			flash('success', 'Přihlášení jako správce proběhlo úspěšně')
-			$location.path('/')
+
+			if ($rootScope.isEmpty(data.name)) {
+				flash('danger', 'Zadejte jméno správce.')
+				return
+			}
+			if ($rootScope.isEmpty(data.password)) {
+				flash('danger', 'Zadejte heslo správce.')
+				return
+			}
+
+			succMsg = 'Přihlášení jako správce proběhlo úspěšně.'
+			nextLoc = '/'
+
 		}
 		else {
-			flash('danger', 'Přihlášení se nezdařilo')
+
+			flash('danger', 'Přihlášení se nezdařilo. Chyba role.')
+			return
+
 		}
+
+		if (relog || !$scope.logged()) {
+			if (!Auth.login(type, data)) {
+				// TODO rozdelit na jednotlive typy pro prehlednost
+				flash('danger', 'Chybné údaje přihlášení.')
+				return
+			}
+			
+			flash('success', succMsg)
+		}
+
+		$location.path(nextLoc)
 	}
 
 	$scope.logout = function() {
@@ -57,6 +99,15 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 
 	$scope.getLoginData = function() {
 		Auth.getData()
+	}
+
+})
+
+app.controller('Home', function($scope, $location, API, flash) {
+
+	$scope.data = {
+		"ongoing": API.getOngoing,
+		'upcomming': API.getUpcomming
 	}
 
 })

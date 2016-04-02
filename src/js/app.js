@@ -12,6 +12,7 @@ $(document).ready(function(){
 var app = angular.module('ufss', [
 	'ngSanitize',
 	'ngRoute',
+	'ngMessages',
 	'flash',
 	// 'pascalprecht.translate'
 ])
@@ -526,4 +527,73 @@ app.service('API', function() {
 			]
 		}
 	}
+
+	this.getUpcomming = [
+  {
+    "id": 0,
+    "date_start": "15. 03. 2016 22:25:03",
+    "name": "Ecratic",
+    "place": "Illumity"
+  },
+  {
+    "id": 1,
+    "date_start": "02. 01. 2016 07:32:50",
+    "name": "Geoform",
+    "place": "Boilcat"
+  },
+  {
+    "id": 2,
+    "date_start": "18. 02. 2016 07:43:45",
+    "name": "Nexgene",
+    "place": "Dancity"
+  },
+  {
+    "id": 3,
+    "date_start": "02. 01. 2016 23:02:25",
+    "name": "Pyrami",
+    "place": "Namebox"
+  },
+  {
+    "id": 4,
+    "date_start": "11. 03. 2016 16:20:54",
+    "name": "Flumbo",
+    "place": "Cowtown"
+  }
+]
+
+	this.getOngoing = [
+  {
+    "id": 0,
+    "date_start": "13. 02. 2016 06:52:18",
+    "team_home": {
+      "name": "Harmoney"
+    },
+    "team_away": {
+      "name": "Dreamia"
+    },
+    "place": "Cinaster"
+  },
+  {
+    "id": 1,
+    "date_start": "10. 02. 2016 10:59:05",
+    "team_home": {
+      "name": "Qot"
+    },
+    "team_away": {
+      "name": "Tropolis"
+    },
+    "place": "Furnitech"
+  },
+  {
+    "id": 2,
+    "date_start": "29. 03. 2016 03:21:51",
+    "team_home": {
+      "name": "Xylar"
+    },
+    "team_away": {
+      "name": "Ersum"
+    },
+    "place": "Xixan"
+  }
+]
 })

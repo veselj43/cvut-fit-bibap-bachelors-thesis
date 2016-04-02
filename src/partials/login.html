@@ -5,14 +5,18 @@
 			<div class="panel panel-primary">
 				<div class="panel-heading">Přihlásit se za tým</div>
 				<div class="panel-body">
-					<form class="form">
+					<form class="form" name="teamLog">
 						<div class="form-group">
-							<label class="sr-only" for="logName">Název účtu</label>
-							<input ng-model="form.team.name" type="text" class="form-control" id="logName" placeholder="Název účtu">
+							<label class="sr-only" for="teamName">Název účtu</label>
+							<input class="form-control" id="teamName" type="text" placeholder="Název účtu" 
+							ng-model="form.team.name" name="name" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
-							<label class="sr-only" for="pass">Heslo</label>
-							<input ng-model="form.team.password" type="password" class="form-control" id="pass" placeholder="Heslo">
+							<label class="sr-only" for="teamPass">Heslo</label>
+							<input class="form-control" id="teamPass" type="password" placeholder="Heslo" 
+							ng-model="form.team.password" name="pass" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
 							<input type="submit" class="btn btn-primary" ng-click="login('team', form.team)" value="Přihlásit">
@@ -29,15 +33,19 @@
 				<div class="panel-body">
 					<form class="form">
 						<div class="form-group">
-							<label class="sr-only" for="logName">Název účtu</label>
-							<select class="form-control" id="tournament" ng-model="form.tournament.tournament"
-								ng-options="obj.id as obj.name for obj in tournaments">
+							<label class="sr-only" for="tourName">Turnaj</label>
+							<select class="form-control" id="tournament" 
+								ng-model="form.tournament.tournament"
+								ng-options="obj.id as obj.name for obj in tournaments" 
+								required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 								<option value="">Vyberte turnaj</option>
 							</select>
 						</div>
 						<div class="form-group">
-							<label class="sr-only" for="pass">Heslo</label>
-							<input ng-model="form.tournament.password" type="password" class="form-control" id="pass" placeholder="Heslo">
+							<label class="sr-only" for="tourPass">Heslo</label>
+							<input class="form-control" id="tourPass" type="password" placeholder="Heslo" 
+							ng-model="form.tournament.password" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
 							<input type="submit" class="btn btn-primary" ng-click="login('tournament', form.tournament)" value="Přihlásit">
@@ -48,7 +56,7 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
 				<div class="panel-heading">Přihlásit se jako správce</div>
@@ -56,11 +64,15 @@
 					<form class="form">
 						<div class="form-group">
 							<label class="sr-only" for="logName">Název účtu</label>
-							<input ng-model="form.admin.name" type="text" class="form-control" id="logName" placeholder="Název účtu">
+							<input class="form-control" id="logName" placeholder="Název účtu" type="text" 
+							ng-model="form.admin.name" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
-							<label class="sr-only" for="pass">Heslo</label>
-							<input ng-model="form.admin.password" type="password" class="form-control" id="pass" placeholder="Heslo">
+							<label class="sr-only" for="adminPass">Heslo</label>
+							<input class="form-control" id="adminPass" type="password" placeholder="Heslo" 
+							ng-model="form.admin.password" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
 							<input type="submit" class="btn btn-primary" ng-click="login('admin', form.admin)" value="Přihlásit">

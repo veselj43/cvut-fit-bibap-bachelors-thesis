@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container" ng-controller="Home">
 
 	<div class="row">
-		<div class="col-sm-6">
+		<!-- <div class="col-sm-6">
 			<div class="panel panel-primary">
 				<div class="panel-heading">Vytvořit turnaj</div>
 				<div class="panel-body">
@@ -17,25 +17,60 @@
 					
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
-				<div class="panel-heading">Zobrazit probíhající zápasy</div>
+				<div class="panel-heading">Probíhající zápasy</div>
 				<div class="panel-body">
-					
+					<div class="table-responzive" ng-hide="isEmpty(data.ongoing.length)">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Datum a čas</th>
+									<th>Domácí</th>
+									<th>Hosté</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="row in data.ongoing">
+									<td>{{row.date_start | date: 'dd. MM. yyyy HH:mm:ss'}}</td>
+									<td>{{row.team_home.name}}</td>
+									<td>{{row.team_away.name}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
-				<div class="panel-heading">Zobrazit výsledky</div>
+				<div class="panel-heading">Plánované turnaje</div>
 				<div class="panel-body">
-					
+					<div class="table-responzive" ng-hide="isEmpty(data.upcomming.length)">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Datum a čas</th>
+									<th>Název</th>
+									<th>Místo</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="row in data.upcomming">
+									<td>{{row.date_start}}</td>
+									<td>{{row.name}}</td>
+									<td>{{row.place}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
 </div>
+<div ng-hide="logged()" ng-include="'partials/login.html'"></div>

@@ -13,16 +13,18 @@ var app = angular.module('ufss', [
 	'ngSanitize',
 	'ngRoute',
 	'flash',
-	'pascalprecht.translate'
+	// 'pascalprecht.translate'
 ])
 
-app.run(function($rootScope) {
+app.run(function($rootScope, $route, $location, Auth) {
 
 	$rootScope.isEmpty = function(value) {
 		if (
+			value === undefined ||
 			typeof(value) === "undefined" ||
 			value === null ||
-			value == {}
+			value === {} ||
+			value === ""
 		) return true
 		return false
 	}
@@ -31,20 +33,24 @@ app.run(function($rootScope) {
 		return (val) ? ifTrue : ifFalse
 	}
 
-})
+	$rootScope.$on('$routeChangeStart', function (event, next) {
 
-app.config(['$translateProvider', function ($translateProvider) {
-  $translateProvider.translations('en', {
-    'TEST': 'Hello'
-  })
- 
-  $translateProvider.translations('cs', {
-    'TEST': 'Ahoj'
-  })
- 
-  $translateProvider.useSanitizeValueStrategy('sanitize')
-  $translateProvider.preferredLanguage('cs')
-}])
+		function authAllow(array) {
+			for (var i in array) {
+				if (Auth.checkRole(array[i], true)) return true
+			}
+			return false
+		}
+
+		let params = ($rootScope.isEmpty(next)) ? $route.current : next
+
+		if (params.access !== undefined) {
+			if (!authAllow(params.access)) $location.path('/')
+		}
+
+	})
+
+})
 
 /**
  * Configure the Routes
@@ -55,20 +61,63 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 	$routeProvider
 		// Home
-		.when("/", {templateUrl: partPath + "home.html", controller: "PageCtrl"})
+		.when("/", {
+			templateUrl: partPath + "home.html"
+		})
 		// Actions
-		.when("/login", {templateUrl: partPath + "login.html", controller: "PageCtrl"})
-		.when("/newTournament", {templateUrl: partPath + "newTournament.html", controller: "PageCtrl"})
-		.when("/selectTournament", {templateUrl: partPath + "selectTournament.html", controller: "PageCtrl"})
-		.when("/selectMatch/:TourID?", {templateUrl: partPath + "selectMatch.html", controller: "PageCtrl"})
-		.when("/scoring/:MatchID", {templateUrl: partPath + "scoring.html", controller: "PageCtrl"})
-		.when("/spirit", {templateUrl: partPath + "spirit.html", controller: "PageCtrl"})
-		.when("/scores", {templateUrl: partPath + "scores.html", controller: "PageCtrl"})
+		.when("/login", {
+			templateUrl: partPath + "login.html"
+		})
+		.when("/newTournament", {
+			templateUrl: partPath + "newTournament.html", 
+			access: ['admin']
+		})
+		.when("/selectTournament", {
+			templateUrl: partPath + "selectTournament.html", 
+			access: ['admin']
+		})
+		.when("/selectMatch/:TourID?", {
+			templateUrl: partPath + "selectMatch.html", 
+			access: ['admin', 'tournament']
+		})
+		.when("/scoring/:MatchID", {
+			templateUrl: partPath + "scoring.html", 
+			access: ['admin', 'tournament']
+		})
+		.when("/spirit", {
+			templateUrl: partPath + "spirit.html", 
+			access: ['admin', 'team']
+		})
+		.when("/scores", {
+			templateUrl: partPath + "scores.html"
+		})
 		// Pages
-		.when("/faq", {templateUrl: partPath + "faq.html", controller: "PageCtrl"})
+		.when("/faq", {
+			templateUrl: partPath + "faq.html"
+		})
 		// else 404
-		.otherwise({templateUrl: partPath + "404.html", controller: "PageCtrl"})
+		.otherwise({
+			templateUrl: partPath + "404.html"
+		})
 }])
+
+
+/**
+ * translation ('pascalprecht.translate' module) ready, but not in use yet
+ */
+
+// app.config(['$translateProvider', function ($translateProvider) {
+//   $translateProvider.translations('en', {
+//     'TEST': 'Hello'
+//   })
+ 
+//   $translateProvider.translations('cs', {
+//     'TEST': 'Ahoj'
+//   })
+ 
+//   $translateProvider.useSanitizeValueStrategy('sanitize')
+//   $translateProvider.preferredLanguage('cs')
+// }])
 
 app.filter('range', function() {
   return function(input, total) {
@@ -91,7 +140,7 @@ app.factory('Globals', function() {
     }
 })
 
-app.service('Auth', function() {
+app.service('Auth', function($rootScope) {
 	let index = "login"
 	let roles = {
 		'team': 1,
@@ -122,6 +171,11 @@ app.service('Auth', function() {
 		return (authLvl <= this.getAuthLvl())
 	}
 
+	this.checkRole = function(role, exact = false) {
+		if ($rootScope.isEmpty(roles[role])) return false
+		return this.check(roles[role], exact)
+	}
+
 	this.login = function(type, data) {
 		if (typeof(roles[type]) === "undefined") return false
 
@@ -133,10 +187,11 @@ app.service('Auth', function() {
 
 	this.logout = function() {
 		localStorage.setItem(index, null)
+		$rootScope.$emit('$routeChangeStart')
 	}
 
 	this.lastTournament = function(TourID) {
-		if (TourID) localStorage.setItem("TourID", TourID)
+		if (!$rootScope.isEmpty(TourID)) localStorage.setItem("TourID", TourID)
 		else return localStorage.getItem("TourID")
 	}
 })

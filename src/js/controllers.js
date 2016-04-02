@@ -2,7 +2,7 @@
 /**
  * Controllers
  */
-app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth) {
+app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash) {
 	console.log("User auth level is: " + Auth.getAuthLvl())
 
 	$scope.getActiveClass = function (path) {
@@ -25,21 +25,30 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth) {
 			// TODO
 			// $scope.form[type].name
 			// $scope.form[type].password
+			flash('success', 'Přihlášení týmu proběhlo úspěšně')
+			$location.path('/spirit/')
 		}
 		else if (type === 'tournament') {
 			Auth.lastTournament(data.tournament)
 			// $scope.form[type].password
+			flash('success', 'Přihlášení k turnaji proběhlo úspěšně')
 			$location.path('/selectMatch/' + data.tournament)
 		}
 		else if (type === 'admin') {
 			// TODO
 			// $scope.form[type].name
 			// $scope.form[type].password
+			flash('success', 'Přihlášení jako správce proběhlo úspěšně')
+			$location.path('/')
+		}
+		else {
+			flash('danger', 'Přihlášení se nezdařilo')
 		}
 	}
 
 	$scope.logout = function() {
 		Auth.logout()
+		flash('success', 'Odlášení proběhlo úspěšně')
 	}
 
 	$scope.logged = function(authLvl = 1, exact = false) {
@@ -52,7 +61,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth) {
 
 })
 
-app.controller('Login', function($scope, $location, API) {
+app.controller('Login', function($scope, $location, API, flash) {
 
 	$scope.form = {}
 
@@ -60,7 +69,7 @@ app.controller('Login', function($scope, $location, API) {
 
 })
 
-app.controller('newTournament', function($scope) {
+app.controller('newTournament', function($scope, flash) {
 
 	function emptyRow(last) {
 		return { id : last + 1, name: "", group: "" }
@@ -93,7 +102,7 @@ app.controller('newTournament', function($scope) {
 
 })
 
-app.controller("SelectTournament", function($scope, $location, API) {
+app.controller("SelectTournament", function($scope, $location, API, flash) {
 
 	$scope.selected = {}
 
@@ -101,16 +110,16 @@ app.controller("SelectTournament", function($scope, $location, API) {
 
 })
 
-app.controller("SelectMatch", function($scope, $location, $routeParams, Auth, API) {
+app.controller("SelectMatch", function($scope, $rootScope, $location, $routeParams, Auth, API, flash) {
 
 	$scope.selected = {}
 
 	function TourID() {
-		if (Auth.getData().tournament) 
+		if (!$rootScope.isEmpty(Auth.getData().tournament)) 
 			return Auth.getData().tournament
-		if ($routeParams.TourID)
+		if (!$rootScope.isEmpty($routeParams.TourID)) 
 			return $routeParams.TourID
-		if (Auth.lastTournament()) 
+		if (!$rootScope.isEmpty(Auth.lastTournament())) 
 			return Auth.lastTournament()
 		return 0
 	}
@@ -121,23 +130,21 @@ app.controller("SelectMatch", function($scope, $location, $routeParams, Auth, AP
 		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds()
 
 		if (angular.isObject($scope.selected.match)) {
-			// Storage.set("match", $scope.selected.match)
+			if (instant) {
+				$location.path('/scoring/' + $scope.selected.match.id)
+			}
+			else {
+				$location.path('/scoring/' + $scope.selected.match.id)
+			}
 		}
 		else {
-			// err
-		}
-
-		if (instant) {
-			$location.path('/scoring/' + $scope.selected.match.id)
-		}
-		else {
-			$location.path('/scoring/' + $scope.selected.match.id)
+			flash('danger', 'Nebyl správně vybrán zápas')
 		}
 	}
 
 })
 
-app.controller("Scoring", function($scope, $routeParams, Globals, API) {
+app.controller("Scoring", function($scope, $routeParams, Globals, API, flash) {
 
 	$scope.data = API.getPlayers
 
@@ -216,7 +223,7 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 
 })
 
-app.controller("Scores", function($scope, $rootScope, API) {
+app.controller("Scores", function($scope, $rootScope, API, flash) {
 
 	$scope.selected = {}
 

@@ -1,5 +1,7 @@
-<div ng-controller="Scoring">
+<div ng-controller="OnlineScoring">
 	<div class="container">
+
+		<div ng-include="'templates/breadcrumb.html'"></div>
 
 		<h1>{{ data.home.name }} vs. {{ data.away.name }} <small>Skórování</small></h1>
 
@@ -106,11 +108,17 @@
 
 	</div>
 
-	<div id="stepBack" class="stepBack text-right">
+	<div id="stepBack" class="stepBack">
 		<div class="container">
-			<span class="right-space">Zrušit poslední zapsaný bod - {{ data[db[db.length-1].team].name }}</span>
-			<button type="button" class="btn btn-danger" 
-			ng-click="stepBack(false)">Zrušit</button>
+			<div class="row">
+				<div class="col-sm-9">
+					<div class="stepTitle">Zrušit poslední zapsaný bod - {{ data[db[db.length-1].team].name }}</div>
+				</div>
+				<div class="col-sm-offset-1 col-sm-2 text-right">
+					<button type="button" class="btn-stepBack" 
+					ng-click="stepBack(false)">Zrušit</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

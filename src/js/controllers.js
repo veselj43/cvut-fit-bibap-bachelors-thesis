@@ -6,7 +6,8 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 	console.log("User auth level is: " + Auth.getAuthLvl())
 
 	$scope.getActiveClass = function (path) {
-		var current = $location.path().substr(0, path.length)
+		// var current = $location.path().substr(0, path.length)
+		var current = $location.path().split("/")[1]
 		if (path !== '/') 
 			return (current === path) ? 'active' : ''
 		else 
@@ -34,7 +35,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 			}
 
 			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
-			nextLoc = '/spirit/'
+			nextLoc = '/spirit'
 
 		}
 		else if (type === 'tournament') {
@@ -43,14 +44,14 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 				flash('danger', 'Zvolte turnaj.')
 				return
 			}
-			if ($rootScope.isEmpty(data.password)) {
+			if ($rootScope.isEmpty(data.password) && !Auth.checkRole('admin')) {
 				flash('danger', 'Zadejte heslo turnaje.')
 				return
 			}
 
-			Auth.lastTournament(data.tournament)
+			Auth.storage("TourID", data.tournament)
 			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
-			nextLoc = '/selectMatch/' + data.tournament
+			nextLoc = '/scoring/selectMatch'
 
 		}
 		else if (type === 'admin') {
@@ -100,6 +101,59 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 	$scope.getLoginData = function() {
 		Auth.getData()
 	}
+
+})
+
+app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
+
+	$scope.breadcrumb = function() {
+
+		function activate(row) {
+			row.class = 'active'
+		}
+		function disable(row) {
+			row.class = 'disabled'
+		}
+
+		let bc = [
+			{ "text": "Vybrat turnaj", 	"href": "/scoring/selectTournament", 	"class": "" },
+			{ "text": "Vybrat zápas", 	"href": "/scoring/selectMatch", 		"class": "" },
+			{ "text": "Skórování", 		"href": "/scoring", 					"class": "" }
+		]
+
+		let cached = [
+			0,
+			Auth.TourID(),
+			Auth.MatchID()
+		]
+
+		let actPath = $location.path()
+
+		if (actPath === bc[2].href && cached[2] === -1) {
+			// go from scoring to tournament select when no tournament or match are selected
+			if (cached[1] === -1) $location.path(bc[0].href)
+			// go from scoring to match select when tournament is selected but match is not
+			else $location.path(bc[1].href)
+		}
+		else if (actPath === bc[1].href && cached[1] === -1) {
+			// go from match select to tournament select when no tournament is selected
+			$location.path(bc[0].href)
+		}
+
+		for (i = 0; i < bc.length; i++) {
+			if (actPath === bc[i].href) activate(bc[i])
+			else if (cached[i] === -1) disable(bc[i])
+		}
+
+		if (!Auth.checkRole('admin')) {
+			bc.splice(0, 1)
+		}
+
+		return bc
+
+	}
+
+	$scope.bcData = $scope.breadcrumb()
 
 })
 
@@ -165,27 +219,18 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 	$scope.selected = {}
 
-	function TourID() {
-		if (!$rootScope.isEmpty(Auth.getData().tournament)) 
-			return Auth.getData().tournament
-		if (!$rootScope.isEmpty($routeParams.TourID)) 
-			return $routeParams.TourID
-		if (!$rootScope.isEmpty(Auth.lastTournament())) 
-			return Auth.lastTournament()
-		return 0
-	}
-
-	$scope.data = API.getMatches[TourID()]
+	$scope.data = API.getMatches[Auth.TourID()]
 
 	$scope.score = function(instant = false) {
 		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds()
 
 		if (angular.isObject($scope.selected.match)) {
 			if (instant) {
-				$location.path('/scoring/' + $scope.selected.match.id)
+				// $location.path('/scoring/')
 			}
 			else {
-				$location.path('/scoring/' + $scope.selected.match.id)
+				Auth.storage("MatchID", $scope.selected.match.id)
+				$location.path('/scoring')
 			}
 		}
 		else {
@@ -195,7 +240,7 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 })
 
-app.controller("Scoring", function($scope, $routeParams, Globals, API, flash) {
+app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globals, API, Auth, flash) {
 
 	$scope.data = API.getPlayers
 
@@ -232,7 +277,7 @@ app.controller("Scoring", function($scope, $routeParams, Globals, API, flash) {
 		if (direction) { // show "cancel last action" option
 			$('#stepBack').show()
 		}
-		else if ($scope.db.length) { // actually cancel last action
+		else if ($scope.db.length) { // cancel last action
 			$scope.actualScore[$scope.db[$scope.db.length-1].team]--
 			$scope.db.splice($scope.db.length-1, 1)
 			$('#stepBack').hide()

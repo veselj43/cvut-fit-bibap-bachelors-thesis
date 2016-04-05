@@ -1,0 +1,7 @@
+<ul class="nav nav-tabs" ng-controller="Breadcrumb">
+	<li ng-repeat="row in bcData" class="{{row.class}}">
+		<a ng-if="isEmpty(row.class)" href="#{{row.href}}">{{row.text}}</a>
+		<span ng-if="!isEmpty(row.class)">{{row.text}}</span>
+	</li>
+</ul>
+<!-- <pre>{{bcData | json}}</pre> -->

@@ -41,6 +41,74 @@
 		<pre>{{db | json}}</pre>
 		<pre>{{data[scored.team].players | json}}</pre> -->
 
+		<div class="row scoreHistory">
+			<div class="scoreHistory-block col-sm-12 col-md-offset-1 col-md-10">
+				<div class="">
+					<input type="button" class="scoreHistory-btn btn btn-primary btn-lg btn-block" id="ScoreHistoryToggle" value="Zobrazit podrobnosti" 
+					ng-click="toggleScoreHistory()">
+				</div>
+
+				<div ng-if="detail" class="scoreHistory-list table-responzive">
+					<table class="table table-striped">
+						<thead>
+							<tr class="sm-hide">
+								<th style="width: 45%" colspan="3">Domácí</th>
+								<th class="delimiter">:</th>
+								<th style="width: 45%" colspan="3">Hosté</th>
+							</tr>
+							<tr class="sm-show">
+								<th style="width: 45%" colspan="2">Domácí</th>
+								<th class="delimiter">:</th>
+								<th style="width: 45%" colspan="2">Hosté</th>
+							</tr>
+							<tr>
+								<th class="name sm-hide">Asistence</th>
+								<th class="name">Bod</th>
+								<th class="score">Skóre</th>
+								<th class="delimiter">:</th>
+								<th class="score">Skóre</th>
+								<th class="name">Bod</th>
+								<th class="name sm-hide">Asistence</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-if="db.length === 0">
+								<td class="text-center sm-hide"></td>
+								<td class="text-center"></td>
+								<td class="text-right">0</td>
+								<td class="delimiter">:</td>
+								<td class="text-left">0</td>
+								<td class="text-center"></td>
+								<td class="text-center sm-hide"></td>
+							</tr>
+							<tr ng-repeat="point in db" class="{{point.team}}Row">
+								<td class="text-center sm-hide">{{echoPlayer('home', point, 'assist')}}</td>
+								<td class="text-center">{{echoPlayer('home', point, 'point')}}</td>
+								<td class="text-right">{{point.actualScore.home}}</td>
+								<td class="delimiter">:</td>
+								<td class="text-left">{{point.actualScore.away}}</td>
+								<td class="text-center">{{echoPlayer('away', point, 'point')}}</td>
+								<td class="text-center sm-hide">{{echoPlayer('away', point, 'assist')}}</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- <div class="row text-center scoreHistoryHeader">
+						<div class="col-sm-6">
+							{{data.home.name}}
+						</div>
+						<div class="col-sm-6">
+							{{data.away.name}}
+						</div>
+					</div>
+					<div class="">
+						<ol>
+							<li ng-repeat="(i, point) in db" class="{{point.team}}">{{point.actualScore.home}}:{{point.actualScore.away}}</li>
+						</ol>
+					</div> -->
+				</div>
+			</div>
+		</div>
+
 		<div id="scorePoint" class="modal" data-replace="true" aria-hidden="false">
 			<div class="modal-dialog">
 

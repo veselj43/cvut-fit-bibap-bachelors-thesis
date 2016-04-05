@@ -1,4 +1,6 @@
 
+'use strict';
+
 /**
  * Controllers
  */
@@ -140,7 +142,7 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 			$location.path(bc[0].href)
 		}
 
-		for (i = 0; i < bc.length; i++) {
+		for (let i = 0; i < bc.length; i++) {
 			if (actPath === bc[i].href) activate(bc[i])
 			else if (cached[i] === -1) disable(bc[i])
 		}
@@ -244,14 +246,44 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 	$scope.data = API.getPlayers
 
-	$scope.db = []
+	$scope.db = [
+		{
+			"point": "null",
+			"assist": "null",
+			"team": "home",
+			"actualScore": {
+				"home": 1,
+				"away": 2
+			}
+		},
+		{
+			"point": "null",
+			"assist": "null",
+			"team": "away",
+			"actualScore": {
+				"home": 0,
+				"away": 2
+			}
+		},
+		{
+			"point": "null",
+			"assist": "null",
+			"team": "away",
+			"actualScore": {
+				"home": 0,
+				"away": 1
+			}
+		}
+	]
 
 	$scope.actualScore = {
-		"home": 0,
-		"away": 0
+		"home": 1,
+		"away": 2
 	}
 
 	$scope.scored = {}
+
+	$scope.detail = false
 
 	function emptyTemp() {
 		$scope.scored = {
@@ -266,8 +298,9 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 	$scope.score = function(opt) {
 		if (opt) {
-			$scope.db.push(angular.copy($scope.scored))
 			$scope.actualScore[$scope.scored.team]++
+			$scope.scored.actualScore = angular.copy($scope.actualScore)
+			$scope.db.splice(0,0, angular.copy($scope.scored))
 			$scope.stepBack()
 		}
 		emptyTemp()
@@ -278,8 +311,8 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 			$('#stepBack').show()
 		}
 		else if ($scope.db.length) { // cancel last action
-			$scope.actualScore[$scope.db[$scope.db.length-1].team]--
-			$scope.db.splice($scope.db.length-1, 1)
+			$scope.actualScore[$scope.db[0].team]--
+			$scope.db.splice(0, 1)
 			$('#stepBack').hide()
 		}
 	}
@@ -291,6 +324,17 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 	$scope.disabled = function(rid,sid) {
 		return ($scope.compare(rid,sid)) ? "disabled" : ""
+	}
+
+	$scope.toggleScoreHistory = function() {
+		document.getElementById('ScoreHistoryToggle').value = ($scope.detail) ? 'Zobrazit podrobnosti' : 'Skrýt podrobnosti'
+		$scope.detail = !$scope.detail
+	}
+
+	$scope.echoPlayer = function(team, row, key) {
+		// TODO hrac[s id row[key]]
+		if (team === row.team) return (row[key] === "null") ? "Anonym" : row[key]
+		return "žán klód van dam-"
 	}
 
 	emptyTemp()

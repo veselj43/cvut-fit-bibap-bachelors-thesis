@@ -1,3 +1,7 @@
+html, body {
+	min-width: 375px;
+}
+
 .no-padding {
 	padding: 0;
 }
@@ -103,7 +107,7 @@ ol.steps li.disabled {
 	right: 0;
 	width: 100%;
 	display: none;
-	padding: 10px 15px;
+	padding: 3px 15px;
 	color: #fff;
 	background-color: #1c2e40;
 	font-size: 110%;
@@ -122,4 +126,68 @@ ol.steps li.disabled {
 	background-color: transparent;
 	border: none;
 	padding: 7px 3em;
+}
+
+.scoreHistory .scoreHistory-block {
+	/* background-color: #f0f0f0; */
+	padding-top: 15px;
+	padding-bottom: 15px;
+	border: 1px #ccc solid;
+	border-radius: 10px;
+}
+
+.scoreHistory .scoreHistory-btn {
+	/* display: block;
+	width: 100%;
+	padding: 5px;
+	border: none;
+	background-color: transparent; */
+}
+
+.scoreHistory .scoreHistory-btn:active,
+.scoreHistory .scoreHistory-btn:focus {
+	background-color-color: #337ab7;
+	border-color: transparent;
+	outline: none;
+}
+
+.scoreHistory .scoreHistoryHeader>div {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.scoreHistory .scoreHistory-list {
+	margin-top: 0;
+}
+
+.scoreHistory table th,
+.scoreHistory table th.home,
+.scoreHistory table th.away {
+	text-align: center;
+}
+
+.scoreHistory table .name {
+	width: 20.5%;
+}
+
+.scoreHistory table .score {
+	width: 8%;
+}
+
+.scoreHistory table .delimiter {
+	width: 8%;
+	text-align: center;
+}
+
+.sm-show {
+	display: none;
+}
+
+@media (max-width:666px){
+	.sm-hide {
+		display: none;
+	}
+	tr.sm-show {
+		display: table-row;
+	}
 }

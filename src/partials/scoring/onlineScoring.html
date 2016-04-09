@@ -1,9 +1,11 @@
 <div ng-controller="OnlineScoring">
 	<div class="container">
 
+<!-- <pre>{{ data.homeTeam.players | json }}</pre> -->
+
 		<div ng-include="'templates/breadcrumb.html'"></div>
 
-		<h1>{{ data.home.name }} vs. {{ data.away.name }} <small>Skórování</small></h1>
+		<h1>{{ data.homeTeam.name }} <small>vs.</small> {{ data.awayTeam.name }} <small>Skórování</small></h1>
 
 		<!-- <pre>{{actualScore | json}}</pre> -->
 
@@ -12,10 +14,10 @@
 			<div class="form-group row">
 				<div class="col-sm-6">
 					<div class="panel panel-primary">
-						<div class="panel-heading">Domácí {{data.home.name}}</div>
+						<div class="panel-heading">Domácí - {{data.homeTeam.name}}</div>
 						<div class="panel-body">
 							<div class="text-center">
-								<h2>{{actualScore.home}}</h2>
+								<h2>{{actualScore.homeTeam}}</h2>
 							</div>
 							<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
 							ng-click="plus('home')" data-toggle="modal" data-target="#scorePoint">+</button>
@@ -24,10 +26,10 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="panel panel-primary">
-						<div class="panel-heading">Hosté {{data.away.name}}</div>
+						<div class="panel-heading">Hosté - {{data.awayTeam.name}}</div>
 						<div class="panel-body">
 							<div class="text-center">
-								<h2>{{actualScore.away}}</h2>
+								<h2>{{actualScore.awayTeam}}</h2>
 							</div>
 							<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
 							ng-click="plus('away')" data-toggle="modal" href="#scorePoint">+</button>
@@ -84,9 +86,9 @@
 							<tr ng-repeat="point in db" class="{{point.team}}Row">
 								<td class="text-center sm-hide">{{echoPlayer('home', point, 'assist')}}</td>
 								<td class="text-center">{{echoPlayer('home', point, 'point')}}</td>
-								<td class="text-right">{{point.actualScore.home}}</td>
+								<td class="text-right">{{point.actualScore.homeTeam}}</td>
 								<td class="delimiter">:</td>
-								<td class="text-left">{{point.actualScore.away}}</td>
+								<td class="text-left">{{point.actualScore.awayTeam}}</td>
 								<td class="text-center">{{echoPlayer('away', point, 'point')}}</td>
 								<td class="text-center sm-hide">{{echoPlayer('away', point, 'assist')}}</td>
 							</tr>
@@ -132,7 +134,7 @@
 										<div class="radio" ng-class="disabled(assistent.id, scored.point)" ng-repeat="assistent in data[scored.team].players">
 											<label class="radio">
 												<input type="radio" ng-model="scored.assist" value="{{assistent.id}}" ng-disabled="compare(assistent.id, scored.point)">
-												{{assistent.name}}
+												{{assistent.firstname}} {{assistent.lastname}}
 											</label>
 										</div>
 									</div>
@@ -153,7 +155,7 @@
 										<div class="radio" ng-class="disabled(pointer.id, scored.assist)" ng-repeat="pointer in data[scored.team].players">
 											<label class="radio">
 												<input type="radio" ng-model="scored.point" value="{{pointer.id}}" ng-disabled="compare(pointer.id, scored.assist)">
-												{{pointer.name}}
+												{{pointer.firstname}} {{pointer.lastname}}
 											</label>
 										</div>
 									</div>

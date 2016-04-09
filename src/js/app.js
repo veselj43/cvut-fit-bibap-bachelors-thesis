@@ -128,16 +128,40 @@ app.config(['$routeProvider', function ($routeProvider) {
 //   $translateProvider.preferredLanguage('cs')
 // }])
 
+
+/**
+ * Custom filters
+ */
 app.filter('range', function() {
-  return function(input, total) {
-    total = parseInt(total)
+	return function(input, total) {
+		total = parseInt(total)
 
-    for (var i=0; i<total; i++) {
-      input.push(i)
-    }
+		for (var i = 0; i < total; i++) {
+			input.push(i)
+		}
 
-    return input
-  }
+		return input
+	}
+})
+
+app.filter('definedMatches', function() {
+	return function(items) {
+		var filtered = []
+
+		angular.forEach(items, function(item) {
+			if(item.homeTeam.name !== null && item.awayTeam.name !== null){
+				filtered.push(item)
+			}
+		})
+
+		// filtered.sort(function(a,b){
+		//     if(a.indexOf(word) < b.indexOf(word)) return -1
+		//     else if(a.indexOf(word) > b.indexOf(word)) return 1
+		//     else return 0
+		// })
+
+		return filtered
+	}
 })
 
 /**
@@ -225,399 +249,53 @@ app.service('Auth', function($rootScope, $routeParams) {
 /**
  * API - backend - db
  */
-app.service('API', function() {
-	this.getMatches = [
-		{
-			"id": 0,
-			"name": "Netbook",
-			"date_start": "2016-02-05T03:09:53 -01:00",
-			"matches": [
-				{
-					"id": 0,
-					"start_time": "2016-01-23T09:27:20 -01:00",
-					"team_home": {
-						"id": 24,
-						"name": "Bugsall"
-					},
-					"team_away": {
-						"id": 15,
-						"name": "Cablam"
-					}
-				},
-				{
-					"id": 1,
-					"start_time": "2016-02-12T05:34:00 -01:00",
-					"team_home": {
-						"id": 37,
-						"name": "Decratex"
-					},
-					"team_away": {
-						"id": 54,
-						"name": "Myopium"
-					}
-				},
-				{
-					"id": 2,
-					"start_time": "2016-02-09T08:11:56 -01:00",
-					"team_home": {
-						"id": 47,
-						"name": "Krag"
-					},
-					"team_away": {
-						"id": 27,
-						"name": "Gynk"
-					}
-				},
-				{
-					"id": 3,
-					"start_time": "2016-02-19T12:27:20 -01:00",
-					"team_home": {
-						"id": 25,
-						"name": "Dognost"
-					},
-					"team_away": {
-						"id": 53,
-						"name": "Zilla"
-					}
-				},
-				{
-					"id": 4,
-					"start_time": "2016-01-19T12:02:23 -01:00",
-					"team_home": {
-						"id": 37,
-						"name": "Rocklogic"
-					},
-					"team_away": {
-						"id": 44,
-						"name": "Mitroc"
-					}
-				},
-				{
-					"id": 5,
-					"start_time": "2016-01-03T02:51:54 -01:00",
-					"team_home": {
-						"id": 32,
-						"name": "Sultraxin"
-					},
-					"team_away": {
-						"id": 12,
-						"name": "Empirica"
-					}
-				}
-			]
-		},
-		{
-			"id": 1,
-			"name": "Enjola",
-			"date_start": "2016-02-25T02:14:44 -01:00",
-			"matches": [
-				{
-					"id": 0,
-					"start_time": "2016-03-09T12:49:27 -01:00",
-					"team_home": {
-						"id": 68,
-						"name": "Zuvy"
-					},
-					"team_away": {
-						"id": 46,
-						"name": "Phuel"
-					}
-				},
-				{
-					"id": 1,
-					"start_time": "2016-02-22T12:01:17 -01:00",
-					"team_home": {
-						"id": 62,
-						"name": "Zillacom"
-					},
-					"team_away": {
-						"id": 53,
-						"name": "Kengen"
-					}
-				},
-				{
-					"id": 2,
-					"start_time": "2016-02-19T11:42:00 -01:00",
-					"team_home": {
-						"id": 4,
-						"name": "Stralum"
-					},
-					"team_away": {
-						"id": 65,
-						"name": "Farmage"
-					}
-				},
-				{
-					"id": 3,
-					"start_time": "2016-02-27T11:01:48 -01:00",
-					"team_home": {
-						"id": 80,
-						"name": "Turnling"
-					},
-					"team_away": {
-						"id": 22,
-						"name": "Digiprint"
-					}
-				},
-				{
-					"id": 4,
-					"start_time": "2016-01-13T03:25:12 -01:00",
-					"team_home": {
-						"id": 66,
-						"name": "Zyple"
-					},
-					"team_away": {
-						"id": 92,
-						"name": "Bedder"
-					}
-				}
-			]
-		},
-		{
-			"id": 2,
-			"name": "Fortean",
-			"date_start": "2016-02-19T05:05:23 -01:00",
-			"matches": [
-				{
-					"id": 0,
-					"start_time": "2016-02-24T11:11:28 -01:00",
-					"team_home": {
-						"id": 22,
-						"name": "Euron"
-					},
-					"team_away": {
-						"id": 19,
-						"name": "Eweville"
-					}
-				},
-				{
-					"id": 1,
-					"start_time": "2016-03-18T04:53:04 -01:00",
-					"team_home": {
-						"id": 61,
-						"name": "Isologica"
-					},
-					"team_away": {
-						"id": 32,
-						"name": "Comdom"
-					}
-				},
-				{
-					"id": 2,
-					"start_time": "2016-01-23T05:20:21 -01:00",
-					"team_home": {
-						"id": 14,
-						"name": "Combogene"
-					},
-					"team_away": {
-						"id": 3,
-						"name": "Buzzness"
-					}
-				},
-				{
-					"id": 3,
-					"start_time": "2016-03-16T01:09:04 -01:00",
-					"team_home": {
-						"id": 18,
-						"name": "Bristo"
-					},
-					"team_away": {
-						"id": 44,
-						"name": "Obones"
-					}
-				},
-				{
-					"id": 4,
-					"start_time": "2016-01-09T04:55:38 -01:00",
-					"team_home": {
-						"id": 42,
-						"name": "Applidec"
-					},
-					"team_away": {
-						"id": 13,
-						"name": "Cosmetex"
-					}
-				},
-				{
-					"id": 5,
-					"start_time": "2016-03-20T03:14:40 -01:00",
-					"team_home": {
-						"id": 36,
-						"name": "Elita"
-					},
-					"team_away": {
-						"id": 14,
-						"name": "Zentility"
-					}
-				}
-			]
-		}
-	]
+app.service('API', function($http) {
 
-	this.getPlayers = {
-		"home": {
-			"name": "Domácí",
-			"players": [
-			{
-				"id": 0,
-				"name": "Gretchen Murphy",
-				"number": 52
-			},
-			{
-				"id": 1,
-				"name": "Valentine Yates",
-				"number": 67
-			},
-			{
-				"id": 2,
-				"name": "Mcconnell Munoz",
-				"number": 16
-			},
-			{
-				"id": 3,
-				"name": "Hunt Calderon",
-				"number": 63
-			},
-			{
-				"id": 4,
-				"name": "Ava Colon",
-				"number": 77
-			},
-			{
-				"id": 5,
-				"name": "Esmeralda Baker",
-				"number": 4
-			},
-			{
-				"id": 6,
-				"name": "Laverne Potts",
-				"number": 27
-			},
-			{
-				"id": 7,
-				"name": "Cole Sampson",
-				"number": 94
-			}
-			]
-		},
-		"away": {
-			"name": "Hosté",
-			"players": [
-			{
-				"id": 0,
-				"name": "Webb Hebert",
-				"number": 32
-			},
-			{
-				"id": 1,
-				"name": "Elsa Duran",
-				"number": 71
-			},
-			{
-				"id": 2,
-				"name": "Joyce Brennan",
-				"number": 65
-			},
-			{
-				"id": 3,
-				"name": "Dorthy Gardner",
-				"number": 63
-			},
-			{
-				"id": 4,
-				"name": "Billie Webster",
-				"number": 26
-			},
-			{
-				"id": 5,
-				"name": "Tucker Slater",
-				"number": 70
-			},
-			{
-				"id": 6,
-				"name": "Letha Mercer",
-				"number": 52
-			},
-			{
-				"id": 7,
-				"name": "Tanisha Sandoval",
-				"number": 85
-			},
-			{
-				"id": 8,
-				"name": "Estelle Mason",
-				"number": 33
-			}
-			]
-		}
+	let basePath = 'http://catcher.zlutazimnice.cz/api/'
+
+	// $http({ method: 'GET', url: '/foo' })
+	// 	.success(function (data, status, headers, config) {
+	// 	})
+	// 	.error(function (data, status, headers, config) {
+	// 	})
+
+	function get(what = "", params, append) {
+		let uri = basePath + what
+		uri += (params) ? ('/' + params) : 's'
+		uri += (append) ? ('/' + append) : ''
+		return $http.get(uri)
 	}
 
-	this.getUpcomming = [
-		{
-			"id": 0,
-			"date_start": "15. 03. 2016 22:25:03",
-			"name": "Ecratic",
-			"place": "Illumity"
-		},
-		{
-			"id": 1,
-			"date_start": "02. 01. 2016 07:32:50",
-			"name": "Geoform",
-			"place": "Boilcat"
-		},
-		{
-			"id": 2,
-			"date_start": "18. 02. 2016 07:43:45",
-			"name": "Nexgene",
-			"place": "Dancity"
-		},
-		{
-			"id": 3,
-			"date_start": "02. 01. 2016 23:02:25",
-			"name": "Pyrami",
-			"place": "Namebox"
-		},
-		{
-			"id": 4,
-			"date_start": "11. 03. 2016 16:20:54",
-			"name": "Flumbo",
-			"place": "Cowtown"
-		}
-	]
+	this.test = function() {
+		return get("club", "2")
+	}
 
-	this.getOngoing = [
-		{
-			"id": 0,
-			"date_start": "13. 02. 2016 06:52:18",
-			"team_home": {
-				"name": "Harmoney"
-			},
-			"team_away": {
-				"name": "Dreamia"
-			},
-			"place": "Cinaster"
-		},
-		{
-			"id": 1,
-			"date_start": "10. 02. 2016 10:59:05",
-			"team_home": {
-				"name": "Qot"
-			},
-			"team_away": {
-				"name": "Tropolis"
-			},
-			"place": "Furnitech"
-		},
-		{
-			"id": 2,
-			"date_start": "29. 03. 2016 03:21:51",
-			"team_home": {
-				"name": "Xylar"
-			},
-			"team_away": {
-				"name": "Ersum"
-			},
-			"place": "Xixan"
-		}
-	]
+	this.getTour = function(id) {
+		return get('tournament', id)
+	}
+
+	// this.getMatch = function(TourID, MatchID) {
+	// 	return get('tournament', id)
+	// }
+
+	this.getMatchesForTour = function(id) {
+		return get('tournament', id, 'matches')
+	}
+
+	this.getPlayersForClub = function(id) {
+		return get('club', id, 'players')
+	}
+
+	this.getUpcomming = function() {
+		return get('tournament')
+	}
+
+	this.getOngoing = function() {
+		return get('tournament')
+	}
+
+	this.basicGet = function(append) {
+		return $http.get(basePath + append)
+	}
+
 })

@@ -1,5 +1,7 @@
 <div class="container" ng-controller="SelectMatch">
 
+<!-- <pre>{{ data | json }}</pre> -->
+
 	<div ng-include="'templates/breadcrumb.html'"></div>
 	
 	<h1><small>Turnaj</small> {{ data.name }} <small>Výběr zápasu</small></h1>
@@ -7,7 +9,7 @@
 	<form class="form">
 		<div class="form-group ">
 			<select class="form-control" id="match" ng-model="selected.match" 
-				ng-options="obj.team_home.name + ' vs. ' + obj.team_away.name for obj in data.matches">
+				ng-options="obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in data | definedMatches">
 				<option value="">Vyberte zápas</option>
 			</select>
 		</div>
@@ -34,16 +36,16 @@
 				<div class="modal-body">
 					<form class="form">
 						<div class="form-group row">
-							<label class="form-control-label col-sm-4" for="homeScore">{{selected.match.team_home.name}}:</label>
+							<label class="form-control-label col-sm-4" for="homeScore">{{selected.match.homeTeam.name}}:</label>
 							<div class="col-sm-8">
-								<input type="number" class="form-control" id="homeScore" placeholder="{{selected.match.team_home.name}}" required 
+								<input type="number" class="form-control" id="homeScore" placeholder="{{selected.match.homeTeam.name}}" required 
 								ng-model="instScore.home">
 							</div>
 						</div>
 						<div class="form-group row">
-							<label class="form-control-label col-sm-4" for="awayScore">{{selected.match.team_away.name}}:</label>
+							<label class="form-control-label col-sm-4" for="awayScore">{{selected.match.awayTeam.name}}:</label>
 							<div class="col-sm-8">
-								<input type="number" class="form-control" id="awayScore" placeholder="{{selected.match.team_away.name}}" required 
+								<input type="number" class="form-control" id="awayScore" placeholder="{{selected.match.awayTeam.name}}" required 
 								ng-model="instScore.away">
 							</div>
 						</div>

@@ -5,14 +5,14 @@
 	<form class="form">
 		<div class="form-group">
 			<select class="form-control" ng-model="selected.tournament"
-				ng-options="obj.name for obj in data">
+				ng-options="obj.name for obj in tours">
 				<option value="">Vyberte turnaj</option>
 			</select>
 		</div>
 		
 		<div class="form-group">
 			<select class="form-control" ng-model="selected.match" ng-disabled="isEmpty(selected.tournament)"
-				ng-options="obj.team_home.name + ' vs. ' + obj.team_away.name for obj in selected.tournament.matches">
+				ng-options="obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in matches">
 				<option value="">Vyberte zápas</option>
 			</select>
 		</div>
@@ -35,8 +35,8 @@
 			<tbody>
 				<tr ng-repeat="one in scoreData">
 					<td>{{one.id}}</td>
-					<td>{{one.team_home.name}}</td>
-					<td>{{one.team_away.name}}</td>
+					<td>{{one.homeTeam.name}}</td>
+					<td>{{one.awayTeam.name}}</td>
 				</tr>
 			</tbody>
 		</table>

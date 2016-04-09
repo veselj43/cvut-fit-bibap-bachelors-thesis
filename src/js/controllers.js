@@ -159,20 +159,38 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 
 })
 
-app.controller('Home', function($scope, $location, API, flash) {
+app.controller('Home', function($scope, $location, $http, API, flash) {
 
 	$scope.data = {
 		"ongoing": API.getOngoing,
 		'upcomming': API.getUpcomming
 	}
 
+	// API.test().then(function (response) {
+	// 	$scope.test = response.data
+	// 	console.log(response.data)
+	// }, function (error) {
+	// 	$scope.test = {"error": 'Unable to load data, error message: ' + error.message}
+	// 	console.log('Unable to load customer data: ' + error.message)
+	// })
+
+	// console.log($scope.test, $scope.status)
+
 })
 
 app.controller('Login', function($scope, $location, API, flash) {
 
 	$scope.form = {}
+	$scope.tournaments = []
 
-	$scope.tournaments = API.getMatches
+	API.getTour()
+		.success(function(data) {
+			$scope.tournaments = data.items
+		})
+		.error(function(data) {
+			flash('danger', 'Nezdařilo se načíst data turnaje. Chyba byla zaznamenána a bude opravena.')
+			// TODO log error
+		})
 
 })
 
@@ -212,16 +230,33 @@ app.controller('newTournament', function($scope, flash) {
 app.controller("SelectTournament", function($scope, $location, API, flash) {
 
 	$scope.selected = {}
+	$scope.data = []
 
-	$scope.data = API.getMatches
+	API.getTour()
+		.success(function(data) {
+			$scope.data = data.items
+			console.log(data)
+		})
+		.error(function(data) {
+			flash('danger', 'Nezdařilo se načíst data turnaje. Chyba byla zaznamenána a bude opravena.')
+			// TODO log error
+		})
 
 })
 
 app.controller("SelectMatch", function($scope, $rootScope, $location, $routeParams, Auth, API, flash) {
 
 	$scope.selected = {}
+	$scope.data = []
 
-	$scope.data = API.getMatches[Auth.TourID()]
+	API.getMatchesForTour(Auth.TourID())
+		.success(function(data) {
+			$scope.data = data.matches
+		})
+		.error(function(data) {
+			flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
+			// TODO log error
+		})
 
 	$scope.score = function(instant = false) {
 		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds()
@@ -244,41 +279,48 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globals, API, Auth, flash) {
 
-	$scope.data = API.getPlayers
+	$scope.data = []
+	//API.getPlayers
 
-	$scope.db = [
-		{
-			"point": "null",
-			"assist": "null",
-			"team": "home",
-			"actualScore": {
-				"home": 1,
-				"away": 2
+	API.getMatchesForTour(Auth.TourID())
+		.success(function(data) {
+			let tmp = data.matches
+
+			for (let i in tmp) {
+				if (tmp[i].id == Auth.MatchID()) {
+					$scope.data = tmp[i]
+					break;
+				}
 			}
-		},
-		{
-			"point": "null",
-			"assist": "null",
-			"team": "away",
-			"actualScore": {
-				"home": 0,
-				"away": 2
-			}
-		},
-		{
-			"point": "null",
-			"assist": "null",
-			"team": "away",
-			"actualScore": {
-				"home": 0,
-				"away": 1
-			}
-		}
-	]
+
+			API.getPlayersForClub($scope.data.homeTeam.id)
+				.success(function(data) {
+					$scope.data.homeTeam.players = data.players
+				})
+				.error(function(data) {
+					$scope.data.homeTeam.players = []
+					// TODO log error
+				})
+
+			API.getPlayersForClub($scope.data.awayTeam.id)
+				.success(function(data) {
+					$scope.data.awayTeam.players = data.players
+				})
+				.error(function(data) {
+					$scope.data.awayTeam.players = []
+					// TODO log error
+				})
+		})
+		.error(function(data) {
+			flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
+			// TODO log error
+		})
+
+	$scope.db = []
 
 	$scope.actualScore = {
-		"home": 1,
-		"away": 2
+		"homeTeam": 0,
+		"awayTeam": 0
 	}
 
 	$scope.scored = {}
@@ -293,7 +335,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 	}
 
 	$scope.plus = function(team) {
-		$scope.scored.team = team
+		$scope.scored.team = team + 'Team'
 	}
 
 	$scope.score = function(opt) {
@@ -333,8 +375,8 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 	$scope.echoPlayer = function(team, row, key) {
 		// TODO hrac[s id row[key]]
-		if (team === row.team) return (row[key] === "null") ? "Anonym" : row[key]
-		return "žán klód van dam-"
+		if (team + 'Team' === row.team) return (row[key] === "null") ? "Anonym" : row[key]
+		return "-"
 	}
 
 	emptyTemp()
@@ -349,7 +391,16 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.selected = {}
 
-	$scope.data = API.getMatches[1].matches
+	$scope.data = []
+
+	API.getMatchesForTour(1)
+			.success(function(data) {
+				$scope.data = data.matches
+			})
+			.error(function(data) {
+				flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
+				// TODO log error
+			})
 
 	$scope.spirit = {}
 
@@ -366,27 +417,46 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 app.controller("Scores", function($scope, $rootScope, API, flash) {
 
 	$scope.selected = {}
+	$scope.tours = []
+	$scope.matches = []
 
-	$scope.data = API.getMatches
+	API.getTour()
+		.success(function(data) {
+			$scope.tours = data.items
+		})
+		.error(function(data) {
+			flash('danger', 'Nezdařilo se načíst data turnaje. Chyba byla zaznamenána a bude opravena.')
+			// TODO log error
+		})
 
 	$scope.scoreData = {}
 
-
-	$scope.show = function() {
+	let changedTour = function() {
 		if ($rootScope.isEmpty($scope.selected.tournament)) {
 			$scope.scoreData = {}
 			return
 		}
+
+		API.getMatchesForTour($scope.selected.tournament.id)
+			.success(function(data) {
+				$scope.scoreData = $scope.matches = data.matches
+			})
+			.error(function(data) {
+				flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
+				// TODO log error
+			})
+	}
+
+	let changedMatch = function() {
 		if ($rootScope.isEmpty($scope.selected.match)) {
-			$scope.scoreData = $scope.selected.tournament.matches
+			$scope.scoreData = $scope.matches
 		}
 		else {
 			$scope.scoreData = [$scope.selected.match]
 		}
-		// console.log('selected.match has changed.')
-		// console.log($scope.scoreData.length)
 	}
 
-	$scope.$watch('selected', $scope.show, true)
+	$scope.$watch('selected.match', changedMatch, true)
+	$scope.$watch('selected.tournament', changedTour, true)
 
 })

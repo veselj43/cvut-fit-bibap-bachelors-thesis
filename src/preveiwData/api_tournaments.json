@@ -1,0 +1,21 @@
+{
+	"count": 1, "items": [
+		{
+			"city": "Prague", 
+			"endDate": "2016-04-01T00:00:00", 
+			"name": "PFL 2016", 
+			"division": {
+				"division": "open", 
+				"id": 1
+			}, 
+			"country": "CZE", 
+			"teams": 4, 
+			"ready": true, 
+			"caldTournament": {}, 
+			"active": false, 
+			"terminated": false, 
+			"startDate": "2016-04-01T00:00:00", 
+			"id": 1
+		}
+	]
+}

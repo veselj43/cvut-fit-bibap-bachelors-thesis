@@ -162,19 +162,17 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 app.controller('Home', function($scope, $location, $http, API, flash) {
 
 	$scope.data = {
-		"ongoing": API.getOngoing,
-		'upcomming': API.getUpcomming
+		// "ongoing": API.getOngoing,
+		// 'upcomming': API.getUpcomming
 	}
 
-	// API.test().then(function (response) {
-	// 	$scope.test = response.data
-	// 	console.log(response.data)
-	// }, function (error) {
-	// 	$scope.test = {"error": 'Unable to load data, error message: ' + error.message}
-	// 	console.log('Unable to load customer data: ' + error.message)
-	// })
+	API.getMatchesForTour(1, function(data) {
+		$scope.data.ongoing = data.matches
+	})
 
-	// console.log($scope.test, $scope.status)
+	API.getTours(function(data) {
+		$scope.data.upcomming = data.items
+	})
 
 })
 
@@ -183,21 +181,16 @@ app.controller('Login', function($scope, $location, API, flash) {
 	$scope.form = {}
 	$scope.tournaments = []
 
-	API.getTour()
-		.success(function(data) {
-			$scope.tournaments = data.items
-		})
-		.error(function(data) {
-			flash('danger', 'Nezdařilo se načíst data turnaje. Chyba byla zaznamenána a bude opravena.')
-			// TODO log error
-		})
+	API.getTours(function(data) {
+		$scope.tournaments = data.items
+	})
 
 })
 
 app.controller('newTournament', function($scope, flash) {
 
 	function emptyRow(last) {
-		return { id : last + 1, name: "", group: "" }
+		return { id: last + 1, name: "", group: "" }
 	}
 
 	$scope.nt = {}
@@ -232,31 +225,22 @@ app.controller("SelectTournament", function($scope, $location, API, flash) {
 	$scope.selected = {}
 	$scope.data = []
 
-	API.getTour()
-		.success(function(data) {
-			$scope.data = data.items
-			console.log(data)
-		})
-		.error(function(data) {
-			flash('danger', 'Nezdařilo se načíst data turnaje. Chyba byla zaznamenána a bude opravena.')
-			// TODO log error
-		})
+	API.getTours(function(data) {
+		$scope.data = data.items
+	})
 
 })
 
 app.controller("SelectMatch", function($scope, $rootScope, $location, $routeParams, Auth, API, flash) {
 
+	if (Auth.TourID() === -1) return
+
 	$scope.selected = {}
 	$scope.data = []
 
-	API.getMatchesForTour(Auth.TourID())
-		.success(function(data) {
-			$scope.data = data.matches
-		})
-		.error(function(data) {
-			flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
-			// TODO log error
-		})
+	API.getMatchesForTour(Auth.TourID(), function(data) {
+		$scope.data = data.matches
+	})
 
 	$scope.score = function(instant = false) {
 		// $scope.selected.start = $scope.db.match.start.getHours() + ":" + $scope.db.match.start.getMinutes() + ":" + $scope.db.match.start.getSeconds()
@@ -279,42 +263,41 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globals, API, Auth, flash) {
 
+	if (Auth.TourID() === -1 || Auth.MatchID() === -1) return
+
 	$scope.data = []
 	//API.getPlayers
 
-	API.getMatchesForTour(Auth.TourID())
-		.success(function(data) {
-			let tmp = data.matches
+	API.getMatchesForTour(Auth.TourID(), function(data) {
+		let tmp = data.matches
 
-			for (let i in tmp) {
-				if (tmp[i].id == Auth.MatchID()) {
-					$scope.data = tmp[i]
-					break;
-				}
+		for (let i in tmp) {
+			if (tmp[i].id == Auth.MatchID()) {
+				$scope.data = tmp[i]
+				break;
 			}
+		}
 
-			API.getPlayersForClub($scope.data.homeTeam.id)
-				.success(function(data) {
-					$scope.data.homeTeam.players = data.players
-				})
-				.error(function(data) {
-					$scope.data.homeTeam.players = []
-					// TODO log error
-				})
+		API.getPlayersForClub(
+			$scope.data.homeTeam.id,
+			function(data) {
+				$scope.data.homeTeam.players = data.players
+			}, function() {
+				$scope.data.homeTeam.players = []
+				// TODO log error
+			}
+		)
 
-			API.getPlayersForClub($scope.data.awayTeam.id)
-				.success(function(data) {
-					$scope.data.awayTeam.players = data.players
-				})
-				.error(function(data) {
-					$scope.data.awayTeam.players = []
-					// TODO log error
-				})
-		})
-		.error(function(data) {
-			flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
-			// TODO log error
-		})
+		API.getPlayersForClub(
+			$scope.data.awayTeam.id, 
+			function(data) {
+				$scope.data.awayTeam.players = data.players
+			}, function(data) {
+				$scope.data.awayTeam.players = []
+				// TODO log error
+			}
+		)
+	})
 
 	$scope.db = []
 
@@ -393,14 +376,9 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.data = []
 
-	API.getMatchesForTour(1)
-			.success(function(data) {
-				$scope.data = data.matches
-			})
-			.error(function(data) {
-				flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
-				// TODO log error
-			})
+	API.getMatchesForTour(1, function(data) {
+		$scope.data = data.matches
+	})
 
 	$scope.spirit = {}
 
@@ -420,14 +398,9 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 	$scope.tours = []
 	$scope.matches = []
 
-	API.getTour()
-		.success(function(data) {
-			$scope.tours = data.items
-		})
-		.error(function(data) {
-			flash('danger', 'Nezdařilo se načíst data turnaje. Chyba byla zaznamenána a bude opravena.')
-			// TODO log error
-		})
+	API.getTours(function(data) {
+		$scope.tours = data.items
+	})
 
 	$scope.scoreData = {}
 
@@ -437,14 +410,9 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 			return
 		}
 
-		API.getMatchesForTour($scope.selected.tournament.id)
-			.success(function(data) {
-				$scope.scoreData = $scope.matches = data.matches
-			})
-			.error(function(data) {
-				flash('danger', 'Nezdařilo se načíst data zápasu. Chyba byla zaznamenána a bude opravena.')
-				// TODO log error
-			})
+		API.getMatchesForTour($scope.selected.tournament.id, function(data) {
+			$scope.scoreData = $scope.matches = data.matches
+		})
 	}
 
 	let changedMatch = function() {

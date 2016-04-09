@@ -23,6 +23,10 @@ html, body {
 	padding: 0;
 }
 
+#flash-messages li {
+	white-space: pre-wrap;
+}
+
 ol.steps {
 	list-style-type: none;
 }

@@ -249,9 +249,15 @@ app.service('Auth', function($rootScope, $routeParams) {
 /**
  * API - backend - db
  */
-app.service('API', function($http) {
+app.service('API', function($http, flash) {
 
 	let basePath = 'http://catcher.zlutazimnice.cz/api/'
+
+	function defErrCallback(data, status, headers, config) {
+		flash('danger', 'Nezdařilo se načíst data. \nChyba byla zaznamenána a bude opravena. \nKód chyby: ' + status)
+		// TODO log error
+		console.log(config)
+	}
 
 	// $http({ method: 'GET', url: '/foo' })
 	// 	.success(function (data, status, headers, config) {
@@ -259,39 +265,44 @@ app.service('API', function($http) {
 	// 	.error(function (data, status, headers, config) {
 	// 	})
 
-	function get(what = "", params, append) {
+	function getPromise(what = "", params, append) {
 		let uri = basePath + what
 		uri += (params) ? ('/' + params) : 's'
 		uri += (append) ? ('/' + append) : ''
 		return $http.get(uri)
 	}
 
-	this.test = function() {
-		return get("club", "2")
+	this.get = function(what, params, append, okCallback, errCallback) {
+		if (!errCallback) errCallback = defErrCallback
+		getPromise(what, params, append).success(okCallback).error(errCallback)
 	}
 
-	this.getTour = function(id) {
-		return get('tournament', id)
+	this.getTour = function(id, okCallback, errCallback) {
+		this.get('tournament', id, null, okCallback, errCallback)
+	}
+
+	this.getTours = function(okCallback, errCallback) {
+		this.get('tournament', null, null, okCallback, errCallback)
 	}
 
 	// this.getMatch = function(TourID, MatchID) {
-	// 	return get('tournament', id)
+	// 	this.get('tournament', id)
 	// }
 
-	this.getMatchesForTour = function(id) {
-		return get('tournament', id, 'matches')
+	this.getMatchesForTour = function(id, okCallback, errCallback) {
+		this.get('tournament', id, 'matches', okCallback, errCallback)
 	}
 
-	this.getPlayersForClub = function(id) {
-		return get('club', id, 'players')
+	this.getPlayersForClub = function(id, okCallback, errCallback) {
+		this.get('club', id, 'players', okCallback, errCallback)
 	}
 
-	this.getUpcomming = function() {
-		return get('tournament')
+	this.getUpcomming = function(okCallback, errCallback) {
+		this.get('tournament', null, null, okCallback, errCallback)
 	}
 
-	this.getOngoing = function() {
-		return get('tournament')
+	this.getOngoing = function(okCallback, errCallback) {
+		this.get('tournament', null, null, okCallback, errCallback)
 	}
 
 	this.basicGet = function(append) {

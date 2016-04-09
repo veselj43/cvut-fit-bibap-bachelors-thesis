@@ -1,7 +1,7 @@
 <div class="container" ng-controller="Home">
 
 	<!-- <h2>Api test</h2>
-	<pre class="alert alert-info">{{ test | json }}</pre> -->
+	<pre class="alert alert-info">{{ data | json }}</pre> -->
 
 	<div class="row">
 		<!-- <div class="col-sm-6">
@@ -36,10 +36,10 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="row in data.ongoing">
-									<td>{{row.date_start | date: 'dd. MM. yyyy HH:mm:ss'}}</td>
-									<td>{{row.team_home.name}}</td>
-									<td>{{row.team_away.name}}</td>
+								<tr ng-repeat="row in data.ongoing | definedMatches">
+									<td>{{row.time.start | date: 'dd. MM. yyyy HH:mm'}}</td>
+									<td>{{row.homeTeam.name}}</td>
+									<td>{{row.awayTeam.name}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -63,9 +63,9 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="row in data.upcomming">
-									<td>{{row.date_start}}</td>
+									<td>{{row.startDate | date: 'dd. MM. yyyy HH:mm'}}</td>
 									<td>{{row.name}}</td>
-									<td>{{row.place}}</td>
+									<td>{{row.city}}</td>
 								</tr>
 							</tbody>
 						</table>

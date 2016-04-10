@@ -272,8 +272,11 @@ app.service('API', function($http, flash) {
 		return $http.get(uri)
 	}
 
-	this.get = function(what, params, append, okCallback, errCallback) {
-		if (!errCallback) errCallback = defErrCallback
+	this.get = function(what, params, append, okCallback, errCallback = defErrCallback) {
+		if (!okCallback) {
+			console.log("callback is not a fn")
+			return
+		}
 		getPromise(what, params, append).success(okCallback).error(errCallback)
 	}
 

@@ -189,16 +189,39 @@ app.controller('Login', function($scope, $location, API, flash) {
 
 app.controller('newTournament', function($scope, flash) {
 
+	let tabsBaseUrl = 'partials/newTournament/'
+
+	$scope.tabs = [
+		{
+			title: 'Informace o turnaji',
+			url: 'tourForm.html'
+		}, {
+			title: 'Zápasy',
+			url: 'matchesForm.html'
+		}
+	]
+
+    $scope.currentTab = tabsBaseUrl + $scope.tabs[0].url;
+
+    $scope.onClickTab = function (tab) {
+        $scope.currentTab = tabsBaseUrl + tab.url;
+    }
+    
+    $scope.isActiveTab = function(tabUrl) {
+        return tabsBaseUrl + tabUrl == $scope.currentTab;
+    }
+
 	function emptyRow(last) {
 		return { id: last + 1, name: "", group: "" }
 	}
 
-	$scope.nt = {}
+	$scope.tour = {}
+	$scope.master = {} // load data if editing
 
-	$scope.nt.table = [emptyRow(0)]
+	$scope.tour.table = [emptyRow(0)]
 
 	$scope.addRow = function() {
-		$scope.nt.table.push(emptyRow($scope.nt.table.length))
+		$scope.tour.table.push(emptyRow($scope.tour.table.length))
 	}
 
 	$scope.parseDate = function(formDate) {
@@ -207,16 +230,16 @@ app.controller('newTournament', function($scope, flash) {
 		return parts[2] + '-' + parts[1] + '-' + parts[0]
 	}
 
-	$scope.update = function(nt) {
-		$scope.master = angular.copy(nt)
+	$scope.update = function(tour) {
+		$scope.master = angular.copy(tour)
 		$scope.master.dbDate = $scope.parseDate($scope.master.date)
 	}
 
 	$scope.reset = function() {
-		$scope.nt = angular.copy($scope.master)
+		$scope.tour = angular.copy($scope.master)
 	}
 
-	$scope.update($scope.nt)
+	$scope.update($scope.tour)
 
 })
 

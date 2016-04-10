@@ -1,97 +1,97 @@
 {
-	"home": {
-		"name": "Domácí",
-		"players": [
-		{
-			"id": 0,
-			"name": "Gretchen Murphy",
-			"number": 52
-		},
-		{
-			"id": 1,
-			"name": "Valentine Yates",
-			"number": 67
-		},
-		{
-			"id": 2,
-			"name": "Mcconnell Munoz",
-			"number": 16
-		},
-		{
-			"id": 3,
-			"name": "Hunt Calderon",
-			"number": 63
-		},
-		{
-			"id": 4,
-			"name": "Ava Colon",
-			"number": 77
-		},
-		{
-			"id": 5,
-			"name": "Esmeralda Baker",
-			"number": 4
-		},
-		{
-			"id": 6,
-			"name": "Laverne Potts",
-			"number": 27
-		},
-		{
-			"id": 7,
-			"name": "Cole Sampson",
-			"number": 94
-		}
-		]
-	},
-	"away": {
-		"name": "Hosté",
-		"players": [
-		{
-			"id": 0,
-			"name": "Webb Hebert",
-			"number": 32
-		},
-		{
-			"id": 1,
-			"name": "Elsa Duran",
-			"number": 71
-		},
-		{
-			"id": 2,
-			"name": "Joyce Brennan",
-			"number": 65
-		},
-		{
-			"id": 3,
-			"name": "Dorthy Gardner",
-			"number": 63
-		},
-		{
-			"id": 4,
-			"name": "Billie Webster",
-			"number": 26
-		},
-		{
-			"id": 5,
-			"name": "Tucker Slater",
-			"number": 70
-		},
-		{
-			"id": 6,
-			"name": "Letha Mercer",
-			"number": 52
-		},
-		{
-			"id": 7,
-			"name": "Tanisha Sandoval",
-			"number": 85
-		},
-		{
-			"id": 8,
-			"name": "Estelle Mason",
-			"number": 33
-		}
-		]
-	}
+    "home": {
+        "name": "Domácí",
+        "players": [
+            {
+                "id": 0,
+                "name": "Gretchen Murphy",
+                "number": 52
+            },
+            {
+                "id": 1,
+                "name": "Valentine Yates",
+                "number": 67
+            },
+            {
+                "id": 2,
+                "name": "Mcconnell Munoz",
+                "number": 16
+            },
+            {
+                "id": 3,
+                "name": "Hunt Calderon",
+                "number": 63
+            },
+            {
+                "id": 4,
+                "name": "Ava Colon",
+                "number": 77
+            },
+            {
+                "id": 5,
+                "name": "Esmeralda Baker",
+                "number": 4
+            },
+            {
+                "id": 6,
+                "name": "Laverne Potts",
+                "number": 27
+            },
+            {
+                "id": 7,
+                "name": "Cole Sampson",
+                "number": 94
+            }
+        ]
+    },
+    "away": {
+        "name": "Hosté",
+        "players": [
+            {
+                "id": 0,
+                "name": "Webb Hebert",
+                "number": 32
+            },
+            {
+                "id": 1,
+                "name": "Elsa Duran",
+                "number": 71
+            },
+            {
+                "id": 2,
+                "name": "Joyce Brennan",
+                "number": 65
+            },
+            {
+                "id": 3,
+                "name": "Dorthy Gardner",
+                "number": 63
+            },
+            {
+                "id": 4,
+                "name": "Billie Webster",
+                "number": 26
+            },
+            {
+                "id": 5,
+                "name": "Tucker Slater",
+                "number": 70
+            },
+            {
+                "id": 6,
+                "name": "Letha Mercer",
+                "number": 52
+            },
+            {
+                "id": 7,
+                "name": "Tanisha Sandoval",
+                "number": 85
+            },
+            {
+                "id": 8,
+                "name": "Estelle Mason",
+                "number": 33
+            }
+        ]
+    }
 }

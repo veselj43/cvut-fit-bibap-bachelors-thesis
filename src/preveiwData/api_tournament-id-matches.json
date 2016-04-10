@@ -1,166 +1,166 @@
 [
-{
-"description": null,
-"homeTeam": {
-"score": null,
-"seed": 1,
-"id": 1,
-"spirit": null,
-"name": "Ježkovy voči A"
-},
-"active": 0,
-"id": 1,
-"looser": {
-"nextStep": {
-"identificator": "FIN",
-"group_id": null,
-"match_id": 4
-},
-"finalStanding": null
-},
-"terminated": 0,
-"awayTeam": {
-"score": null,
-"seed": 4,
-"id": 4,
-"spirit": null,
-"name": "Létající Cirkus A"
-},
-"winner": {
-"nextStep": {
-"identificator": "3RD",
-"group_id": null,
-"match_id": 3
-},
-"finalStanding": null
-},
-"field": {
-"id": 1,
-"name": "Main field"
-},
-"time": {
-"start": "2016-04-01T09:00:00",
-"end": "2016-04-01T09:29:00"
-},
-"identificator": "SE1"
-},
-{
-"description": null,
-"homeTeam": {
-"score": null,
-"seed": 2,
-"id": 2,
-"spirit": null,
-"name": "PeaceEgg A"
-},
-"active": 0,
-"id": 2,
-"looser": {
-"nextStep": {
-"identificator": "FIN",
-"group_id": null,
-"match_id": 4
-},
-"finalStanding": null
-},
-"terminated": 0,
-"awayTeam": {
-"score": null,
-"seed": 3,
-"id": 3,
-"spirit": null,
-"name": "Prague Lions A"
-},
-"winner": {
-"nextStep": {
-"identificator": "3RD",
-"group_id": null,
-"match_id": 3
-},
-"finalStanding": null
-},
-"field": {
-"id": 1,
-"name": "Main field"
-},
-"time": {
-"start": "2016-04-01T09:30:00",
-"end": "2016-04-01T09:59:00"
-},
-"identificator": "SE2"
-},
-{
-"description": null,
-"homeTeam": {
-"score": null,
-"seed": null,
-"id": null,
-"spirit": null,
-"name": null
-},
-"active": 0,
-"id": 3,
-"looser": {
-"nextStep": null,
-"finalStanding": 4
-},
-"terminated": 0,
-"awayTeam": {
-"score": null,
-"seed": null,
-"id": null,
-"spirit": null,
-"name": null
-},
-"winner": {
-"nextStep": null,
-"finalStanding": 3
-},
-"field": {
-"id": 1,
-"name": "Main field"
-},
-"time": {
-"start": "2016-04-01T10:00:00",
-"end": "2016-04-01T10:29:00"
-},
-"identificator": "3RD"
-},
-{
-"description": "Finale",
-"homeTeam": {
-"score": null,
-"seed": null,
-"id": null,
-"spirit": null,
-"name": null
-},
-"active": 0,
-"id": 4,
-"looser": {
-"nextStep": null,
-"finalStanding": 2
-},
-"terminated": 0,
-"awayTeam": {
-"score": null,
-"seed": null,
-"id": null,
-"spirit": null,
-"name": null
-},
-"winner": {
-"nextStep": null,
-"finalStanding": 1
-},
-"field": {
-"id": 1,
-"name": "Main field"
-},
-"time": {
-"start": "2016-04-01T10:30:00",
-"end": "2016-04-01T10:59:00"
-},
-"identificator": "FIN"
-}
+    {
+        "description": null,
+        "homeTeam": {
+            "score": null,
+            "seed": 1,
+            "id": 1,
+            "spirit": null,
+            "name": "Ježkovy voči A"
+        },
+        "active": 0,
+        "id": 1,
+        "looser": {
+            "nextStep": {
+                "identificator": "FIN",
+                "group_id": null,
+                "match_id": 4
+            },
+            "finalStanding": null
+        },
+        "terminated": 0,
+        "awayTeam": {
+            "score": null,
+            "seed": 4,
+            "id": 4,
+            "spirit": null,
+            "name": "Létající Cirkus A"
+        },
+        "winner": {
+            "nextStep": {
+                "identificator": "3RD",
+                "group_id": null,
+                "match_id": 3
+            },
+            "finalStanding": null
+        },
+        "field": {
+            "id": 1,
+            "name": "Main field"
+        },
+        "time": {
+            "start": "2016-04-01T09:00:00",
+            "end": "2016-04-01T09:29:00"
+        },
+        "identificator": "SE1"
+    },
+    {
+        "description": null,
+        "homeTeam": {
+            "score": null,
+            "seed": 2,
+            "id": 2,
+            "spirit": null,
+            "name": "PeaceEgg A"
+        },
+        "active": 0,
+        "id": 2,
+        "looser": {
+            "nextStep": {
+                "identificator": "FIN",
+                "group_id": null,
+                "match_id": 4
+            },
+            "finalStanding": null
+        },
+        "terminated": 0,
+        "awayTeam": {
+            "score": null,
+            "seed": 3,
+            "id": 3,
+            "spirit": null,
+            "name": "Prague Lions A"
+        },
+        "winner": {
+            "nextStep": {
+                "identificator": "3RD",
+                "group_id": null,
+                "match_id": 3
+            },
+            "finalStanding": null
+        },
+        "field": {
+            "id": 1,
+            "name": "Main field"
+        },
+        "time": {
+            "start": "2016-04-01T09:30:00",
+            "end": "2016-04-01T09:59:00"
+        },
+        "identificator": "SE2"
+    },
+    {
+        "description": null,
+        "homeTeam": {
+            "score": null,
+            "seed": null,
+            "id": null,
+            "spirit": null,
+            "name": null
+        },
+        "active": 0,
+        "id": 3,
+        "looser": {
+            "nextStep": null,
+            "finalStanding": 4
+        },
+        "terminated": 0,
+        "awayTeam": {
+            "score": null,
+            "seed": null,
+            "id": null,
+            "spirit": null,
+            "name": null
+        },
+        "winner": {
+            "nextStep": null,
+            "finalStanding": 3
+        },
+        "field": {
+            "id": 1,
+            "name": "Main field"
+        },
+        "time": {
+            "start": "2016-04-01T10:00:00",
+            "end": "2016-04-01T10:29:00"
+        },
+        "identificator": "3RD"
+    },
+    {
+        "description": "Finale",
+        "homeTeam": {
+            "score": null,
+            "seed": null,
+            "id": null,
+            "spirit": null,
+            "name": null
+        },
+        "active": 0,
+        "id": 4,
+        "looser": {
+            "nextStep": null,
+            "finalStanding": 2
+        },
+        "terminated": 0,
+        "awayTeam": {
+            "score": null,
+            "seed": null,
+            "id": null,
+            "spirit": null,
+            "name": null
+        },
+        "winner": {
+            "nextStep": null,
+            "finalStanding": 1
+        },
+        "field": {
+            "id": 1,
+            "name": "Main field"
+        },
+        "time": {
+            "start": "2016-04-01T10:30:00",
+            "end": "2016-04-01T10:59:00"
+        },
+        "identificator": "FIN"
+    }
 ]

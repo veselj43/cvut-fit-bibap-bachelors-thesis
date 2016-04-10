@@ -1,4 +1,6 @@
-
+/**
+ * bootstrap overwrite
+ */
 html {
 	position: relative;
 	min-height: 100%;
@@ -26,6 +28,14 @@ footer p {
 	padding: 0 1em;
 }
 
+.form-control-label {
+	padding-top: 6px;
+}
+
+
+/**
+ * custom styles
+ */
 .no-padding {
 	padding: 0;
 }
@@ -84,6 +94,12 @@ ol.steps li.disabled {
 	color: #666;
 }
 
+.nav-tabs>li.active>a,
+.nav-tabs>li.disabled>a,
+.nav-tabs>li>a {
+	cursor: pointer;
+}
+
 .nav-tabs>li.active>span,
 .nav-tabs>li.disabled>span {
 	position: relative;
@@ -105,6 +121,10 @@ ol.steps li.disabled {
 
 .nav-tabs>li.disabled>span {
 	border: 1px solid transparent;
+}
+
+.tabPage {
+	margin-top: 15px;
 }
 
 .modal div.radio {

@@ -1,0 +1,79 @@
+<form class="form">
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="name">Název:</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="name" ng-model="tour.name" placeholder="Název">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="startDate">Datum zahájení:</label>
+		<div class="col-sm-10">
+			<div class="input-group date">
+				<input class="form-control" type="text" id="startDate" ng-model="tour.startDate" placeholder="Datum zahájení">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="endDate">Datum ukončení:</label>
+		<div class="col-sm-10">
+			<div class="input-group date">
+				<input class="form-control" type="text" id="endDate" ng-model="tour.endDate" placeholder="Datum ukončení">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="division">Kategorie:</label> <!-- select -->
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="division" ng-model="tour.division" placeholder="Kategorie">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="teams">Počet týmů:</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="teams" ng-model="tour.teams" placeholder="Počet týmů">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="ready">Ready:</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="ready" ng-model="tour.ready" placeholder="Ready">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="active">Active:</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="active" ng-model="tour.active" placeholder="Active">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="terminated">Terminated:</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="terminated" ng-model="tour.terminated" placeholder="Terminated">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-sm-offset-2 col-sm-10">
+			<input class="btn btn-primary" type="submit" ng-click="update(nt)" value="Uložit">
+			<input class="btn btn-secondary" type="button" ng-click="reset()" value="Reset">
+		</div>
+	</div>
+</form>
+<!-- <pre>nt = {{nt | json}}</pre>
+<pre>master = {{master | json}}</pre> -->
+
+<script>
+	$('.form-group .date').datepicker({
+		format: "dd. mm. yyyy",
+		language: "cs"
+	});
+</script>

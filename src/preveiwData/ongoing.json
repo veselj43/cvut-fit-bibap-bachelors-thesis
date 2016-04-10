@@ -1,35 +1,35 @@
 [
-	{
-		"id": 0,
-		"date_start": "13. 02. 2016 06:52:18",
-		"team_home": {
-			"name": "Harmoney"
-		},
-		"team_away": {
-			"name": "Dreamia"
-		},
-		"place": "Cinaster"
-	},
-	{
-		"id": 1,
-		"date_start": "10. 02. 2016 10:59:05",
-		"team_home": {
-			"name": "Qot"
-		},
-		"team_away": {
-			"name": "Tropolis"
-		},
-		"place": "Furnitech"
-	},
-	{
-		"id": 2,
-		"date_start": "29. 03. 2016 03:21:51",
-		"team_home": {
-			"name": "Xylar"
-		},
-		"team_away": {
-			"name": "Ersum"
-		},
-		"place": "Xixan"
-	}
+    {
+        "id": 0,
+        "date_start": "13. 02. 2016 06:52:18",
+        "team_home": {
+            "name": "Harmoney"
+        },
+        "team_away": {
+            "name": "Dreamia"
+        },
+        "place": "Cinaster"
+    },
+    {
+        "id": 1,
+        "date_start": "10. 02. 2016 10:59:05",
+        "team_home": {
+            "name": "Qot"
+        },
+        "team_away": {
+            "name": "Tropolis"
+        },
+        "place": "Furnitech"
+    },
+    {
+        "id": 2,
+        "date_start": "29. 03. 2016 03:21:51",
+        "team_home": {
+            "name": "Xylar"
+        },
+        "team_away": {
+            "name": "Ersum"
+        },
+        "place": "Xixan"
+    }
 ]

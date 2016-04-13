@@ -26,7 +26,7 @@
 			<div class="panel panel-primary">
 				<div class="panel-heading">Probíhající zápasy</div>
 				<div class="panel-body">
-					<div class="table-responzive" ng-hide="isEmpty(data.ongoing.length)">
+					<div class="table-responzive" ng-hide="data.ongoing.length === 0">
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -36,13 +36,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="row in data.ongoing | definedMatches">
+								<tr ng-repeat="row in data.ongoing">
 									<td>{{row.time.start | date: 'dd. MM. yyyy HH:mm'}}</td>
 									<td>{{row.homeTeam.name}}</td>
 									<td>{{row.awayTeam.name}}</td>
 								</tr>
 							</tbody>
 						</table>
+					</div>
+					<div class="text-muted" ng-show="data.ongoing.length === 0">
+						Zádné probíhající zápasy
 					</div>
 				</div>
 			</div>
@@ -52,7 +55,7 @@
 			<div class="panel panel-primary">
 				<div class="panel-heading">Plánované turnaje</div>
 				<div class="panel-body">
-					<div class="table-responzive" ng-hide="isEmpty(data.upcomming.length)">
+					<div class="table-responzive" ng-hide="data.upcomming.length === 0">
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -69,6 +72,9 @@
 								</tr>
 							</tbody>
 						</table>
+					</div>
+					<div class="text-muted" ng-show="data.upcomming.length === 0">
+						Zádné plánované turnaje
 					</div>
 				</div>
 			</div>

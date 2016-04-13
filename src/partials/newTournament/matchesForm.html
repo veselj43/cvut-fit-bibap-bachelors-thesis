@@ -1,24 +1,92 @@
 
-<form class="form">
+<div class="form-group-set" ng-repeat="data in tour.matches">
+
 	<div class="form-group row">
-		<div class="col-sm-2">ID</div>
-		<div class="col-sm-5">Název</div>
-		<div class="col-sm-5">Skupina</div>
-	</div>
-
-	<div class="form-group row" ng-repeat="data in tour.table">
-		<div class="col-sm-2">
-			<input class="form-control" type="text" ng-model="data.id" placeholder="ID">
-		</div>
-		<div class="col-sm-5">
-			<input class="form-control" type="text" ng-model="data.name" placeholder="Název">
-		</div>
-		<div class="col-sm-5">
-			<input class="form-control" type="text" ng-model="data.group" placeholder="Skupina">
+		<label class="form-control-label col-sm-2" for="identificator{{$index}}">Identifikátor:</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="text" id="identificator{{$index}}" ng-model="data.identificator" placeholder="Identifikátor">
 		</div>
 	</div>
 
-	<div class="form-group">
-		<button class="btn btn-secondary" ng-click="addRow()">Přidat další</button>
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="homeSeed{{$index}}">Domácí:</label>
+		<label class="form-control-label col-sm-1" for="homeSeedTBA{{$index}}">
+			<span>TBA</span>
+			<input class="" type="checkbox" id="homeSeedTBA{{$index}}" ng-model="data.homeSeed" ng-true-value="null" ng-false-value="">
+		</label>
+		<div class="col-sm-9">
+			<input class="form-control" type="text" id="homeSeed{{$index}}" ng-model="data.homeSeed" placeholder="Domácí">
+		</div>
 	</div>
-</form>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="awaySeed{{$index}}">Hosté:</label>
+		<label class="form-control-label col-sm-1" for="awaySeedTBA{{$index}}">
+			<span>TBA</span>
+			<input class="" type="checkbox" id="awaySeedTBA{{$index}}" ng-model="data.awaySeed" ng-true-value="null" ng-false-value="">
+		</label>
+		<div class="col-sm-9">
+			<input class="form-control" type="text" id="awaySeed{{$index}}" ng-model="data.awaySeed" placeholder="Hosté">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="time{{$index}}">Čas:</label>
+		<div class="col-sm-5">
+			<input type="text" id="time{{$index}}" class="form-control timepicker" ng-model="data.time.start.time" placeholder="Čas">
+		</div>
+		<div class="col-sm-5">
+			<div class="input-group date">
+				<input class="form-control" type="text" id="endDate{{$index}}" ng-model="data.time.start.date" placeholder="Datum">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="field{{$index}}">Hřiště:</label>
+		<div class="col-sm-10">
+			<select class="form-control" id="field{{$index}}" ng-model="data.field" 
+				ng-options="obj.id as obj.name for obj in tour.fields | definedValue:'name'">
+				<option value="">Vyberte hřiště</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="winner{{$index}}">Postup vítěze:</label>
+		<div class="col-sm-10">
+			<select class="form-control" id="winner{{$index}}" ng-model="data.winner" 
+				ng-options="obj.identificator for obj in tour.matches | definedValue:'identificator'">
+				<option value="">Vyberte zápas</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="looser{{$index}}">Postup poraženého:</label>
+		<div class="col-sm-10">
+			<select class="form-control" id="looser{{$index}}" ng-model="data.looser" 
+				ng-options="obj.identificator for obj in tour.matches | definedValue:'identificator'">
+				<option value="">Vyberte zápas</option>
+			</select>
+		</div>
+	</div>
+
+	<script>
+		$('.timepicker').timepicker({
+			'timeFormat': 'H:i'
+		})
+		$('.form-group .date').datepicker({
+			format: "yyyy-mm-dd",
+			language: "cs"
+		})
+	</script>
+
+</div>
+
+<div class="form-group row">
+	<div class="col-sm-offset-2 col-sm-10">
+		<button class="btn btn-secondary" ng-click="addMatch()">Přidat zápas</button>
+	</div>
+</div>

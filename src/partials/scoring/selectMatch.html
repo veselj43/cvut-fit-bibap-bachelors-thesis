@@ -9,7 +9,7 @@
 	<form class="form">
 		<div class="form-group ">
 			<select class="form-control" id="match" ng-model="selected.match" 
-				ng-options="obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in data | definedMatches">
+				ng-options="obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in data.matches | definedMatches">
 				<option value="">Vyberte zápas</option>
 			</select>
 		</div>

@@ -1,4 +1,4 @@
-- nacist - MatchSelect - udaje turnaje se zapasy (data.name v nadpisu)
+- zpracovat registraci uzivatele
 - ukonceni zapasu
 - zobrazit informaci o prihlasenem uzivateli
 

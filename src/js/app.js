@@ -16,6 +16,7 @@ var app = angular.module('ufss', [
 	'ngRoute',
 	'ngMessages',
 	'flash',
+	// 'mgcrea.ngStrap',
 	// 'pascalprecht.translate'
 ])
 
@@ -79,7 +80,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 		})
 		.when("/newTournament", {
 			templateUrl: partPath + "newTournament.html", 
-			access: ['admin']
+			access: ['admin', 'organizier']
 		})
 		.when("/scoring/selectTournament", {
 			templateUrl: partPath + "scoring/selectTournament.html", 
@@ -87,15 +88,15 @@ app.config(['$routeProvider', function ($routeProvider) {
 		})
 		.when("/scoring/selectMatch", {
 			templateUrl: partPath + "scoring/selectMatch.html", 
-			access: ['admin', 'tournament']
+			access: ['admin', 'organizier', 'tournament']
 		})
 		.when("/scoring", {
 			templateUrl: partPath + "scoring/onlineScoring.html", 
-			access: ['admin', 'tournament']
+			access: ['admin', 'organizier', 'tournament']
 		})
 		.when("/spirit", {
 			templateUrl: partPath + "spirit.html", 
-			access: ['admin', 'team']
+			access: ['admin', 'organizier', 'team']
 		})
 		.when("/scores", {
 			templateUrl: partPath + "scores.html"
@@ -164,6 +165,26 @@ app.filter('definedMatches', function() {
 	}
 })
 
+app.filter('definedValue', function() {
+	return function(items, val) {
+		var filtered = []
+
+		angular.forEach(items, function(item) {
+			if (item[val]) {
+				filtered.push(item)
+			}
+		})
+
+		// filtered.sort(function(a,b){
+		//     if(a.indexOf(word) < b.indexOf(word)) return -1
+		//     else if(a.indexOf(word) > b.indexOf(word)) return 1
+		//     else return 0
+		// })
+
+		return filtered
+	}
+})
+
 /**
  * Services and Factories
  */
@@ -178,7 +199,8 @@ app.service('Auth', function($rootScope, $routeParams) {
 	let roles = {
 		'team': 1,
 		'tournament': 2,
-		'admin': 3 
+		'organizier': 3,
+		'admin': 4 
 	}
 
 	function ok() {
@@ -259,6 +281,10 @@ app.service('API', function($http, flash) {
 		console.log(config)
 	}
 
+	function mergeAppends(base, add) {
+		return (add) ? base + add : base
+	}
+
 	// $http({ method: 'GET', url: '/foo' })
 	// 	.success(function (data, status, headers, config) {
 	// 	})
@@ -280,32 +306,28 @@ app.service('API', function($http, flash) {
 		getPromise(what, params, append).success(okCallback).error(errCallback)
 	}
 
-	this.getTour = function(id, okCallback, errCallback) {
-		this.get('tournament', id, null, okCallback, errCallback)
-	}
-
-	this.getTours = function(okCallback, errCallback) {
-		this.get('tournament', null, null, okCallback, errCallback)
+	this.getTour = function(req) {
+		this.get('tournament', req.id, req.append, req.ok, req.err)
 	}
 
 	// this.getMatch = function(TourID, MatchID) {
 	// 	this.get('tournament', id)
 	// }
 
-	this.getMatchesForTour = function(id, okCallback, errCallback) {
-		this.get('tournament', id, 'matches', okCallback, errCallback)
+	this.getMatchesForTour = function(req) {
+		this.get('tournament', req.id, mergeAppends('matches', req.append), req.ok, req.err)
 	}
 
-	this.getPlayersForClub = function(id, okCallback, errCallback) {
-		this.get('club', id, 'players', okCallback, errCallback)
+	this.getPlayersForTour = function(req) {
+		this.get('club', req.id, mergeAppends('players', req.append), req.ok, req.err)
 	}
 
-	this.getUpcomming = function(okCallback, errCallback) {
-		this.get('tournament', null, null, okCallback, errCallback)
+	this.getPlayersForClub = function(req) {
+		this.get('club', req.id, mergeAppends('players', req.append), req.ok, req.err)
 	}
 
-	this.getOngoing = function(okCallback, errCallback) {
-		this.get('tournament', null, null, okCallback, errCallback)
+	this.getDivisions = function(req) {
+		this.get('division', null, req.append, req.ok, req.err)
 	}
 
 	this.basicGet = function(append) {

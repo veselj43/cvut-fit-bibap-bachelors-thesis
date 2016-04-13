@@ -8,8 +8,8 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 	console.log("User auth level is: " + Auth.getAuthLvl())
 
 	$scope.getActiveClass = function (path) {
-		// var current = $location.path().substr(0, path.length)
-		var current = $location.path().split("/")[1]
+		// let current = $location.path().substr(0, path.length)
+		let current = $location.path().split("/")[1]
 		if (path !== '/') 
 			return (current === path) ? 'active' : ''
 		else 
@@ -161,17 +161,21 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 
 app.controller('Home', function($scope, $location, $http, API, flash) {
 
-	$scope.data = {
-		// "ongoing": API.getOngoing,
-		// 'upcomming': API.getUpcomming
-	}
+	$scope.data = {}
 
-	API.getMatchesForTour(1, function(data) {
-		$scope.data.ongoing = data.matches
+	API.getMatchesForTour({
+		id: 1, 
+		append: '?active=true&terminated=false', 
+		ok: function(data) {
+			$scope.data.ongoing = data.matches
+		}
 	})
 
-	API.getTours(function(data) {
-		$scope.data.upcomming = data.items
+	API.getTour({
+		append: '?active=false&terminated=false', 
+		ok: function(data) {
+			$scope.data.upcomming = data.items
+		}
 	})
 
 })
@@ -181,14 +185,17 @@ app.controller('Login', function($scope, $location, API, flash) {
 	$scope.form = {}
 	$scope.tournaments = []
 
-	API.getTours(function(data) {
-		$scope.tournaments = data.items
+	API.getTour({
+		ok: function(data) {
+			$scope.tournaments = data.items
+		}
 	})
 
 })
 
-app.controller('newTournament', function($scope, flash) {
+app.controller('newTournament', function($scope, API, flash) {
 
+	// Tabs
 	let tabsBaseUrl = 'partials/newTournament/'
 
 	$scope.tabs = [
@@ -196,37 +203,69 @@ app.controller('newTournament', function($scope, flash) {
 			title: 'Informace o turnaji',
 			url: 'tourForm.html'
 		}, {
+			title: 'Hřiště',
+			url: 'fieldsForm.html'
+		}, {
 			title: 'Zápasy',
 			url: 'matchesForm.html'
 		}
 	]
 
-    $scope.currentTab = tabsBaseUrl + $scope.tabs[0].url;
-
-    $scope.onClickTab = function (tab) {
-        $scope.currentTab = tabsBaseUrl + tab.url;
-    }
-    
-    $scope.isActiveTab = function(tabUrl) {
-        return tabsBaseUrl + tabUrl == $scope.currentTab;
-    }
-
-	function emptyRow(last) {
-		return { id: last + 1, name: "", group: "" }
+	$scope.getFullTabUrl = function(tabUrl) {
+		return tabsBaseUrl + tabUrl
 	}
 
-	$scope.tour = {}
+	$scope.currentTab = $scope.getFullTabUrl($scope.tabs[0].url)
+
+	$scope.onClickTab = function(tab) {
+		$scope.currentTab = $scope.getFullTabUrl(tab.url)
+	}
+
+	$scope.isActiveTab = function(tabUrl) {
+		return $scope.getFullTabUrl(tabUrl) == $scope.currentTab
+	}
+
+	// input data for forms
+	$scope.divisions = []
+	
+	API.getDivisions({
+		ok: function(data) {
+			$scope.divisions = data.items
+		}
+	})
+
+	// new objects
+	function newField(last = 0) {
+		return {
+			"id": last + 1 
+		}
+	}
+	function newMatch(last = 0) {
+		return {
+			"active": 0,
+			"terminated": 0
+		}
+	}
+
+	$scope.tour = {
+		country: "CZE"
+	}
 	$scope.master = {} // load data if editing
 
-	$scope.tour.table = [emptyRow(0)]
+	$scope.tour.matches = [newMatch()]
+	$scope.tour.fields = [newField()]
 
-	$scope.addRow = function() {
-		$scope.tour.table.push(emptyRow($scope.tour.table.length))
+	$scope.addField = function() {
+		$scope.tour.fields.push(newField($scope.tour.fields.length))
+	}
+
+	$scope.addMatch = function() {
+		$scope.tour.matches.push(newMatch($scope.tour.matches.length))
 	}
 
 	$scope.parseDate = function(formDate) {
 		if (typeof(formDate) === "undefined") return
-		var parts = formDate.split('. ')
+		let parts = formDate.split('. ')
 		return parts[2] + '-' + parts[1] + '-' + parts[0]
 	}
 
@@ -248,8 +287,10 @@ app.controller("SelectTournament", function($scope, $location, API, flash) {
 	$scope.selected = {}
 	$scope.data = []
 
-	API.getTours(function(data) {
-		$scope.data = data.items
+	API.getTour({
+		ok: function(data) {
+			$scope.data = data.items
+		}
 	})
 
 })
@@ -261,8 +302,18 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 	$scope.selected = {}
 	$scope.data = []
 
-	API.getMatchesForTour(Auth.TourID(), function(data) {
-		$scope.data = data.matches
+	API.getTour({
+		id: Auth.TourID(), 
+		ok: function(data) {
+			$scope.data = data
+		}
+	})
+
+	API.getMatchesForTour({
+		id: Auth.TourID(), 
+		ok: function(data) {
+			$scope.data.matches = data.matches
+		}
 	})
 
 	$scope.score = function(instant = false) {
@@ -291,35 +342,44 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 	$scope.data = []
 	//API.getPlayers
 
-	API.getMatchesForTour(Auth.TourID(), function(data) {
-		let tmp = data.matches
+	let TourID = Auth.TourID();
 
-		for (let i in tmp) {
-			if (tmp[i].id == Auth.MatchID()) {
-				$scope.data = tmp[i]
-				break;
+	API.getMatchesForTour({
+		id: TourID, 
+		ok: function(data) {
+			let tmp = data.matches
+
+			for (let i in tmp) {
+				if (tmp[i].id == Auth.MatchID()) {
+					$scope.data = tmp[i]
+					break;
+				}
 			}
+
+			API.getPlayersForTour({
+				id: TourID,
+				append: '?teamId='.$scope.data.homeTeam.id, 
+				ok: function(data) {
+					$scope.data.homeTeam.players = data.players
+				},
+				err: function() {
+					$scope.data.homeTeam.players = []
+					// TODO log error
+				}
+			})
+
+			API.getPlayersForTour({
+				id: TourID, 
+				append: '?teamId='.$scope.data.awayTeam.id, 
+				ok: function(data) {
+					$scope.data.awayTeam.players = data.players
+				},
+				err: function(data) {
+					$scope.data.awayTeam.players = []
+					// TODO log error
+				}
+			})
 		}
-
-		API.getPlayersForClub(
-			$scope.data.homeTeam.id,
-			function(data) {
-				$scope.data.homeTeam.players = data.players
-			}, function() {
-				$scope.data.homeTeam.players = []
-				// TODO log error
-			}
-		)
-
-		API.getPlayersForClub(
-			$scope.data.awayTeam.id, 
-			function(data) {
-				$scope.data.awayTeam.players = data.players
-			}, function(data) {
-				$scope.data.awayTeam.players = []
-				// TODO log error
-			}
-		)
 	})
 
 	$scope.db = []
@@ -399,8 +459,11 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.data = []
 
-	API.getMatchesForTour(1, function(data) {
-		$scope.data = data.matches
+	API.getMatchesForTour({
+		id: 1,
+		ok: function(data) {
+			$scope.data = data.matches
+		}
 	})
 
 	$scope.spirit = {}
@@ -421,8 +484,11 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 	$scope.tours = []
 	$scope.matches = []
 
-	API.getTours(function(data) {
-		$scope.tours = data.items
+	API.getTour({
+		append: '?terminated=true', 
+		ok: function(data) {
+			$scope.tours = data.items
+		}
 	})
 
 	$scope.scoreData = {}
@@ -433,8 +499,12 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 			return
 		}
 
-		API.getMatchesForTour($scope.selected.tournament.id, function(data) {
-			$scope.scoreData = $scope.matches = data.matches
+		API.getMatchesForTour({
+			id: $scope.selected.tournament.id, 
+			append: '?terminated=true', 
+			ok: function(data) {
+				$scope.scoreData = $scope.matches = data.matches
+			}
 		})
 	}
 

@@ -22,6 +22,8 @@ var app = angular.module('ufss', [
 
 app.run(function($rootScope, $route, $location, $templateCache, Auth) {
 
+	$rootScope.ngMessagesFile = "templates/_messages.html"
+
 	// clears cache
 	// $rootScope.$on('$viewContentLoaded', function() {
 	// 	$templateCache.removeAll()
@@ -82,9 +84,13 @@ app.config(['$routeProvider', function ($routeProvider) {
 			templateUrl: partPath + "newTournament.html", 
 			access: ['admin', 'organizier']
 		})
+		.when("/newClub", {
+			templateUrl: partPath + "newClub.html", 
+			access: ['admin', 'team']
+		})
 		.when("/scoring/selectTournament", {
 			templateUrl: partPath + "scoring/selectTournament.html", 
-			access: ['admin']
+			access: ['admin', 'organizier']
 		})
 		.when("/scoring/selectMatch", {
 			templateUrl: partPath + "scoring/selectMatch.html", 
@@ -100,6 +106,23 @@ app.config(['$routeProvider', function ($routeProvider) {
 		})
 		.when("/scores", {
 			templateUrl: partPath + "scores.html"
+		})
+		.when("/profile", {
+			templateUrl: partPath + "profile.html", 
+			access: ['organizier', 'team']
+		})
+		// Administration
+		.when("/admin", {
+			templateUrl: partPath + "admin.html", 
+			access: ['admin']
+		})
+		.when("/admin/clubs", {
+			templateUrl: partPath + "admin/clubs.html", 
+			access: ['admin']
+		})
+		.when("/admin/tours", {
+			templateUrl: partPath + "admin/tours.html", 
+			access: ['admin']
 		})
 		// Pages
 		.when("/faq", {

@@ -59,6 +59,32 @@
 		
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
+				<div class="panel-heading">Přihlásit se jako organizátor</div>
+				<div class="panel-body">
+					<form class="form">
+						<div class="form-group">
+							<label class="sr-only" for="logOrganizierName">Název účtu</label>
+							<input class="form-control" id="logOrganizierName" placeholder="Název účtu" type="text" 
+							ng-model="form.organizier.name" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="organizierPass">Heslo</label>
+							<input class="form-control" id="organizierPass" type="password" placeholder="Heslo" 
+							ng-model="form.organizier.password" 
+							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
+						</div>
+						<div class="form-group">
+							<input type="submit" class="btn btn-primary" ng-click="login('organizier', form.organizier)" value="Přihlásit">
+							<a href="#">Zapomenuté heslo?</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-sm-6">
+			<div class="panel panel-primary">
 				<div class="panel-heading">Přihlásit se jako správce</div>
 				<div class="panel-body">
 					<form class="form">

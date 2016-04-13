@@ -1,59 +1,80 @@
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="name">Název:</label>
-	<div class="col-sm-10">
-		<input class="form-control" type="text" id="name" ng-model="tour.name" placeholder="Název">
+	<div class="col-sm-8">
+		<input class="form-control" type="text" id="name" name="name" ng-model="tour.name" placeholder="Název" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.name.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="startDate">Datum zahájení:</label>
-	<div class="col-sm-10">
+	<div class="col-sm-8">
 		<div class="input-group date">
-			<input class="form-control from-date" type="text" id="startDate" ng-model="tour.startDate" placeholder="Datum zahájení">
+			<input class="form-control from-date" type="text" id="startDate" name="startDate" ng-model="tour.startDate" placeholder="Datum zahájení" required>
 			<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 		</div>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.startDate.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="endDate">Datum ukončení:</label>
-	<div class="col-sm-10">
+	<div class="col-sm-8">
 		<div class="input-group date">
-			<input class="form-control to-date" type="text" id="endDate" ng-model="tour.endDate" placeholder="Datum ukončení">
+			<input class="form-control to-date" type="text" id="endDate" name="endDate" ng-model="tour.endDate" placeholder="Datum ukončení" required>
 			<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 		</div>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.endDate.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="place">Místo:</label>
-	<div class="col-sm-10">
-		<input class="form-control" type="text" id="place" ng-model="tour.place" placeholder="Místo">
+	<div class="col-sm-8">
+		<input class="form-control" type="text" id="place" name="place" ng-model="tour.place" placeholder="Místo" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.place.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="country">Země:</label>
-	<div class="col-sm-10">
-		<input class="form-control" type="text" id="country" ng-model="tour.country" placeholder="Země">
+	<div class="col-sm-8">
+		<input class="form-control" type="text" id="country" name="country" ng-model="tour.country" placeholder="Země" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.country.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="division">Kategorie:</label> <!-- select -->
-	<div class="col-sm-10">
-		<select class="form-control" id="division" ng-model="tour.division" 
+	<div class="col-sm-8">
+		<select class="form-control" id="division" name="division" ng-model="tour.division" required 
 			ng-options="obj.id as obj.division for obj in divisions">
 			<option value="">Vyberte kategorii</option>
 		</select>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.division.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
 <div class="form-group row">
 	<label class="form-control-label col-sm-2" for="teams">Počet týmů:</label>
-	<div class="col-sm-10">
-		<input class="form-control" type="number" id="teams" ng-model="tour.teams" placeholder="Počet týmů">
+	<div class="col-sm-8">
+		<input class="form-control" type="number" id="teams" name="teams" ng-model="tour.teams" placeholder="Počet týmů" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.teams.$error">
+		<div ng-include="ngMessagesFile"></div>
 	</div>
 </div>
 
@@ -65,7 +86,7 @@
 	let startDate = new Date('01/01/2012')
 	let FromEndDate = new Date()
 	let ToEndDate = new Date()
-	$('.from-date').datepicker({
+	$('#startDate').datepicker({
 		language: "cs",
 		format: "yyyy-mm-dd",
 		autoclose: true
@@ -74,7 +95,7 @@
 		startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())))
 		$('.to-date').datepicker('setStartDate', startDate)
 	})
-	$('.to-date').datepicker({
+	$('#endDate').datepicker({
 		language: "cs",
 		format: "yyyy-mm-dd",
 		autoclose: true
@@ -84,5 +105,4 @@
 		FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())))
 		$('.from-date').datepicker('setEndDate', FromEndDate)
 	})
-
 </script>

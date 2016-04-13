@@ -12,6 +12,10 @@ body {
 	font-family: "Segoe UI",Helvetica,Arial,sans-serif;
 }
 
+.container .container {
+	width: 100%;
+}
+
 .navbar-fixed-bottom, 
 .navbar-fixed-top {
 	z-index: 9;
@@ -33,7 +37,8 @@ footer p {
 	padding: 0 1em;
 }
 
-.form-control-label {
+.form-control-label,
+.formMsg {
 	padding-top: 7px;
 }
 
@@ -49,12 +54,20 @@ footer p {
 	margin: 0;
 }
 
+.margin-top-20 {
+	margin-top: 20px;
+}
+
 .cursor-pointer {
 	cursor: pointer;
 }
 
 .score-btn {
 	font-size: 200%;
+}
+
+.text-validate-msg {
+	color: #c00;
 }
 
 #flash-messages {
@@ -130,6 +143,10 @@ ol.steps li.disabled {
 
 .tabPage {
 	margin-top: 15px;
+}
+
+.tabPage h1 {
+	margin-top: 10px;
 }
 
 .modal div.radio {

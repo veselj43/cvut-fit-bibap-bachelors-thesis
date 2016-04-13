@@ -1,0 +1,62 @@
+<div class="container" ng-controller="newClub">
+
+	<h1><small>Nový tým/klub</small></h1>
+
+	<form novalidate class="formm margin-top-20" name="newClub">
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="caldId">ČALD ID:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="caldId" ng-model="club.caldId" placeholder="ČALD ID">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="name">Název:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="name" ng-model="club.name" placeholder="Název" name="name" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="newClub.name.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="shortcut">Zkratka:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="shortcut" ng-model="club.shortcut" placeholder="Zkratka" name="shotcut" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="newClub.shotcut.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="city">Město:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="city" ng-model="club.city" placeholder="Město" name="city" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="newClub.city.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="country">Země:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="country" ng-model="club.country" placeholder="Země" name="country" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="newClub.country.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-sm-offset-2 col-sm-10">
+				<input class="btn btn-primary" type="submit" ng-click="update(club)" value="Uložit">
+				<input class="btn btn-secondary" type="button" ng-click="reset()" value="Reset">
+			</div>
+		</div>
+	</form>
+
+</div>

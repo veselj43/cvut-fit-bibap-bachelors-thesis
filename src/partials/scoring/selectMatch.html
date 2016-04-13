@@ -6,7 +6,7 @@
 	
 	<h1><small>Turnaj</small> {{ data.name }} <small>Výběr zápasu</small></h1>
 
-	<form class="form">
+	<form novalidate class="form">
 		<div class="form-group ">
 			<select class="form-control" id="match" ng-model="selected.match" 
 				ng-options="obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in data.matches | definedMatches">

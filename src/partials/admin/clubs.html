@@ -1,0 +1,16 @@
+<div class="container" ng-controller="Clubs">
+	
+
+	<div ng-show="creatingNew" ng-include="getFullTabUrl('newClub.html')"></div>
+
+	<div ng-hide="creatingNew">
+		<button class="btn btn-secondary" ng-click="creatingNew = true">Přidat tým/klub</button>
+		
+		<h1>Seznam týmů</h1>
+		<div ng-repeat="club in clubs">
+			
+		</div>
+
+	</div>
+
+</div>

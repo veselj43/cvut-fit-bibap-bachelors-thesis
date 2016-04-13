@@ -46,7 +46,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 				flash('danger', 'Zvolte turnaj.')
 				return
 			}
-			if ($rootScope.isEmpty(data.password) && !Auth.checkRole('admin')) {
+			if ($rootScope.isEmpty(data.password) && !Auth.checkRole('admin') && !Auth.checkRole('organizier')) {
 				flash('danger', 'Zadejte heslo turnaje.')
 				return
 			}
@@ -54,6 +54,21 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 			Auth.storage("TourID", data.tournament)
 			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
 			nextLoc = '/scoring/selectMatch'
+
+		}
+		else if (type === 'organizier') {
+
+			if ($rootScope.isEmpty(data.name)) {
+				flash('danger', 'Zadejte jméno správce.')
+				return
+			}
+			if ($rootScope.isEmpty(data.password)) {
+				flash('danger', 'Zadejte heslo organizátora.')
+				return
+			}
+
+			succMsg = 'Přihlášení jako organizátor proběhlo úspěšně.'
+			nextLoc = '/'
 
 		}
 		else if (type === 'admin') {
@@ -147,7 +162,7 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 			else if (cached[i] === -1) disable(bc[i])
 		}
 
-		if (!Auth.checkRole('admin')) {
+		if (!Auth.checkRole('admin') && !Auth.checkRole('organizier')) {
 			bc.splice(0, 1)
 		}
 
@@ -282,6 +297,15 @@ app.controller('newTournament', function($scope, API, flash) {
 
 })
 
+app.controller('newClub', function($scope, API, flash) {
+
+	$scope.club = {
+		country: "CZE"
+	}
+	$scope.master = {} // load data if editing
+
+})
+
 app.controller("SelectTournament", function($scope, $location, API, flash) {
 
 	$scope.selected = {}
@@ -358,7 +382,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 			API.getPlayersForTour({
 				id: TourID,
-				append: '?teamId='.$scope.data.homeTeam.id, 
+				append: '?teamId=' + $scope.data.homeTeam.id, 
 				ok: function(data) {
 					$scope.data.homeTeam.players = data.players
 				},
@@ -370,7 +394,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 			API.getPlayersForTour({
 				id: TourID, 
-				append: '?teamId='.$scope.data.awayTeam.id, 
+				append: '?teamId=' + $scope.data.awayTeam.id, 
 				ok: function(data) {
 					$scope.data.awayTeam.players = data.players
 				},
@@ -521,3 +545,52 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 	$scope.$watch('selected.tournament', changedTour, true)
 
 })
+
+/*
+ * Administration
+ */
+app.controller("Admin", function($scope, $rootScope, API, flash) {
+
+	let tabsBaseUrl = 'partials/admin/'
+
+	$scope.tabs = [
+		{
+			title: 'Správa klubů',
+			url: 'clubs.html'
+		}, {
+			title: 'Správa turnajů',
+			url: 'tours.html'
+		}
+	]
+
+	$scope.getFullTabUrl = function(tabUrl) {
+		return tabsBaseUrl + tabUrl
+	}
+
+	$scope.currentTab = $scope.getFullTabUrl($scope.tabs[0].url)
+
+	$scope.onClickTab = function(tab) {
+		$scope.creatingNew = false
+		$scope.currentTab = $scope.getFullTabUrl(tab.url)
+	}
+
+	$scope.isActiveTab = function(tabUrl) {
+		return $scope.getFullTabUrl(tabUrl) == $scope.currentTab
+	}
+
+	$scope.creatingNew = false
+
+})
+
+app.controller("Clubs", function($scope, $rootScope, API, flash) {
+
+	$scope.clubs = []
+
+})
+
+app.controller("Tours", function($scope, $rootScope, API, flash) {
+
+	$scope.tours = []
+
+})
+

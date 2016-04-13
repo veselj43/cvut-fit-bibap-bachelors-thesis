@@ -1,0 +1,16 @@
+<div class="container" ng-controller="Tours">
+	
+
+	<div ng-show="creatingNew" ng-include="getFullTabUrl('../newTournament.html')"></div>
+
+	<div ng-hide="creatingNew">
+		<button class="btn btn-secondary" ng-click="creatingNew = true">Přidat turnaj</button>
+		
+		<h1>Seznam turnajů</h1>
+		<div ng-repeat="tour in tours">
+			
+		</div>
+
+	</div>
+
+</div>

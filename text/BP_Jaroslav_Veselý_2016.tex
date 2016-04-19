@@ -131,6 +131,34 @@
 	
 	\subsection{Heuristická analýza}
 
+	\subsubsection{Viditelnost stavu systému}
+	Aplikace celkově neobsahuje příliš úrovní obsahu. Uživatel vždy vidí zvýrazněnou položku v menu. Pokud se některá akce skládá z více kroků nebo je k dispozici více možností, je k dispozici orientace pomocí záložek. Běžný uživatel se setká maximálně se dvěma úrovněmi menu a to hlavní menu a záložkové. V administraci jsou i případy, kde je použita ještě třetí úroveň, jednotlivé úrovně jsou přehledně odsazené, takže by se uživatel neměl v obsahu ztácet.
+
+	Bylo by dobré ještě doplnit uživatelský panel po přihlášení, nyní je k dispozici jen tlačítko pro odhlášení. Informace o roli uživatele je jen ve zprávě o úspěšném přihlášení, poté již není tato informace uživateli dostupná.
+
+	Uživatel je o výsledku každé akce informován pomocí zprávy, která je stylovaná, tedy i barevně odlišená podle obsahu, bootstrapem.
+
+	\subsubsection{Propojení systému s reálným světem}
+	Neměly by být použité žádné termíny neznámé uživateli, některá slova jsou převzata z prostření frisbee, jinak je použitá jen běžná slovní zásoba. Chybové hlášky obsahujý nejdříve prostý text popisující chybu běžnému uživateli, pokud je chyba způsobena systémem je o tom uživatel ve zprávě informován. Jestliže jsou k dispozici další poskytnutelné upřesňující informace o chybě, jsou zahrnuty ve zprávě z důvodu rozpoznání chyby vývojáři.
+
+	\subsubsection{Uživatelova kontrola a svoboda}
+	Celá aplikace podporuje tlačítka "zpět" a "dopředu". Při vícekrokovém procesu je vždy možnost vrátit se zpět také pomocí již víše zmiňovaných záložek.
+
+	\subsubsection{Předcházení chybám}
+	U formlulářů je u každé položky poskytnuta informace o chybě, pokud je některá z podmínek pro formát vsupu porušena. Při odeslání údajů se zkontrolují případné další chyby o kterých je uživatel informován, přičemž nepřichází o žádná vyplněná data.
+
+	\subsubsection{Připomenutí raději než odvolávání se}
+	Některé složitější formuláře interagují s vyplněnými daty například z předchozích kroků. Data jako taková uživatel žadává jen jednou, poté již pouze vybírá ze seznamu možností.
+
+	\subsubsection{Flexibilita a efektivita použití}
+	Prozatím není aplikace příliš rozsáhlá a není zapotřebí mnoho kroků pro dokončení libovolné akce, navíc jsou všechny kroky povinné, pouze minimum informací je doplňujícího či popisujícího charakteru.
+
+	\subsubsection{Estetický a minimalisticý design}
+
+	\subsubsection{Pomoci uživatelům rozpoznat, diagnostikovat a zotavit se z chyb}
+
+	\subsubsection{Pomoc a dokumentace}
+
 	\subsection{Kognitivní průchod}
 
 	\subsection{Testování použitelnosti}

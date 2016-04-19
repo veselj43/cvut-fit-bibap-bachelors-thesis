@@ -23,16 +23,9 @@
 			</select>
 		</div>
 
-		<div ng-show="check(3)" class="form-group row">
-			<label class="form-control-label col-sm-2" for="pass">Heslo:</label>
-			<div class="col-sm-10">
-				<input class="form-control" type="password" id="pass" ng-model="selected.password" required>
-			</div>
-		</div>
-
 		<div class="form-group">
 			<input class="btn btn-primary" type="button" value="Přihlásit se ke skórování" 
-			ng-disabled="isEmpty(selected.tournament)" ng-click="login('tournament', selected, false)">
+			ng-disabled="isEmpty(selected.tournament)" ng-click=""> <!-- TODO login('tournament', selected, false) -->
 		</div>
 	</form>
 

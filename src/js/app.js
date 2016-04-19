@@ -217,7 +217,7 @@ app.factory('Globals', function() {
     }
 })
 
-app.service('Auth', function($rootScope, $routeParams) {
+app.service('Auth', function($rootScope, $routeParams, API) {
 	let index = "login"
 	let roles = {
 		'team': 1,
@@ -236,12 +236,12 @@ app.service('Auth', function($rootScope, $routeParams) {
 
 	this.getAuthLvl = function() {
 		if (!ok()) return 0
-		return (get() === null) ? 0 : get().authLvl
+		return (get() === null) ? 0 : roles[this.getData().role]
 	}
 
 	this.getData = function() {
 		if (!ok()) return null
-		return (get() === null) ? null : get().data
+		return (get() === null) ? null : get()
 	}
 
 	this.check = function(authLvl, exact = false) {
@@ -254,13 +254,22 @@ app.service('Auth', function($rootScope, $routeParams) {
 		return this.check(roles[role], exact)
 	}
 
-	this.login = function(type, data) {
-		if (typeof(roles[type]) === "undefined") return false
+	this.login = function(logData, callback) {
 
-		// check auth here
+		let logResponse = {}
 
-		localStorage.setItem(index, JSON.stringify({"authLvl": roles[type], "data": data}))
-		return true
+		API.login({
+			data: logData,
+			ok: function(data) {
+				logResponse = data
+				localStorage.setItem(index, JSON.stringify(logResponse))
+				callback(data)
+			},
+			err: function(data, status, headers, config) {
+				logResponse = false
+				callback(false)
+			}
+		})
 	}
 
 	this.logout = function() {
@@ -314,28 +323,30 @@ app.service('API', function($http, flash) {
 	// 	.error(function (data, status, headers, config) {
 	// 	})
 
-	function getPromise(what = "", params, append) {
+	function collectUri(what = "", params, append) {
 		let uri = basePath + what
 		uri += (params) ? ('/' + params) : 's'
 		uri += (append) ? ('/' + append) : ''
-		return $http.get(uri)
+		return uri
 	}
 
-	this.get = function(what, params, append, okCallback, errCallback = defErrCallback) {
+	function processPromise(httpPromise, okCallback, errCallback = defErrCallback) {
 		if (!okCallback) {
 			console.log("callback is not a fn")
 			return
 		}
-		getPromise(what, params, append).success(okCallback).error(errCallback)
+		httpPromise.success(okCallback).error(errCallback)
+	}
+
+	// GET
+
+	this.get = function(what, params, append, okCallback, errCallback = defErrCallback) {
+		processPromise($http.get(collectUri(what, params, append)), okCallback, errCallback)
 	}
 
 	this.getTour = function(req) {
 		this.get('tournament', req.id, req.append, req.ok, req.err)
 	}
-
-	// this.getMatch = function(TourID, MatchID) {
-	// 	this.get('tournament', id)
-	// }
 
 	this.getMatchesForTour = function(req) {
 		this.get('tournament', req.id, mergeAppends('matches', req.append), req.ok, req.err)
@@ -355,6 +366,26 @@ app.service('API', function($http, flash) {
 
 	this.basicGet = function(append) {
 		return $http.get(basePath + append)
+	}
+
+	// POST
+
+	this.post = function(uri, data, okCallback, errCallback = defErrCallback) {
+		if (!okCallback) {
+			console.log("callback is not a fn")
+			return
+		}
+		processPromise($http.post(uri, data), okCallback, errCallback)
+	}
+
+	// login
+	
+	this.login = function(req) {
+		this.post(basePath + 'login', req.data, req.ok, req.err)
+	}
+
+	this.newXX = function(req) {
+		this.post(collectUri(what, params, append), req.data, req.ok, req.err)
 	}
 
 })

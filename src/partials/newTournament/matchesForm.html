@@ -2,18 +2,18 @@
 <div class="form-group-set" ng-repeat="data in tour.matches">
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="identificator{{$index}}">Identifikátor:</label>
+		<label class="form-control-label col-sm-2" for="ide{{$index}}">Identifikátor:</label>
 		<div class="col-sm-8">
-			<input class="form-control" type="text" id="identificator{{$index}}" name="identificator" ng-model="data.identificator" placeholder="Identifikátor" required>
+			<input class="form-control" type="text" id="ide{{$index}}" name="ide" ng-model="data.ide" placeholder="Identifikátor" required>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour.identificator.$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour.ide.$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
 
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="homeSeed{{$index}}">Domácí:</label>
-		<label class="form-control-label col-sm-1" for="homeSeedTBA{{$index}}">
+		<label class="form-control-label col-sm-1 mw-75" for="homeSeedTBA{{$index}}">
 			<span>TBA</span>
 			<input class="" type="checkbox" id="homeSeedTBA{{$index}}" ng-model="data.homeSeed" ng-true-value="null" ng-false-value="">
 		</label>
@@ -27,7 +27,7 @@
 
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="awaySeed{{$index}}">Hosté:</label>
-		<label class="form-control-label col-sm-1" for="awaySeedTBA{{$index}}">
+		<label class="form-control-label col-sm-1 mw-75" for="awaySeedTBA{{$index}}">
 			<span>TBA</span>
 			<input class="" type="checkbox" id="awaySeedTBA{{$index}}" ng-model="data.awaySeed" ng-true-value="null" ng-false-value="">
 		</label>

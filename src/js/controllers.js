@@ -4,7 +4,7 @@
 /**
  * Controllers
  */
-app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash) {
+app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, flash) {
 	console.log("User auth level is: " + Auth.getAuthLvl())
 
 	$scope.getActiveClass = function (path) {
@@ -16,7 +16,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 			return ($location.path() === '/') ? 'active' : ''
 	}
 
-	$scope.login = function(type, data, relog = true) {
+	$scope.login = function(data, relog = true) {
 		let nextLoc = ""
 		let succMsg = ""
 
@@ -25,85 +25,51 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, flash)
 			return
 		}
 
-		if (type === 'team') {
-
-			if ($rootScope.isEmpty(data.name)) {
-				flash('danger', 'Zadejte název týmu.')
-				return
-			}
-			if ($rootScope.isEmpty(data.password)) {
-				flash('danger', 'Zadejte heslo týmu.')
-				return
-			}
-
-			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
-			nextLoc = '/spirit'
-
-		}
-		else if (type === 'tournament') {
-
-			if ($rootScope.isEmpty(data.tournament)) {
-				flash('danger', 'Zvolte turnaj.')
-				return
-			}
-			if ($rootScope.isEmpty(data.password) && !Auth.checkRole('admin') && !Auth.checkRole('organizier')) {
-				flash('danger', 'Zadejte heslo turnaje.')
-				return
-			}
-
-			Auth.storage("TourID", data.tournament)
-			succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
-			nextLoc = '/scoring/selectMatch'
-
-		}
-		else if (type === 'organizier') {
-
-			if ($rootScope.isEmpty(data.name)) {
-				flash('danger', 'Zadejte jméno správce.')
-				return
-			}
-			if ($rootScope.isEmpty(data.password)) {
-				flash('danger', 'Zadejte heslo organizátora.')
-				return
-			}
-
-			succMsg = 'Přihlášení jako organizátor proběhlo úspěšně.'
-			nextLoc = '/'
-
-		}
-		else if (type === 'admin') {
-
-			if ($rootScope.isEmpty(data.name)) {
-				flash('danger', 'Zadejte jméno správce.')
-				return
-			}
-			if ($rootScope.isEmpty(data.password)) {
-				flash('danger', 'Zadejte heslo správce.')
-				return
-			}
-
-			succMsg = 'Přihlášení jako správce proběhlo úspěšně.'
-			nextLoc = '/'
-
-		}
-		else {
-
-			flash('danger', 'Přihlášení se nezdařilo. Chyba role.')
+		if ($rootScope.isEmpty(data.email)) {
+			flash('danger', 'Zadejte email.')
 			return
-
+		}
+		if ($rootScope.isEmpty(data.password)) {
+			flash('danger', 'Zadejte heslo.')
+			return
 		}
 
-		if (relog || !$scope.logged()) {
-			if (!Auth.login(type, data)) {
-				// TODO rozdelit na jednotlive typy pro prehlednost
+		function callback(logData) {
+			if (logData) {
+				let role = logData.role
+				if (role === 'team') {
+					succMsg = 'Přihlášení k týmu proběhlo úspěšně.'
+					nextLoc = '/spirit'
+				}
+				else if (role === 'tournament') {
+					// Auth.storage("TourID", data.tournament)
+					succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
+					nextLoc = '/scoring/selectMatch'
+				}
+				else if (role === 'organizier') {
+					succMsg = 'Přihlášení jako organizátor proběhlo úspěšně.'
+					nextLoc = '/'
+				}
+				else if (role === 'admin') {
+					succMsg = 'Přihlášení jako správce proběhlo úspěšně.'
+					nextLoc = '/'
+				}
+				else {
+					flash('danger', 'Přihlášení se nezdařilo. Chyba role.')
+					return
+				}
+
+				flash('success', succMsg)
+				$location.path(nextLoc)
+			}
+			else {
 				flash('danger', 'Chybné údaje přihlášení.')
 				return
 			}
-			
-			flash('success', succMsg)
 		}
 
-		$location.path(nextLoc)
+		Auth.login(data, callback)
+
 	}
 
 	$scope.logout = function() {
@@ -182,7 +148,7 @@ app.controller('Home', function($scope, $location, $http, API, flash) {
 		id: 1, 
 		append: '?active=true&terminated=false', 
 		ok: function(data) {
-			$scope.data.ongoing = data.matches
+			$scope.data.ongoing = data.items
 		}
 	})
 
@@ -336,7 +302,7 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 	API.getMatchesForTour({
 		id: Auth.TourID(), 
 		ok: function(data) {
-			$scope.data.matches = data.matches
+			$scope.data.matches = data.items
 		}
 	})
 
@@ -371,7 +337,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 	API.getMatchesForTour({
 		id: TourID, 
 		ok: function(data) {
-			let tmp = data.matches
+			let tmp = data.items
 
 			for (let i in tmp) {
 				if (tmp[i].id == Auth.MatchID()) {
@@ -384,7 +350,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 				id: TourID,
 				append: '?teamId=' + $scope.data.homeTeam.id, 
 				ok: function(data) {
-					$scope.data.homeTeam.players = data.players
+					$scope.data.homeTeam.players = data.items
 				},
 				err: function() {
 					$scope.data.homeTeam.players = []
@@ -396,7 +362,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 				id: TourID, 
 				append: '?teamId=' + $scope.data.awayTeam.id, 
 				ok: function(data) {
-					$scope.data.awayTeam.players = data.players
+					$scope.data.awayTeam.players = data.items
 				},
 				err: function(data) {
 					$scope.data.awayTeam.players = []
@@ -485,8 +451,9 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	API.getMatchesForTour({
 		id: 1,
+		append: '?terminated=true', 
 		ok: function(data) {
-			$scope.data = data.matches
+			$scope.data = data.items
 		}
 	})
 
@@ -527,7 +494,7 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 			id: $scope.selected.tournament.id, 
 			append: '?terminated=true', 
 			ok: function(data) {
-				$scope.scoreData = $scope.matches = data.matches
+				$scope.scoreData = $scope.matches = data.items
 			}
 		})
 	}

@@ -58,12 +58,29 @@ footer p {
 	margin-top: 20px;
 }
 
+.margin-bot-10 {
+	margin-bottom: 10px;
+}
+
+.mw-75 {
+	min-width: 75px;
+}
+
 .cursor-pointer {
 	cursor: pointer;
 }
 
-.score-btn {
+.highlight {
 	font-size: 200%;
+}
+
+.score-btn {
+	margin: 5px auto;
+	font-size: 250%;
+	width: 100px;
+	height: 90px;
+	padding: 0px;
+	text-align: center;
 }
 
 .text-validate-msg {
@@ -254,9 +271,23 @@ ol.steps li.disabled {
 	display: none;
 }
 
+.append-sm:after {
+	content: " - ";
+}
+
 @media (max-width:666px){
+	.append-sm:after {
+		content: "";
+	}
+
 	.sm-hide {
 		display: none;
+	}
+	.sm-show {
+		display: block;
+	}
+	span.sm-show {
+		display: inline;
 	}
 	tr.sm-show {
 		display: table-row;

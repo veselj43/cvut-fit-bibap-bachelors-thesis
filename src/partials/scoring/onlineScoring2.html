@@ -3,37 +3,33 @@
 
 <!-- <pre>{{ data.homeTeam.players | json }}</pre> -->
 
-		<div ng-include="'templates/breadcrumb.html'"></div>
+		<div class="margin-bot-10" ng-include="'templates/breadcrumb.html'"></div>
 
-		<h1>{{ data.homeTeam.name }} <small>vs.</small> {{ data.awayTeam.name }} <small>Skórování</small></h1>
+		<div class="sm-show"><h1>{{ data.homeTeam.name }} <small>vs.</small> {{ data.awayTeam.name }} <!-- <small>Skórování</small> --></h1></div>
 
 		<!-- <pre>{{actualScore | json}}</pre> -->
 
 		<form novalidate class="form">
 
-			<div class="form-group row">
+			<div class="row">
 				<div class="col-xs-6">
-					<div class="panel panel-primary">
-						<div class="panel-heading text-center">Domácí - {{data.homeTeam.name}}</div>
-						<div class="panel-body">
-							<div class="text-center">
-								<h2>{{actualScore.homeTeam}}</h2>
-							</div>
-							<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
-							ng-click="plus('home')" data-toggle="modal" data-target="#scorePoint">+</button>
+					<div class="highlight text-center"><small class="append-sm">Domácí</small> <span class="sm-hide">{{data.homeTeam.name}}</span></div>
+					<div class="">
+						<div class="text-center">
+							<h2>{{actualScore.homeTeam}}</h2>
 						</div>
+						<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
+						ng-click="plus('home')" data-toggle="modal" data-target="#scorePoint">+</button>
 					</div>
 				</div>
 				<div class="col-xs-6">
-					<div class="panel panel-primary">
-						<div class="panel-heading text-center">Hosté - {{data.awayTeam.name}}</div>
-						<div class="panel-body">
-							<div class="text-center">
-								<h2>{{actualScore.awayTeam}}</h2>
-							</div>
-							<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
-							ng-click="plus('away')" data-toggle="modal" href="#scorePoint">+</button>
+					<div class="highlight text-center"><small class="append-sm">Hosté</small> <span class="sm-hide">{{data.awayTeam.name}}</span></div>
+					<div class="">
+						<div class="text-center">
+							<h2>{{actualScore.awayTeam}}</h2>
 						</div>
+						<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
+						ng-click="plus('away')" data-toggle="modal" href="#scorePoint">+</button>
 					</div>
 				</div>
 			</div>
@@ -43,7 +39,7 @@
 		<pre>{{db | json}}</pre>
 		<pre>{{data[scored.team].players | json}}</pre> -->
 
-		<div class="row scoreHistory">
+		<div class="row scoreHistory margin-top-20">
 			<div class="scoreHistory-block col-sm-12 col-md-offset-1 col-md-10">
 				<div class="">
 					<input type="button" class="scoreHistory-btn btn btn-primary btn-lg btn-block" id="ScoreHistoryToggle" value="Zobrazit podrobnosti" 

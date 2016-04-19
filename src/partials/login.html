@@ -3,106 +3,24 @@
 	<div class="row">
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
-				<div class="panel-heading">Přihlásit se za tým</div>
-				<div class="panel-body">
-					<form class="form" name="teamLog">
-						<div class="form-group">
-							<label class="sr-only" for="teamName">Název účtu</label>
-							<input class="form-control" id="teamName" type="text" placeholder="Název účtu" 
-							ng-model="form.team.name" name="name" 
-							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-						</div>
-						<div class="form-group">
-							<label class="sr-only" for="teamPass">Heslo</label>
-							<input class="form-control" id="teamPass" type="password" placeholder="Heslo" 
-							ng-model="form.team.password" name="pass" 
-							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-						</div>
-						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="login('team', form.team)" value="Přihlásit">
-							<a href="#">Zapomenuté heslo?</a>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-sm-6">
-			<div class="panel panel-primary">
-				<div class="panel-heading">Přihlásit se ke skórování</div>
+				<div class="panel-heading">Přihlásit se</div>
 				<div class="panel-body">
 					<form class="form">
 						<div class="form-group">
-							<label class="sr-only" for="tourName">Turnaj</label>
-							<select class="form-control" id="tournament" 
-								ng-model="form.tournament.tournament"
-								ng-options="obj.id as obj.name for obj in tournaments" 
-								required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-								<option value="">Vyberte turnaj</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label class="sr-only" for="tourPass">Heslo</label>
-							<input class="form-control" id="tourPass" type="password" placeholder="Heslo" 
-							ng-model="form.tournament.password" 
+							<label class="sr-only" for="logEmail">E-mail</label>
+							<input class="form-control" id="logEmail" type="email" placeholder="E-mail" 
+							ng-model="form.email" 
 							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="login('tournament', form.tournament)" value="Přihlásit">
-							<a href="#">Zapomenuté heslo?</a>
-						</div>
-					</form>
-					
-				</div>
-			</div>
-		</div>
-		
-		<div class="col-sm-6">
-			<div class="panel panel-primary">
-				<div class="panel-heading">Přihlásit se jako organizátor</div>
-				<div class="panel-body">
-					<form class="form">
-						<div class="form-group">
-							<label class="sr-only" for="logOrganizierName">Název účtu</label>
-							<input class="form-control" id="logOrganizierName" placeholder="Název účtu" type="text" 
-							ng-model="form.organizier.name" 
+							<label class="sr-only" for="logPass">Heslo</label>
+							<input class="form-control" id="logPass" type="password" placeholder="Heslo" 
+							ng-model="form.password" 
 							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
-							<label class="sr-only" for="organizierPass">Heslo</label>
-							<input class="form-control" id="organizierPass" type="password" placeholder="Heslo" 
-							ng-model="form.organizier.password" 
-							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-						</div>
-						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="login('organizier', form.organizier)" value="Přihlásit">
-							<a href="#">Zapomenuté heslo?</a>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		
-		<div class="col-sm-6">
-			<div class="panel panel-primary">
-				<div class="panel-heading">Přihlásit se jako správce</div>
-				<div class="panel-body">
-					<form class="form">
-						<div class="form-group">
-							<label class="sr-only" for="logName">Název účtu</label>
-							<input class="form-control" id="logName" placeholder="Název účtu" type="text" 
-							ng-model="form.admin.name" 
-							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-						</div>
-						<div class="form-group">
-							<label class="sr-only" for="adminPass">Heslo</label>
-							<input class="form-control" id="adminPass" type="password" placeholder="Heslo" 
-							ng-model="form.admin.password" 
-							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-						</div>
-						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="login('admin', form.admin)" value="Přihlásit">
-							<a href="#">Zapomenuté heslo?</a>
+							<input type="submit" class="btn btn-primary" ng-click="login(form)" value="Přihlásit">
+							<a href="#/forgottenPass">Zapomenuté heslo?</a>
 						</div>
 					</form>
 				</div>

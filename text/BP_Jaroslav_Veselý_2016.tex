@@ -58,27 +58,82 @@
 	Hodnocení pomocí aplikace je zde ještě větším přínosem než u většiny sportů právě kvůli hodnocení férovosti (sportovního ducha) soupeře. Toho hodnocení se jinak vyplňuje na papírovém dotazníku, které je zapotřebí zpracovat. Aplikace by tuto práci měla značně usnadnit.
 
 	\section{Motivace}
-	
+
 	Realizace této práce vzešla z nápadu na rozšíření mobilní aplikace Catcher, kterou čeští hráči frisbee používají. 
 	Jeden z požadavků byl, aby se aplikace dala použít na různých zařízeních, jelikož pro organizaci turnaje je pohodlnější použít notebook či stolní počítač, kdežto pro získání informací o zápasech, turnajích a hodnocení spirit of the game může být praktičtější mobilní zařízení.
 
 \end{introduction}
 
-\chapter{Analýza a návrh}
+\chapter{Návrh a analýza}
 	
-	
+	\section{Problematika}
+	% TODO klasicky problem predelat vs nova aplikace ?
+
+	% jak se situace má nyní a co by mohlo být lepší
+
+	% ... Vzhledem k tématu aplikace je několik funkčních požadavků
+	\section{Vztah uživatele s aplikací}
+	Již z tématu jako takového vyplývá několik scénářů a použití.
+
+	Lidé, kteří se o tento sport zajímají se dají rozdelit do následujících skpin:
+	\begin{itemize}
+		\item Organizátoři
+		\item Zástupci týmů (trenéři)
+		\item Hráči
+		\item Fanoušci
+	\end{itemize}
+
+	Pro běh aplikace budou zapotřebí tyto role:
+	\begin{itemize}
+		\item Správce
+		\item Organizátor
+		\item Tým
+		\item Fanoušek
+	\end{itemize}
+
+	\subsection{Správce}
+
 
 	% TODO posat klíčové akce, které budou uživatelé provádět
 
 	% TODO posat další funkcionalitu aplikace
 
-	% TODO proc webova aplikace?
+	\section{Možnosti řešení}
+	Systému pro skórování Ultimate frisbee by mohl být provozován jako mobilní, desktopová nebo webová aplikace. Vzhledem k použitelnosti aplikace je potřeba data ukládat na server, aby nebylo celé hodnocení závislé pouze na jediném zařízení. Možnost importu a exportu dat je zde nedostačující, v průběhu turnaje mají mít všichni přehled a není vhodné čekat na export dat.
+	
+	\subsection{Mobilní aplikace}
+	Mobilní aplikace má výhodu dostupnosti. Další nevýhodou je psaní rozpisů týmů, hráčů a turnajů. Je nepraktické psát takové množství dat na mobilním telefonu či tabletu a to i v případě, že by existovala databáze hráčů. Tento problém by částečně řešila možnost importu dat, zde by zas bylo složité přesně specifikovat očekávaný formát a to hlavně u rozpisu turnajů.
+	
+	\subsection{Desktopová aplikace}
+	Desktopová aplikace je na rozdíl od mobilní vhodná pro vyplňování dat, ale nepraktická při hodnocení sportovního ducha soupeře. Turnaje se konají i na venkovních hřištích a každý tým by tak musel mít k dispozici notebook.
+	
+	\subsection{Webová aplikace}
+	Webová aplikace má značnou výhodu v přenosnosti mezi platformami, data lze vyplnit na jakémkoli PC a hodnotit lze na mobilním zařízení. Optimalizace pro oba typy zařízení by zde měla být dostačující.
+	
+	\subsection{Způsob propojení backendu a frontendu}
+	Při tvorbě aplikace se nabízí možnost vytvořit API, pomocí kterého bude komunikovat serverová část aplikace starající se o data s uživatelským rozhraním, které bude poskytovat možnosti práce s těmito daty. Jednoznačnou výhodou je zde možnost další implementace více druhů aplikací, které budou optimalizované pro konkrétní použití a budou sdílet data. Tento přístup by měl zajistit možnost rozšiřování jak z hlediska funkcionality tak z hlediska vývoje aplikací pro libovolné zařízení, které má možnost připojení k internetu.
+		
+\section{Zvolené řešení}
+	S ohledem na celkem rozhodující faktor pro použitelnost aplikace v praxi, kterým je dostupnost jsme zvolili webovou aplikaci s tím, že komunikace zařízení a serveru bude probíhat přes API. 
+	
+	% TODO predelat !!!
+	Budu zde mít také možnost zužitkovat některé své zkušenosti s~tvorbou webových stránek. Nový je pro mě pohled ze strany uživatele a kladení důrazu na~jednoduchost používání pro uživatele.
+	
+	V praxi by mohl turnaj probíhat jako příprava turnaje předem na PC, případné korekce lze vyřídit na tabletu či chytrém telefonu a stejně tak hodnocení. Také by mohl být k dispozici jeden notebook pro bodování průběhu hry. Dále by měl každý tým alespoň jedno mobilní zařízení, na kterém by hodnotil soupeře. V dnešní době se také může stát, že bude každý hráč hodnotit z~vlastního zařízení, s čímž by měla aplikace počítat.
 
 	% TODO použité technologie
 
 \chapter{Realizace}
 
 	% TODO 
+
+\chapter{Testování uživatelského rozhraní}
+	
+	\subsection{Heuristická analýza}
+
+	\subsection{Kognitivní průchod}
+
+	\subsection{Testování použitelnosti}
 
 \begin{conclusion}
 	%sem napište závěr Vaší práce
@@ -92,8 +147,9 @@
 \chapter{Seznam použitých zkratek}
 % \printglossaries
 \begin{description}
-	\item[GUI] Graphical user interface
-	\item[XML] Extensible markup language
+	\item[UI] User interface
+	\item[HTML] HyperText markup language
+	\item[CSS] Cascading style sheets
 \end{description}
 
 

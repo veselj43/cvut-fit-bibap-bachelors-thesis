@@ -289,7 +289,7 @@ app.controller('newClub', function($scope, API, flash) {
 
 })
 
-app.controller("SelectTournament", function($scope, $location, Auth, API, flash) {
+app.controller("SelectTournament", function($scope, $location, LS, API, flash) {
 
 	$scope.selected = {}
 	$scope.data = []
@@ -312,22 +312,22 @@ app.controller("SelectTournament", function($scope, $location, Auth, API, flash)
 
 })
 
-app.controller("SelectMatch", function($scope, $rootScope, $location, $routeParams, Auth, API, flash) {
+app.controller("SelectMatch", function($scope, $rootScope, $location, $routeParams, LS, API, flash) {
 
-	if (Auth.TourID() === -1) return
+	if (LS.TourID() === -1) return
 
 	$scope.selected = {}
 	$scope.data = []
 
 	API.getTour({
-		id: Auth.TourID(), 
+		id: LS.TourID(), 
 		ok: function(response) {
 			$scope.data = response.data
 		}
 	})
 
 	API.getMatchesForTour({
-		id: Auth.TourID(), 
+		id: LS.TourID(), 
 		ok: function(response) {
 			$scope.data.matches = response.data.items
 		}

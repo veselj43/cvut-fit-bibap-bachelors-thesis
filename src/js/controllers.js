@@ -104,7 +104,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 
 })
 
-app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
+app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth, LS) {
 
 	$scope.breadcrumb = function() {
 
@@ -123,8 +123,8 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 
 		let cached = [
 			0,
-			Auth.TourID(),
-			Auth.MatchID()
+			LS.TourID(),
+			LS.MatchID()
 		]
 
 		let actPath = $location.path()
@@ -302,7 +302,7 @@ app.controller("SelectTournament", function($scope, $location, Auth, API, flash)
 
 	$scope.select = function() {
 		if (angular.isNumber($scope.selected.tournament)) {
-			Auth.storage("TourID", $scope.selected.tournament)
+			LS.store(LS.def.tid, $scope.selected.tournament)
 			$location.path('/scoring/selectMatch')
 		}
 		else {
@@ -341,7 +341,7 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 				// $location.path('/scoring/')
 			}
 			else {
-				Auth.storage("MatchID", $scope.selected.match.id)
+				LS.store(LS.def.mid, $scope.selected.match.id)
 				$location.path('/scoring')
 			}
 		}
@@ -352,14 +352,14 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 })
 
-app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globals, API, Auth, flash) {
+app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globals, API, LS, flash) {
 
-	if (Auth.TourID() === -1 || Auth.MatchID() === -1) return
+	if (LS.TourID() === -1 || LS.MatchID() === -1) return
 
 	$scope.data = []
 	//API.getPlayers
 
-	let TourID = Auth.TourID();
+	let TourID = LS.TourID();
 
 	API.getMatchesForTour({
 		id: TourID, 
@@ -367,7 +367,7 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 			let tmp = response.data.items // TODO predelat na /match/{id} ??
 
 			for (let i in tmp) {
-				if (tmp[i].id == Auth.MatchID()) {
+				if (tmp[i].id == LS.MatchID()) {
 					$scope.data = tmp[i]
 					break;
 				}

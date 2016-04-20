@@ -221,11 +221,13 @@ app.factory('Globals', function() {
 })
 
 app.service('LS', function($rootScope) {
-	let def = {
+	this.def = {
 		auth: 'login',
 		tid: 'TourID',
 		mid: 'MatchID'
 	}
+
+	let def = this.def
 
 	this.ok = function() {
 		return (typeof(Storage) !== "undefined") ? true : false
@@ -247,14 +249,14 @@ app.service('LS', function($rootScope) {
 
 	// remember last actions
 	this.TourID = function() {
-		if (!$rootScope.isEmpty(this.storage(def.tid))) 
-			return this.storage(def.tid)
+		if (!$rootScope.isEmpty(this.store(def.tid))) 
+			return this.store(def.tid)
 		return -1
 	}
 
 	this.MatchID = function() {
-		if (!$rootScope.isEmpty(this.storage(def.mid))) 
-			return this.storage(def.mid)
+		if (!$rootScope.isEmpty(this.store(def.mid))) 
+			return this.store(def.mid)
 		return -1
 	}
 
@@ -266,7 +268,7 @@ app.service('LS', function($rootScope) {
 	this.remove = function(index) {
 		localStorage.setItem(index, null)
 	}
-	
+
 })
 
 app.service('Auth', function($rootScope, $routeParams, API, LS) {

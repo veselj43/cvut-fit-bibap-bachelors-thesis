@@ -1,4 +1,3 @@
-- zpracovat registraci uzivatele
 - ukonceni zapasu
 - zobrazit informaci o prihlasenem uzivateli
 
@@ -10,10 +9,6 @@ dohodnout:
 
 - zapisovani probihajiciho hodnoceni, jak ukoncit zapas (=dohrano, popr. muze byt i jina situace ?)
 - jak se autorizovat na zapisovani dat (alespon prizatim)
-- format akce POST pro novy turnaj (zkusit pripravit)
 
 - styl filtrovani 
 	- zapasy k hodnoceni, u kterych zobrazit vysledky
-	- ukoncene, probihajici, nadchazejici turnaje
-	- hraci v zapasu
-	? nacist vse a filtrovat v js nebo resit na strane db

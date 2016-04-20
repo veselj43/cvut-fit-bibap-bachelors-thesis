@@ -16,7 +16,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 			return ($location.path() === '/') ? 'active' : ''
 	}
 
-	$scope.login = function(data, relog = true) {
+	$scope.login = function(data) {
 		let nextLoc = ""
 		let succMsg = ""
 
@@ -37,25 +37,26 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 		function callback(logData) {
 			if (logData) {
 				let role = logData.role
-				if (role === 'team') {
+
+				if (role == 'club') {
 					succMsg = 'Přihlášení k týmu proběhlo úspěšně.'
 					nextLoc = '/spirit'
 				}
-				else if (role === 'tournament') {
+				else if (role == 'tournament') {
 					// Auth.storage("TourID", data.tournament)
 					succMsg = 'Přihlášení k turnaji proběhlo úspěšně.'
 					nextLoc = '/scoring/selectMatch'
 				}
-				else if (role === 'organizier') {
+				else if (role == 'organizer') {
 					succMsg = 'Přihlášení jako organizátor proběhlo úspěšně.'
 					nextLoc = '/'
 				}
-				else if (role === 'admin') {
+				else if (role == 'admin') {
 					succMsg = 'Přihlášení jako správce proběhlo úspěšně.'
 					nextLoc = '/'
 				}
 				else {
-					flash('danger', 'Přihlášení se nezdařilo. Chyba role.')
+					flash('danger', 'Přihlášení se nezdařilo. Chyba role. (' + role + ')')
 					return
 				}
 
@@ -83,6 +84,22 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 
 	$scope.getLoginData = function() {
 		Auth.getData()
+	}
+
+	$scope.register = function(data) {
+		data.role = 'organizer'
+		API.register({
+			data: data,
+			ok: function(response) {
+				flash('success', 'Registrace proběhla v pořádku.')
+			}
+			// TODO
+			// ,
+			// err: function(response) {
+			// 	console.log(response)
+			// 	flash('danger', 'Tento e-mail je již registrován.')
+			// }
+		})
 	}
 
 })
@@ -128,7 +145,7 @@ app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth) {
 			else if (cached[i] === -1) disable(bc[i])
 		}
 
-		if (!Auth.checkRole('admin') && !Auth.checkRole('organizier')) {
+		if (!Auth.checkRole('admin') && !Auth.checkRole('organizer')) {
 			bc.splice(0, 1)
 		}
 
@@ -147,15 +164,15 @@ app.controller('Home', function($scope, $location, $http, API, flash) {
 	API.getMatchesForTour({
 		id: 1, 
 		append: '?active=true&terminated=false', 
-		ok: function(data) {
-			$scope.data.ongoing = data.items
+		ok: function(response) {
+			$scope.data.ongoing = response.data.items
 		}
 	})
 
 	API.getTour({
 		append: '?active=false&terminated=false', 
-		ok: function(data) {
-			$scope.data.upcomming = data.items
+		ok: function(response) {
+			$scope.data.upcomming = response.data.items
 		}
 	})
 
@@ -167,8 +184,8 @@ app.controller('Login', function($scope, $location, API, flash) {
 	$scope.tournaments = []
 
 	API.getTour({
-		ok: function(data) {
-			$scope.tournaments = data.items
+		ok: function(response) {
+			$scope.tournaments = response.data.items
 		}
 	})
 
@@ -210,8 +227,8 @@ app.controller('newTournament', function($scope, API, flash) {
 	$scope.divisions = []
 	
 	API.getDivisions({
-		ok: function(data) {
-			$scope.divisions = data.items
+		ok: function(response) {
+			$scope.divisions = response.data.items
 		}
 	})
 
@@ -272,16 +289,26 @@ app.controller('newClub', function($scope, API, flash) {
 
 })
 
-app.controller("SelectTournament", function($scope, $location, API, flash) {
+app.controller("SelectTournament", function($scope, $location, Auth, API, flash) {
 
 	$scope.selected = {}
 	$scope.data = []
 
 	API.getTour({
-		ok: function(data) {
-			$scope.data = data.items
+		ok: function(response) {
+			$scope.data = response.data.items
 		}
 	})
+
+	$scope.select = function() {
+		if (angular.isNumber($scope.selected.tournament)) {
+			Auth.storage("TourID", $scope.selected.tournament)
+			$location.path('/scoring/selectMatch')
+		}
+		else {
+			flash('danger', 'Nebyl správně vybrán turnaj.')
+		}
+	}
 
 })
 
@@ -294,15 +321,15 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 	API.getTour({
 		id: Auth.TourID(), 
-		ok: function(data) {
-			$scope.data = data
+		ok: function(response) {
+			$scope.data = response.data
 		}
 	})
 
 	API.getMatchesForTour({
 		id: Auth.TourID(), 
-		ok: function(data) {
-			$scope.data.matches = data.items
+		ok: function(response) {
+			$scope.data.matches = response.data.items
 		}
 	})
 
@@ -319,7 +346,7 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 			}
 		}
 		else {
-			flash('danger', 'Nebyl správně vybrán zápas')
+			flash('danger', 'Nebyl správně vybrán zápas.')
 		}
 	}
 
@@ -336,8 +363,8 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 	API.getMatchesForTour({
 		id: TourID, 
-		ok: function(data) {
-			let tmp = data.items
+		ok: function(response) {
+			let tmp = response.data.items // TODO predelat na /match/{id} ??
 
 			for (let i in tmp) {
 				if (tmp[i].id == Auth.MatchID()) {
@@ -349,8 +376,8 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 			API.getPlayersForTour({
 				id: TourID,
 				append: '?teamId=' + $scope.data.homeTeam.id, 
-				ok: function(data) {
-					$scope.data.homeTeam.players = data.items
+				ok: function(response) {
+					$scope.data.homeTeam.players = response.data.items
 				},
 				err: function() {
 					$scope.data.homeTeam.players = []
@@ -361,10 +388,10 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 			API.getPlayersForTour({
 				id: TourID, 
 				append: '?teamId=' + $scope.data.awayTeam.id, 
-				ok: function(data) {
-					$scope.data.awayTeam.players = data.items
+				ok: function(response) {
+					$scope.data.awayTeam.players = response.data.items
 				},
-				err: function(data) {
+				err: function(response) {
 					$scope.data.awayTeam.players = []
 					// TODO log error
 				}
@@ -452,8 +479,8 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 	API.getMatchesForTour({
 		id: 1,
 		append: '?terminated=true', 
-		ok: function(data) {
-			$scope.data = data.items
+		ok: function(response) {
+			$scope.data = response.data.items
 		}
 	})
 
@@ -477,8 +504,8 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 
 	API.getTour({
 		append: '?terminated=true', 
-		ok: function(data) {
-			$scope.tours = data.items
+		ok: function(response) {
+			$scope.tours = response.data.items
 		}
 	})
 
@@ -493,8 +520,8 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 		API.getMatchesForTour({
 			id: $scope.selected.tournament.id, 
 			append: '?terminated=true', 
-			ok: function(data) {
-				$scope.scoreData = $scope.matches = data.items
+			ok: function(response) {
+				$scope.scoreData = $scope.matches = response.data.items
 			}
 		})
 	}
@@ -549,9 +576,29 @@ app.controller("Admin", function($scope, $rootScope, API, flash) {
 
 })
 
+app.controller("Users", function($scope, $rootScope, API, flash) {
+
+	$scope.users = []
+
+	$scope.update = function(data) {
+		
+	}
+
+})
+
 app.controller("Clubs", function($scope, $rootScope, API, flash) {
 
 	$scope.clubs = []
+
+	$scope.update = function(data) {
+		API.newClub({
+			data: data,
+			ok: function(response) {
+				console.log(response)
+				flash('success', 'Nový klub byl úspěšně vytvořen.')
+			}
+		})
+	}
 
 })
 
@@ -561,3 +608,21 @@ app.controller("Tours", function($scope, $rootScope, API, flash) {
 
 })
 
+/*
+ * Simpler actions
+ */
+app.controller("ForgottenPass", function($scope, $rootScope, API, flash){
+
+	$scope.sendNewPass = function(data) {
+		API.forgottenPass({
+			data: data,
+			ok: function(response) {
+				flash('success', 'Na email vám bylo odesláno nové heslo.')
+			},
+			err: function(response) {
+				if (response.status === 401) flash('warning', 'Byl zadán nezaregistrovaný email.')
+			}
+		})
+	}
+
+})

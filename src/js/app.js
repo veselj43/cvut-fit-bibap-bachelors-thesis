@@ -80,36 +80,39 @@ app.config(['$routeProvider', function ($routeProvider) {
 		.when("/login", {
 			templateUrl: partPath + "login.html"
 		})
+		.when("/forgottenPass", {
+			templateUrl: partPath + "forgottenPass.html"
+		})
 		.when("/newTournament", {
 			templateUrl: partPath + "newTournament.html", 
-			access: ['admin', 'organizier']
+			access: ['admin', 'organizer']
 		})
 		.when("/newClub", {
 			templateUrl: partPath + "newClub.html", 
-			access: ['admin', 'team']
+			access: ['admin', 'club']
 		})
 		.when("/scoring/selectTournament", {
 			templateUrl: partPath + "scoring/selectTournament.html", 
-			access: ['admin', 'organizier']
+			access: ['admin', 'organizer']
 		})
 		.when("/scoring/selectMatch", {
 			templateUrl: partPath + "scoring/selectMatch.html", 
-			access: ['admin', 'organizier', 'tournament']
+			access: ['admin', 'organizer', 'tournament']
 		})
 		.when("/scoring", {
 			templateUrl: partPath + "scoring/onlineScoring.html", 
-			access: ['admin', 'organizier', 'tournament']
+			access: ['admin', 'organizer', 'tournament']
 		})
 		.when("/spirit", {
 			templateUrl: partPath + "spirit.html", 
-			access: ['admin', 'organizier', 'team']
+			access: ['admin', 'organizer', 'club']
 		})
 		.when("/scores", {
 			templateUrl: partPath + "scores.html"
 		})
 		.when("/profile", {
 			templateUrl: partPath + "profile.html", 
-			access: ['organizier', 'team']
+			access: ['organizer', 'club']
 		})
 		// Administration
 		.when("/admin", {
@@ -217,30 +220,75 @@ app.factory('Globals', function() {
     }
 })
 
-app.service('Auth', function($rootScope, $routeParams, API) {
-	let index = "login"
-	let roles = {
-		'team': 1,
-		'tournament': 2,
-		'organizier': 3,
-		'admin': 4 
+app.service('LS', function($rootScope) {
+	let def = {
+		auth: 'login',
+		tid: 'TourID',
+		mid: 'MatchID'
 	}
 
-	function ok() {
+	this.ok = function() {
 		return (typeof(Storage) !== "undefined") ? true : false
 	}
 
+	// Auth
+	this.setAuth = function(data) {
+		localStorage.setItem(def.auth, JSON.stringify(data))
+	}
+
+	this.getAuth = function() {
+		return JSON.parse(localStorage.getItem(def.auth))
+	}
+
+	this.getApiKey = function() {
+		if (this.getAuth()) return this.getAuth().apiKey
+		return null
+	}
+
+	// remember last actions
+	this.TourID = function() {
+		if (!$rootScope.isEmpty(this.storage(def.tid))) 
+			return this.storage(def.tid)
+		return -1
+	}
+
+	this.MatchID = function() {
+		if (!$rootScope.isEmpty(this.storage(def.mid))) 
+			return this.storage(def.mid)
+		return -1
+	}
+
+	// univarsal storing
+	this.store = function(index, value) {
+		if (!$rootScope.isEmpty(value)) localStorage.setItem(index, value)
+		else return localStorage.getItem(index)
+	}
+	this.remove = function(index) {
+		localStorage.setItem(index, null)
+	}
+	
+})
+
+app.service('Auth', function($rootScope, $routeParams, API, LS) {
+	let index = "login"
+	let roles = {
+		'club': 1,
+		'tournament': 2,
+		'organizer': 3,
+		'admin': 4 
+	}
+
 	function get() {
-		return JSON.parse(localStorage.getItem(index))
+		return LS.getAuth()
 	}
 
 	this.getAuthLvl = function() {
-		if (!ok()) return 0
+		if (!LS.ok()) return 0
 		return (get() === null) ? 0 : roles[this.getData().role]
 	}
 
 	this.getData = function() {
-		if (!ok()) return null
+		if (!LS.ok()) return null
 		return (get() === null) ? null : get()
 	}
 
@@ -260,12 +308,13 @@ app.service('Auth', function($rootScope, $routeParams, API) {
 
 		API.login({
 			data: logData,
-			ok: function(data) {
-				logResponse = data
-				localStorage.setItem(index, JSON.stringify(logResponse))
-				callback(data)
+			ok: function(response) {
+				logResponse = response.data
+				logResponse.password = null
+				LS.setAuth(logResponse)
+				callback(logResponse)
 			},
-			err: function(data, status, headers, config) {
+			err: function(response) {
 				logResponse = false
 				callback(false)
 			}
@@ -273,44 +322,26 @@ app.service('Auth', function($rootScope, $routeParams, API) {
 	}
 
 	this.logout = function() {
-		localStorage.setItem(index, null)
-		localStorage.setItem("TourID", null)
-		localStorage.setItem("MatchID", null)
+		LS.setAuth(null)
+		LS.remove("TourID")
+		LS.remove("MatchID")
 		$rootScope.$emit('$routeChangeStart')
 	}
 
-	this.storage = function(index, value) {
-		if (!$rootScope.isEmpty(value)) localStorage.setItem(index, value)
-		else return localStorage.getItem(index)
-	}
-
-	this.TourID = function() {
-		if (!$rootScope.isEmpty(this.getData().tournament)) 
-			return this.getData().tournament
-		if (!$rootScope.isEmpty(this.storage("TourID"))) 
-			return this.storage("TourID")
-		return -1
-	}
-
-	this.MatchID = function() {
-		if (!$rootScope.isEmpty(this.storage("MatchID"))) 
-			return this.storage("MatchID")
-		return -1
-	}
 })
 
 
 /**
  * API - backend - db
  */
-app.service('API', function($http, flash) {
+app.service('API', function($http, LS, flash) {
 
 	let basePath = 'http://catcher.zlutazimnice.cz/api/'
 
-	function defErrCallback(data, status, headers, config) {
-		flash('danger', 'Nezdařilo se načíst data. \nChyba byla zaznamenána a bude opravena. \nKód chyby: ' + status)
+	function defErrCallback(response) {
+		flash('danger', 'Nezdařilo se načíst data. \nChyba byla zaznamenána a bude opravena. \nKód chyby: ' + response.status)
 		// TODO log error
-		console.log(config)
+		console.log(response)
 	}
 
 	function mergeAppends(base, add) {
@@ -335,33 +366,41 @@ app.service('API', function($http, flash) {
 			console.log("callback is not a fn")
 			return
 		}
-		httpPromise.success(okCallback).error(errCallback)
+		httpPromise.then(okCallback, errCallback)
 	}
 
 	// GET
 
-	this.get = function(what, params, append, okCallback, errCallback = defErrCallback) {
-		processPromise($http.get(collectUri(what, params, append)), okCallback, errCallback)
+	this.get = function(req) {
+		processPromise($http.get(collectUri(req.what, req.id, req.append)), req.ok, req.err)
 	}
 
 	this.getTour = function(req) {
-		this.get('tournament', req.id, req.append, req.ok, req.err)
+		req.what = 'tournament'
+		this.get(req)
 	}
 
 	this.getMatchesForTour = function(req) {
-		this.get('tournament', req.id, mergeAppends('matches', req.append), req.ok, req.err)
+		req.what = 'tournament'
+		req.append = mergeAppends('matches', req.append)
+		this.get(req)
 	}
 
 	this.getPlayersForTour = function(req) {
-		this.get('club', req.id, mergeAppends('players', req.append), req.ok, req.err)
+		req.what = 'club'
+		req.append = mergeAppends('players', req.append)
+		this.get(req)
 	}
 
 	this.getPlayersForClub = function(req) {
-		this.get('club', req.id, mergeAppends('players', req.append), req.ok, req.err)
+		req.what = 'club'
+		req.append = mergeAppends('players', req.append)
+		this.get(req)
 	}
 
 	this.getDivisions = function(req) {
-		this.get('division', null, req.append, req.ok, req.err)
+		req.what = 'division'
+		this.get(req)
 	}
 
 	this.basicGet = function(append) {
@@ -370,22 +409,36 @@ app.service('API', function($http, flash) {
 
 	// POST
 
-	this.post = function(uri, data, okCallback, errCallback = defErrCallback) {
-		if (!okCallback) {
-			console.log("callback is not a fn")
-			return
-		}
-		processPromise($http.post(uri, data), okCallback, errCallback)
+	this.post = function(req) {
+		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
+		processPromise($http.post(req.uri, req.data, req.config), req.ok, req.err)
 	}
 
 	// login
 	
 	this.login = function(req) {
-		this.post(basePath + 'login', req.data, req.ok, req.err)
+		req.uri = basePath + 'login'
+		this.post(req)
+	}
+	this.forgottenPass = function(req) {
+		req.uri = basePath + 'forgotten-password'
+		this.post(req)
+	}
+	this.register = function(req) {
+		req.uri = basePath + 'users'
+		this.post(req)
+	}
+
+	// post for adding new objects
+	
+	this.newClub = function(req) {
+		req.uri = collectUri('club')
+		this.post(req)
 	}
 
 	this.newXX = function(req) {
-		this.post(collectUri(what, params, append), req.data, req.ok, req.err)
+		req.uri = collectUri(what, params, append)
+		this.post(req)
 	}
 
 })

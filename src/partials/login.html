@@ -9,17 +9,17 @@
 						<div class="form-group">
 							<label class="sr-only" for="logEmail">E-mail</label>
 							<input class="form-control" id="logEmail" type="email" placeholder="E-mail" 
-							ng-model="form.email" 
+							ng-model="form.login.email" 
 							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
 							<label class="sr-only" for="logPass">Heslo</label>
 							<input class="form-control" id="logPass" type="password" placeholder="Heslo" 
-							ng-model="form.password" 
+							ng-model="form.login.password" 
 							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="login(form)" value="Přihlásit">
+							<input type="submit" class="btn btn-primary" ng-click="login(form.login)" value="Přihlásit">
 							<a href="#/forgottenPass">Zapomenuté heslo?</a>
 						</div>
 					</form>
@@ -29,15 +29,9 @@
 		
 		<div class="col-sm-6">
 			<div class="panel panel-primary">
-				<div class="panel-heading">Vytvořit nový účet</div>
+				<div class="panel-heading">Vytvořit nový účet organizátora</div>
 				<div class="panel-body">
 					<form class="form">
-						<div class="form-group">
-							<label class="sr-only" for="logName">Název účtu</label>
-							<input class="form-control" id="logName" placeholder="Název účtu" type="text" 
-							ng-model="form.register.name" 
-							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
-						</div>
 						<div class="form-group">
 							<label class="sr-only" for="registerEmail">E-mail</label>
 							<input class="form-control" id="registerEmail" type="email" placeholder="E-mail" 
@@ -46,12 +40,12 @@
 						</div>
 						<div class="form-group">
 							<label class="sr-only" for="registerPass">Heslo</label>
-							<input class="form-control" id="registerPass" type="password" placeholder="Heslo" 
+							<input class="form-control" id="registerPass" type="password" placeholder="Heslo (minimálně 5 znaků)" minlength="5" 
 							ng-model="form.register.password" 
 							required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
 						</div>
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary" ng-click="register('register', form.register)" value="Vytvořit">
+							<input type="submit" class="btn btn-primary" ng-click="register(form.register)" value="Vytvořit">
 						</div>
 					</form>
 				</div>

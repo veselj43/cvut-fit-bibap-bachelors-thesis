@@ -1,0 +1,17 @@
+<div class="container" ng-controller="ForgottenPass">
+	
+	<form novalidate class="form ">
+		<div class="form-group row">
+			<label class="form-control-label col-sm-5" for="logEmail">Zadejte svůj registrovaný e-mail</label>
+			<div class="col-sm-5">
+				<input class="form-control" id="logEmail" type="email" placeholder="E-mail" 
+				ng-model="FPemail.email" 
+				required oninvalid="this.setCustomValidity('Povinný údaj.')" oninput="this.setCustomValidity('')">
+			</div>
+			<div class="col-sm-2">
+				<input type="submit" class="btn btn-primary" ng-click="sendNewPass(FPemail)" value="Odeslat">
+			</div>
+		</div>
+	</form>
+
+</div>

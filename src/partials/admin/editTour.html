@@ -1,0 +1,101 @@
+<div ng-controller="TourForm">
+	<form novalidate class="form" name="editTour">
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="name">Název:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="name" name="name" ng-model="edit.name" placeholder="Název" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTour.name.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="startDate">Datum zahájení:</label>
+			<div class="col-sm-8">
+				<div class="input-group date">
+					<input class="form-control from-date" type="text" id="startDate" name="startDate" ng-model="edit.startDate" placeholder="Datum zahájení" required
+					value="{{edit.startDate}}">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+				</div>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTour.startDate.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="endDate">Datum ukončení:</label>
+			<div class="col-sm-8">
+				<div class="input-group date">
+					<input class="form-control to-date" type="text" id="endDate" name="endDate" ng-model="edit.endDate" placeholder="Datum ukončení" required
+					value="{{edit.endDate}}">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+				</div>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTour.endDate.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="city">Místo:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="city" name="city" ng-model="edit.city" placeholder="Místo" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTour.city.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="country">Země:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="country" name="country" ng-model="edit.country" placeholder="Země" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTour.country.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-sm-offset-2 col-sm-10">
+				<input class="btn btn-primary" type="submit" ng-click="edit(edit)" value="Uložit">
+				<input class="btn btn-secondary" type="button" ng-click="reset()" value="Reset">
+			</div>
+		</div>
+
+		<script>
+			// $('.form-group .date').datepicker({
+			// 	format: "yyyy-mm-dd", //dd. mm. yyyy
+			// 	language: "cs"
+			// })
+			$(function(){
+				let startDate = new Date('01/01/2012')
+				let FromEndDate = new Date()
+				let ToEndDate = new Date()
+				$('#startDate').datepicker({
+					language: "cs",
+					format: "yyyy-mm-dd",
+					autoclose: true
+				}).on('changeDate', function(selected){
+					startDate = new Date(selected.date.valueOf())
+					startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())))
+					$('.to-date').datepicker('setStartDate', startDate)
+				})
+				$('#endDate').datepicker({
+					language: "cs",
+					format: "yyyy-mm-dd",
+					autoclose: true
+				})
+				.on('changeDate', function(selected){
+					FromEndDate = new Date(selected.date.valueOf())
+					FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())))
+					$('.from-date').datepicker('setEndDate', FromEndDate)
+				})
+			})
+		</script>
+
+	</form>
+</div>

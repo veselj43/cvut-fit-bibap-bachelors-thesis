@@ -37,6 +37,21 @@ footer p {
 	padding: 0 1em;
 }
 
+table.table td.col-sm-fix {
+	width: 90px;
+	padding-top: 5px;
+	padding-bottom: 0;
+}
+
+table.table td.col-sm-fix .btn {
+	padding: 4px 10px;
+	line-height: 1;
+}
+
+table.table.table-hover tbody tr:hover {
+	background-color: #ffc;
+}
+
 .form-control-label,
 .formMsg {
 	padding-top: 7px;
@@ -214,6 +229,10 @@ ol.steps li.disabled {
 	background-color: transparent;
 	border: none;
 	padding: 7px 3em;
+}
+
+.scoreHistory {
+	margin-top: 10px;
 }
 
 .scoreHistory .scoreHistory-block {

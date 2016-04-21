@@ -1,6 +1,52 @@
 - ukonceni zapasu
 - zobrazit informaci o prihlasenem uzivateli
 
+- zprovoznit formular pro novy turnaj
+
+- custom validations
+
+- pokryt funkcionalitu
+	- /user/{id}
+		- put
+	- /club/{id}
+		- put
+		- delete
+	- /club/{id}/players
+	- /club/{id}/teams
+	- /players
+		- post
+	- /player/{id}
+		- put
+		- delete
+	- /teams
+		- post
+	- /team/{id}
+		- put
+		- delete
+	- /tournament/{id}
+	 - put
+	- /tournament/{id}/players
+		- post
+		- delete
+	- /tournament/{id}/teams
+		- put
+	- /tournament/{id}/missing-spirits
+	- /match/{id}
+		- put
+	- /match/{id}/points
+		- post
+		- put
+		- delete
+	- /match/{id}/spirits
+		- post
+		- put
+
+	- vysledky, samozrejme
+
+
+- scenare !!!
+- text !!!
+
 ===================================================================================================
 dohodnout:
 - pokryti funkcionality
@@ -10,5 +56,4 @@ dohodnout:
 - zapisovani probihajiciho hodnoceni, jak ukoncit zapas (=dohrano, popr. muze byt i jina situace ?)
 - jak se autorizovat na zapisovani dat (alespon prizatim)
 
-- styl filtrovani 
-	- zapasy k hodnoceni, u kterych zobrazit vysledky
+- zapasy k hodnoceni SOTG vs zobrazit vysledky ?

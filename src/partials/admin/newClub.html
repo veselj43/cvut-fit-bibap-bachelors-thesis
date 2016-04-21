@@ -1,8 +1,12 @@
-<div class="container" ng-controller="newClub">
+<div class="container" ng-controller="ClubForm">
 
-	<h1><small>Nový tým/klub</small></h1>
+	<ul class="nav nav-tabs">
+		<li class="active">
+			<a>Nový klub</a>
+		</li>
+	</ul>
 
-	<form novalidate class="formm margin-top-20" name="newClub">
+	<form novalidate class="form tabPage" name="newClub">
 
 		<div class="form-group row">
 			<label class="form-control-label col-sm-2" for="caldId">ČALD ID:</label>
@@ -53,8 +57,7 @@
 
 		<div class="form-group row">
 			<div class="col-sm-offset-2 col-sm-10">
-				<input class="btn btn-primary" type="submit" ng-click="update(club)" value="Uložit">
-				<input class="btn btn-secondary" type="button" ng-click="reset()" value="Reset">
+				<input class="btn btn-primary" type="submit" ng-click="post(club)" value="Uložit">
 			</div>
 		</div>
 	</form>

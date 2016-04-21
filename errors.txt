@@ -1,0 +1,4 @@
+club/{id} - put - zmena zkratky 304 z Tč1 na Tč1 + neco
+ - zvlastni chyba, konkretni ... ??
+
+users - nefunguje vubec

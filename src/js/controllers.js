@@ -1,6 +1,12 @@
 
 'use strict';
 
+function parseDateForEdit(str) {
+	let res = str.split('T')[0]
+	res = res.split('-')
+	return res.reverse().join('-')
+}
+
 /**
  * Controllers
  */
@@ -280,15 +286,6 @@ app.controller('newTournament', function($scope, API, flash) {
 
 })
 
-app.controller('newClub', function($scope, API, flash) {
-
-	$scope.club = {
-		country: "CZE"
-	}
-	$scope.master = {} // load data if editing
-
-})
-
 app.controller("SelectTournament", function($scope, $location, LS, API, flash) {
 
 	$scope.selected = {}
@@ -543,45 +540,75 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 /*
  * Administration
  */
-app.controller("Admin", function($scope, $rootScope, API, flash) {
+app.controller("Admin", function($scope, $rootScope, $filter, $route, $routeParams, $location, API, flash) {
 
 	let tabsBaseUrl = 'partials/admin/'
+	let baseUrl = '#/admin/'
 
 	$scope.tabs = [
 		{
-			title: 'Správa klubů',
-			url: 'clubs.html'
+			tab: 'clubs',
+			create: 'newClub',
+			edit: 'editClub',
+			delete: 'club',
+			title: 'Správa klubů'
 		}, {
-			title: 'Správa turnajů',
-			url: 'tours.html'
+			tab: 'tours',
+			create: '../newTournament',
+			edit: 'editTour',
+			delete: 'tournament',
+			title: 'Správa turnajů'
+		}, {
+			tab: 'newUser',
+			title: 'Vytvořit oddílový účet'
 		}
 	]
 
-	$scope.getFullTabUrl = function(tabUrl) {
-		return tabsBaseUrl + tabUrl
+	let currentTab = ($routeParams.tab) ? $filter('getByKey')($scope.tabs, 'tab', $routeParams.tab)[0] : $scope.tabs[0]
+
+	let create = $location.search().create
+	let edit = $location.search().edit
+
+	$scope.getHref = function(tab) {
+		return baseUrl + tab
 	}
 
-	$scope.currentTab = $scope.getFullTabUrl($scope.tabs[0].url)
-
-	$scope.onClickTab = function(tab) {
-		$scope.creatingNew = false
-		$scope.currentTab = $scope.getFullTabUrl(tab.url)
+	$scope.getTabFileUrl = function(tab = currentTab.tab) {
+		return tabsBaseUrl + tab + '.html'
 	}
 
-	$scope.isActiveTab = function(tabUrl) {
-		return $scope.getFullTabUrl(tabUrl) == $scope.currentTab
+	$scope.isActiveTab = function(tab) {
+		return currentTab.tab == tab
 	}
 
-	$scope.creatingNew = false
+	$scope.actionFile = false
+	if (create) $scope.actionFile = $scope.getTabFileUrl(currentTab.create)
+	else if (edit) $scope.actionFile = $scope.getTabFileUrl(currentTab.edit)
+	
+	$scope.list = function() {
+		$location.search('create', null)
+		$location.search('edit', null)
+	}
 
-})
+	$scope.create = function() {
+		$location.search('create', true)
+	}
 
-app.controller("Users", function($scope, $rootScope, API, flash) {
+	$scope.edit = function(id) {
+		$location.search('edit', id)
+	}
 
-	$scope.users = []
-
-	$scope.update = function(data) {
-		
+	$scope.delete = function(id) {
+		// overit smazani (y/n)
+		return
+		API.delete({
+			what: currentTab.delete,
+			id: id,
+			ok: function(response) {
+				flash('success', 'Smazáno.')
+				$route.reload()
+			}
+		})
 	}
 
 })
@@ -590,21 +617,157 @@ app.controller("Clubs", function($scope, $rootScope, API, flash) {
 
 	$scope.clubs = []
 
-	$scope.update = function(data) {
-		API.newClub({
-			data: data,
+	$scope.updateList = function() {
+		API.get({
+			what: 'club',
 			ok: function(response) {
-				console.log(response)
-				flash('success', 'Nový klub byl úspěšně vytvořen.')
+				$scope.clubs = response.data.items
 			}
 		})
 	}
+	$scope.updateList()
 
 })
 
 app.controller("Tours", function($scope, $rootScope, API, flash) {
 
 	$scope.tours = []
+
+	$scope.updateList = function() {
+		API.get({
+			what: 'tournament',
+			ok: function(response) {
+				$scope.tours = response.data.items
+			}
+		})
+	}
+	$scope.updateList()
+
+})
+
+app.controller("UserForm", function($scope, $rootScope, API, flash) {
+
+	// new
+	$scope.data = {
+		clubs: [],
+		roles: [
+			{
+				key: 'organizer', 
+				name: 'Organizátor'
+			}, {
+				key: 'club', 
+				name: 'Klubový účet'
+			}
+		]
+	}
+
+	API.get({
+		what: 'club',
+		ok: function(response) {
+			$scope.data.clubs = response.data.items
+		}
+	})
+
+	$scope.user = {
+		role: "club"
+	}
+
+	$scope.post = function(data) {
+		API.newUser({
+			data: data,
+			ok: function(response) {
+				flash('success', 'Nový klubový účet byl vytvořen.')
+				$route.reload()
+			}
+		})
+	}
+
+})
+
+app.controller('ClubForm', function($scope, $location, $route, API, flash) {
+
+	let edit = $location.search().edit
+
+	// new
+	$scope.club = {
+		country: "CZE"
+	}
+
+	$scope.post = function(data) {
+		API.newClub({
+			data: data,
+			ok: function(response) {
+				flash('success', 'Nový klub byl přidán.')
+				$route.reload()
+			}
+		})
+	}
+
+	// edit
+	$scope.master = {} // load data if editing
+	$scope.edit = {}
+
+	$scope.reset = function() {
+		$scope.edit = angular.copy($scope.master)
+	}
+	$scope.put = function(data) {
+		API.editClub({
+			data: data,
+			id: edit,
+			ok: function(response) {
+				flash('success', 'Údaje klubu byly upraveny.')
+				$route.reload()
+			}
+		})
+	}
+
+	if (edit) {
+		API.get({
+			what: 'club',
+			id: edit,
+			ok: function(response) {
+				$scope.master = response.data
+				$scope.reset()
+			}
+		})
+	}
+
+})
+
+app.controller('TourForm', function($scope, $location, $route, $filter, API, flash) {
+
+	let edit = $location.search().edit
+
+	// edit
+	$scope.master = {} // load data if editing
+	$scope.edit = {}
+
+	$scope.reset = function() {
+		$scope.edit = angular.copy($scope.master)
+	}
+	$scope.put = function(data) {
+		API.editTour({
+			data: data,
+			id: edit,
+			ok: function(response) {
+				flash('success', 'Údaje klubu byly upraveny.')
+				$route.reload()
+			}
+		})
+	}
+
+	if (edit) {
+		API.get({
+			what: 'tournament',
+			id: edit,
+			ok: function(response) {
+				$scope.master = response.data
+				$scope.master.startDate = $scope.master.startDate.split('T')[0]
+				$scope.master.endDate = $scope.master.startDate.split('T')[0]
+				$scope.reset()
+			}
+		})
+	}
 
 })
 

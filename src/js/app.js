@@ -11,7 +11,7 @@ $(document).ready(function(){
 /**
  * Main AngularJS Web Application
  */
-var app = angular.module('ufss', [
+let app = angular.module('ufss', [
 	'ngSanitize',
 	'ngRoute',
 	'ngMessages',
@@ -48,7 +48,7 @@ app.run(function($rootScope, $route, $location, $templateCache, Auth) {
 	$rootScope.$on('$routeChangeStart', function (event, next) {
 
 		function authAllow(array) {
-			for (var i in array) {
+			for (let i in array) {
 				if (Auth.checkRole(array[i], true)) return true
 			}
 			return false
@@ -69,7 +69,7 @@ app.run(function($rootScope, $route, $location, $templateCache, Auth) {
  */
 app.config(['$routeProvider', function ($routeProvider) {
 
-	var partPath = "partials/"
+	let partPath = "partials/"
 
 	$routeProvider
 		// Home
@@ -89,6 +89,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 		})
 		.when("/newClub", {
 			templateUrl: partPath + "newClub.html", 
+			access: ['admin']
+		})
+		.when("/editClub/:ClubId", {
+			templateUrl: partPath + "editClub.html", 
 			access: ['admin', 'club']
 		})
 		.when("/scoring/selectTournament", {
@@ -115,18 +119,18 @@ app.config(['$routeProvider', function ($routeProvider) {
 			access: ['organizer', 'club']
 		})
 		// Administration
-		.when("/admin", {
+		.when("/admin/:tab?", {
 			templateUrl: partPath + "admin.html", 
 			access: ['admin']
 		})
-		.when("/admin/clubs", {
-			templateUrl: partPath + "admin/clubs.html", 
-			access: ['admin']
-		})
-		.when("/admin/tours", {
-			templateUrl: partPath + "admin/tours.html", 
-			access: ['admin']
-		})
+		// .when("/admin/clubs", {
+		// 	templateUrl: partPath + "admin/clubs.html", 
+		// 	access: ['admin']
+		// })
+		// .when("/admin/tours", {
+		// 	templateUrl: partPath + "admin/tours.html", 
+		// 	access: ['admin']
+		// })
 		// Pages
 		.when("/faq", {
 			templateUrl: partPath + "faq.html"
@@ -163,7 +167,7 @@ app.filter('range', function() {
 	return function(input, total) {
 		total = parseInt(total)
 
-		for (var i = 0; i < total; i++) {
+		for (let i = 0; i < total; i++) {
 			input.push(i)
 		}
 
@@ -171,9 +175,23 @@ app.filter('range', function() {
 	}
 })
 
+app.filter('getByKey', function() {
+  return function(items, key, needle) {
+		let filtered = []
+
+		angular.forEach(items, function(item) {
+			if(item[key] == needle){
+				filtered.push(item)
+			}
+		})
+
+		return filtered
+	}
+})
+
 app.filter('definedMatches', function() {
 	return function(items) {
-		var filtered = []
+		let filtered = []
 
 		angular.forEach(items, function(item) {
 			if(item.homeTeam.name !== null && item.awayTeam.name !== null){
@@ -193,7 +211,7 @@ app.filter('definedMatches', function() {
 
 app.filter('definedValue', function() {
 	return function(items, val) {
-		var filtered = []
+		let filtered = []
 
 		angular.forEach(items, function(item) {
 			if (item[val]) {
@@ -208,6 +226,34 @@ app.filter('definedValue', function() {
 		// })
 
 		return filtered
+	}
+})
+
+app.filter('czDate', function($filter) {
+	let angularDateFilter = $filter('date')
+	return function(theDate) {
+		return angularDateFilter(theDate, 'dd. MM. yyyy')
+	}
+})
+
+app.filter('czDateTime', function($filter) {
+	let angularDateFilter = $filter('date')
+	return function(theDate) {
+		return angularDateFilter(theDate, 'dd. MM. yyyy HH:mm')
+	}
+})
+
+app.filter('czTime', function($filter) {
+	let angularDateFilter = $filter('date')
+	return function(theDate) {
+		return angularDateFilter(theDate, 'HH:mm')
+	}
+})
+
+app.filter('DatePick', function($filter) {
+	let angularDateFilter = $filter('date')
+	return function(theDate) {
+		return angularDateFilter(theDate, 'yyyy-mm-dd')
 	}
 })
 
@@ -260,7 +306,7 @@ app.service('LS', function($rootScope) {
 		return -1
 	}
 
-	// univarsal storing
+	// uniletsal storing
 	this.store = function(index, value) {
 		if (!$rootScope.isEmpty(value)) localStorage.setItem(index, value)
 		else return localStorage.getItem(index)
@@ -371,10 +417,18 @@ app.service('API', function($http, LS, flash) {
 		httpPromise.then(okCallback, errCallback)
 	}
 
-	// GET
+	/** 
+	 * GET
+	 * req.data - post data
+	 * req.ok - success callback fn
+	 */
 
 	this.get = function(req) {
 		processPromise($http.get(collectUri(req.what, req.id, req.append)), req.ok, req.err)
+	}
+	this.delete = function(req) {
+		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
+		processPromise($http.delete(collectUri(req.what, req.id), req.config), req.ok, req.err)
 	}
 
 	this.getTour = function(req) {
@@ -409,11 +463,19 @@ app.service('API', function($http, LS, flash) {
 		return $http.get(basePath + append)
 	}
 
-	// POST
-
+	/**
+	 * POST / PUT
+	 * req.data - post data
+	 * req.ok - success callback fn
+	 */
+	
 	this.post = function(req) {
 		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
 		processPromise($http.post(req.uri, req.data, req.config), req.ok, req.err)
+	}
+	this.put = function(req) {
+		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
+		processPromise($http.put(req.uri, req.data, req.config), req.ok, req.err)
 	}
 
 	// login
@@ -431,11 +493,25 @@ app.service('API', function($http, LS, flash) {
 		this.post(req)
 	}
 
-	// post for adding new objects
+	// post / put for adding new objects / editing existing ones
 	
+	this.newUser = function(req) {
+		req.uri = collectUri('user')
+		this.post(req)
+	}
+
 	this.newClub = function(req) {
 		req.uri = collectUri('club')
 		this.post(req)
+	}
+	this.editClub = function(req) {
+		req.uri = collectUri('club', req.id)
+		this.put(req)
+	}
+
+	this.editTour = function(req) {
+		req.uri = collectUri('tournament', req.id)
+		this.put(req)
 	}
 
 	this.newXX = function(req) {

@@ -37,7 +37,7 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="row in data.ongoing">
-									<td>{{row.time.start | date: 'dd. MM. yyyy HH:mm'}}</td>
+									<td>{{row.time.start | czDateTime }}</td>
 									<td>{{row.homeTeam.name}}</td>
 									<td>{{row.awayTeam.name}}</td>
 								</tr>
@@ -66,7 +66,7 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="row in data.upcomming">
-									<td>{{row.startDate | date: 'dd. MM. yyyy HH:mm'}}</td>
+									<td>{{row.startDate | czDateTime }}</td>
 									<td>{{row.name}}</td>
 									<td>{{row.city}}</td>
 								</tr>

@@ -10,13 +10,14 @@
 			</select>
 		</div>
 
-		<ul class="form-group list-inline" ng-hide="isEmpty(selected.match)">
+		<div class="form-group btn-group" ng-hide="isEmpty(selected.match)">
 			<!-- <input class="form-control" type="number" 
 			ng-disabled="isEmpty(selected.match)" placeholder="Zde napište číselné hodnocení 1 až 10"> -->
-			<li ng-repeat="n in [] | range:10">
-				<input class="btn " ng-class="decider(((n+1)===selected.score), 'btn-info', 'btn-default')" type="button" value="{{n+1}}" ng-click="select(n+1)">
-			</li>
-		</ul>
+			<button ng-repeat="n in [] | range:10" 
+				type="button" class="btn" ng-class="decider(((n+1)===selected.score), 'btn-info', 'btn-default')" ng-click="select(n+1)">
+				{{n+1}}
+			</button>
+		</div>
 
 		<div class="form-group">
 			<input class="btn btn-primary" type="button" value="Uložit hodnocení" 

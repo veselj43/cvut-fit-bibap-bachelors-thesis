@@ -7,6 +7,13 @@ function parseDateForEdit(str) {
 	return res.reverse().join('-')
 }
 
+function searchAnObject(input, key, needle) {
+	for (let i in input) {
+		if (input[i][key] == needle) return input[i]
+	}
+	return null
+}
+
 /**
  * Controllers
  */
@@ -731,6 +738,31 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 			}
 		})
 	}
+
+	let divisions = []
+	$scope.teams = []
+
+	API.get({
+		what: 'division',
+		ok: function(response) {
+			divisions = response.data.items
+		}
+	})
+
+	$scope.getDivision = function(id) {
+		let res = searchAnObject(divisions, 'id', id)
+		return (res) ? res.division : ''
+	}
+
+	$scope.updateList = function() {
+		API.get({
+			what: 'team',
+			ok: function(response) {
+				$scope.teams = response.data.items
+			}
+		})
+	}
+	$scope.updateList()
 
 })
 

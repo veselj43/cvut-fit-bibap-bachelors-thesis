@@ -180,7 +180,7 @@ app.filter('getByKey', function() {
 		let filtered = []
 
 		angular.forEach(items, function(item) {
-			if(item[key] == needle){
+			if(item[key] == needle) {
 				filtered.push(item)
 			}
 		})

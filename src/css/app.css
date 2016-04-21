@@ -89,6 +89,10 @@ table.table.table-hover tbody tr:hover {
 	font-size: 200%;
 }
 
+.nav-row div.text-right button {
+	margin-top: 20px;
+}
+
 .score-btn {
 	margin: 5px auto;
 	font-size: 250%;

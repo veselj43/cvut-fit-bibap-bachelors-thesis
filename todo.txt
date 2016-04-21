@@ -8,7 +8,7 @@
 - pokryt funkcionalitu
 	- /user/{id}
 		- put
-	- /club/{id}
+/	- /club/{id}
 		- put
 		- delete
 	- /club/{id}/players

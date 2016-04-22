@@ -115,6 +115,15 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 		})
 	}
 
+	$scope.gravatar = function() {
+		let baseGravatarUrl = 'http://www.gravatar.com/avatar/'
+		if ($scope.logged()) {
+			let email = Auth.getData().email
+			return baseGravatarUrl + CryptoJS.MD5(email.trim().toLowerCase()).toString()
+		}
+		return null
+	}
+
 })
 
 app.controller("Breadcrumb", function($scope, $rootScope, $location, Auth, LS) {
@@ -544,7 +553,77 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 
 })
 
-/*
+/**
+ * User profile
+ */
+app.controller("Profile", function($scope, $rootScope, $route, $location, API, Auth, flash) {
+
+	// TODO jen vlastni vytvorene turnaje
+	$scope.tours = []
+	$scope.user = Auth.getData()
+	$scope.editUser = {}
+
+	let basePath = 'partials/profile/'
+	let params = $location.search()
+
+	$scope.updateList = function() {
+		API.get({
+			what: 'tournament',
+			ok: function(response) {
+				$scope.tours = response.data.items
+			}
+		})
+	}
+	$scope.updateList()
+
+	$scope.profile = function() {
+		$scope.actionFile = null
+		$location.search('editProfile', null)
+		$location.search('createTour', null)
+		$location.search('editTour', null)
+	}
+
+	$scope.editProfile = function() {
+		$location.search('editProfile')
+	}
+
+	$scope.createTour = function() {
+		$location.search('createTour')
+	}
+
+	$scope.editTour = function(id) {
+		$location.search('editTour', id)
+	}
+
+	$scope.putUser = function(data) {
+		API.editUser({
+			id: $scope.user.id,
+			data: data,
+			ok: function(response) {
+				flash('success', 'Údaje profilu upraveny.')
+			}
+		})
+	}
+	$scope.resetUser = function() {
+		$scope.editUser.email = $scope.user.email
+	}
+
+	function getAFPath(fileName) {
+		return basePath + fileName + '.html'
+	}
+
+	$scope.resetUser()
+
+	if (params.editProfile) 
+		$scope.actionFile = getAFPath('editUser')
+	else if (params.createTour) 
+		$scope.actionFile = getAFPath('../newTournament')
+	else if (params.editTour)
+		$scope.actionFile = getAFPath('../admin/editTour')
+
+})
+
+/**
  * Administration
  */
 app.controller("Admin", function($scope, $rootScope, $filter, $route, $routeParams, $location, API, flash) {
@@ -568,20 +647,26 @@ app.controller("Admin", function($scope, $rootScope, $filter, $route, $routePara
 		}, {
 			tab: 'newUser',
 			title: 'Vytvořit oddílový účet'
-		}
+		}// , {
+		// 	tab: 'profile',
+		// 	file: '../profile',
+		// 	title: 'Upravit profil',
+		// 	class: 'navbar-right'
+		// }
 	]
 
 	let currentTab = ($routeParams.tab) ? $filter('getByKey')($scope.tabs, 'tab', $routeParams.tab)[0] : $scope.tabs[0]
 
 	let create = $location.search().create
-	let edit = $location.search().edit
+	let edit = $location.search().editTour
 
 	$scope.getHref = function(tab) {
 		return baseUrl + tab
 	}
 
-	$scope.getTabFileUrl = function(tab = currentTab.tab) {
-		return tabsBaseUrl + tab + '.html'
+	$scope.getTabFileUrl = function(tab) {
+		let file = (tab) ? tab : (currentTab.file) ? currentTab.file : currentTab.tab
+		return tabsBaseUrl + file + '.html'
 	}
 
 	$scope.isActiveTab = function(tab) {
@@ -602,7 +687,7 @@ app.controller("Admin", function($scope, $rootScope, $filter, $route, $routePara
 	}
 
 	$scope.edit = function(id) {
-		$location.search('edit', id)
+		$location.search('editTour', id)
 	}
 
 	$scope.delete = function(id) {
@@ -768,7 +853,7 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 
 app.controller('TourForm', function($scope, $location, $route, $filter, API, flash) {
 
-	let edit = $location.search().edit
+	let edit = $location.search().editTour
 
 	// edit
 	$scope.master = {} // load data if editing

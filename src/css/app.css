@@ -89,8 +89,16 @@ table.table.table-hover tbody tr:hover {
 	font-size: 200%;
 }
 
+.highlight-2 {
+	font-size: 150%;
+}
+
 .nav-row div.text-right button {
 	margin-top: 20px;
+}
+
+.profile-img {
+	padding: 10px !important;
 }
 
 .score-btn {

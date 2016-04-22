@@ -1,0 +1,47 @@
+<div class="container" ng-controller="Profile">
+
+	<form class="form" name="editProfile" novalidate>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="registerEmail">E-mail</label>
+			<div class="col-sm-7">
+				<input class="form-control" id="registerEmail" type="email" placeholder="E-mail" 
+				ng-model="editUser.email" name="registerEmail" required
+				required>
+			</div>
+			<div class="col-sm-3 formMsg" ng-messages="editProfile.registerEmail.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="oldPassword">Staré heslo</label>
+			<div class="col-sm-7">
+				<input class="form-control" id="oldPassword" type="password" placeholder="Původní heslo" minlength="5" 
+				ng-model="editUser.oldPassword" name="oldPassword" required
+				required>
+			</div>
+			<div class="col-sm-3 formMsg" ng-messages="editProfile.oldPassword.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="newPassword">Nové heslo</label>
+			<div class="col-sm-7">
+				<input class="form-control" id="newPassword" type="password" placeholder="Nové heslo (minimálně 5 znaků)" minlength="5" 
+				ng-model="editUser.newPassword" name="newPassword" required
+				required>
+			</div>
+			<div class="col-sm-3 formMsg" ng-messages="editProfile.newPassword.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<input type="submit" class="btn btn-primary" ng-click="putUser(editUser)" value="Uložit">
+			<input type="submit" class="btn btn-secondary" ng-click="resetUser()" value="Původní údaje">
+		</div>
+	</form>
+
+</div>

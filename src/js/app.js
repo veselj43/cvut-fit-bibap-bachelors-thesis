@@ -116,7 +116,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 		})
 		.when("/profile", {
 			templateUrl: partPath + "profile.html", 
-			access: ['organizer', 'club']
+			access: ['admin', 'organizer', 'club']
 		})
 		// Administration
 		.when("/admin/:tab?", {
@@ -496,6 +496,11 @@ app.service('API', function($http, LS, flash) {
 	// post / put for adding new objects / editing existing ones
 	
 	this.newUser = function(req) {
+		req.uri = collectUri('user')
+		this.post(req)
+	}
+	this.editUser = function(req) {
+		if (req.id) return
 		req.uri = collectUri('user')
 		this.post(req)
 	}

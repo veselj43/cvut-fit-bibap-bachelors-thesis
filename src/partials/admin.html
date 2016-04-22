@@ -1,7 +1,7 @@
 <div class="container" ng-controller="Admin">
 
 	<ul class="nav nav-tabs">
-		<li ng-repeat="tab in tabs" ng-class="{active:isActiveTab(tab.tab)}">
+		<li ng-repeat="tab in tabs" ng-class="{active:isActiveTab(tab.tab)}" class="{{tab.class}}">
 			<a href="{{getHref(tab.tab)}}">{{tab.title}}</a>
 		</li>
 	</ul>

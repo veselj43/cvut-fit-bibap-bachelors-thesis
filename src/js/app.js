@@ -258,12 +258,61 @@ app.filter('DatePick', function($filter) {
 })
 
 /**
+ * Directives
+*/
+app.directive('ngValidateTba', function(){
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function($scope, $element, $attrs, ngModel) {
+			ngModel.$validators.required = function(modelValue) {
+				return true
+			}
+
+			ngModel.$validators.tba = function(modelValue) {
+				return (modelValue === null || !ngModel.$isEmpty(modelValue))
+			}
+		}
+	}
+})
+
+app.directive('ngValidateNextStep', function(){
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function($scope, $element, $attrs, ngModel) {
+			ngModel.$validators.consequence = function(modelValue) {
+				if (!ngModel.$isEmpty(modelValue)) $scope.data[$attrs.ngValidateNextStep] = ""
+				return true
+			}
+		}
+	}
+})
+
+app.directive('ngValidateFinalStanding', function(){
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function($scope, $element, $attrs, ngModel) {
+			ngModel.$validators.consequence = function(modelValue) {
+				if (!ngModel.$isEmpty(modelValue)) $scope.data[$attrs.ngValidateFinalStanding] = ""
+				return !(ngModel.$isEmpty(modelValue) && ngModel.$isEmpty($scope.data[$attrs.ngValidateFinalStanding]))
+			}
+
+			ngModel.$validators.standing = function(modelValue) {
+				return (!angular.isNumber(modelValue) || modelValue > 0)
+			}
+		}
+	}
+})
+
+/**
  * Services and Factories
  */
 app.factory('Globals', function() {
-    return {
-        default : 'null'
-    }
+	return {
+		default : 'null'
+	}
 })
 
 app.service('LS', function($rootScope) {
@@ -500,7 +549,7 @@ app.service('API', function($http, LS, flash) {
 		this.post(req)
 	}
 	this.editUser = function(req) {
-		if (req.id) return
+		if (!req.id) return
 		req.uri = collectUri('user')
 		this.post(req)
 	}
@@ -511,6 +560,15 @@ app.service('API', function($http, LS, flash) {
 	}
 	this.editClub = function(req) {
 		req.uri = collectUri('club', req.id)
+		this.put(req)
+	}
+
+	this.newTeam = function(req) {
+		req.uri = collectUri('team')
+		this.post(req)
+	}
+	this.editTeam = function(req) {
+		req.uri = collectUri('team', req.id)
 		this.put(req)
 	}
 

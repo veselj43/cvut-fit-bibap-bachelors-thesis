@@ -1,0 +1,39 @@
+<div class="container" ng-controller="ClubForm">
+
+	<h1><small>Úprava klubu</small> {{master.name}}</h1>
+
+	<form novalidate class="form margin-top-20" name="editTeam">
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="divisionId">Divize:</label>
+			<div class="col-sm-8">
+				<select class="form-control" id="divisionId" ng-model="team.divisionId" name="divisionId" required
+					ng-options="division.id as division.division for division in divisions">
+					<option value="">Vyberte divizi</option>
+				</select>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTeam.divisionId.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="degree">Skupina:</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" id="degree" ng-model="team.degree" 
+				placeholder="Skupina" name="degree" maxlength="1" required>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="editTeam.degree.$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-sm-offset-2 col-sm-10">
+				<input class="btn btn-primary" type="submit" ng-click="put(edit)" value="Uložit">
+				<input class="btn btn-secondary" type="button" ng-click="reset()" value="Obnovit původní údaje">
+			</div>
+		</div>
+	</form>
+
+</div>

@@ -4,9 +4,9 @@
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="ide{{$index}}">Identifikátor:</label>
 		<div class="col-sm-8">
-			<input class="form-control" type="text" id="ide{{$index}}" name="ide" ng-model="data.ide" placeholder="Identifikátor" required>
+			<input class="form-control" type="text" id="ide{{$index}}" name="ide{{$index}}" ng-model="data.ide" placeholder="Identifikátor" required>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour.ide.$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['ide'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
@@ -18,9 +18,10 @@
 			<input class="" type="checkbox" id="homeSeedTBA{{$index}}" ng-model="data.homeSeed" ng-true-value="null" ng-false-value="">
 		</label>
 		<div class="col-sm-7">
-			<input class="form-control" type="text" id="homeSeed{{$index}}" ng-model="data.homeSeed" placeholder="Domácí">
+			<input class="form-control" type="text" id="homeSeed{{$index}}" 
+			ng-validate-tba ng-model="data.homeSeed" placeholder="Domácí" required name="homeSeed{{$index}}">
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="customValidation.matches[$index].homeSeed.$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['homeSeed'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
@@ -32,9 +33,10 @@
 			<input class="" type="checkbox" id="awaySeedTBA{{$index}}" ng-model="data.awaySeed" ng-true-value="null" ng-false-value="">
 		</label>
 		<div class="col-sm-7">
-			<input class="form-control" type="text" id="awaySeed{{$index}}" ng-model="data.awaySeed" placeholder="Hosté">
+			<input class="form-control" type="text" id="awaySeed{{$index}}" 
+			ng-validate-tba ng-model="data.awaySeed" placeholder="Hosté" name="awaySeed{{$index}}">
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="customValidation.matches[$index].awaySeed.$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['awaySeed'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
@@ -50,7 +52,7 @@
 				<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 			</div>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="customValidation.matches[$index].startdate.$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['startDate'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
@@ -59,7 +61,7 @@
 		<label class="form-control-label col-sm-2" for="field{{$index}}">Hřiště:</label>
 		<div class="col-sm-8">
 			<select class="form-control" id="field{{$index}}" ng-model="data.field" name="field{{$index}}" required
-				ng-options="obj.id as obj.name for obj in tour.fields | definedValue:'name'">
+				ng-options="field.id as field.name for field in tour.fields | definedValue:'name'">
 				<option value="">Vyberte hřiště</option>
 			</select>
 		</div>
@@ -71,17 +73,25 @@
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="winnerStep{{$index}}">Postup vítěze:</label>
 		<div class="col-sm-4">
-			<select class="form-control" id="winner{{$index}}" ng-model="data.winnerNextStep" 
-				ng-options="obj.identificator for obj in tour.matches | definedValue:'identificator'">
+			<select class="form-control" id="winnerStep{{$index}}" ng-model="data.winnerNextStep" 
+				ng-options="match.ide as getSelectDescForField(match) for match in tour.matches | definedValue:'ide'"
+				ng-validate-next-step="winnerFinalStanding" name="winnerStep{{$index}}">
 				<option value="">Zápas</option>
 			</select>
 		</div>
 		<div class="col-sm-1 text-center formMsg">nebo</div>
 		<div class="col-sm-3">
-			<input type="number" id="winnerStanding{{$index}}" class="form-control" ng-model="data.winnerFinalStanding" placeholder="Umístění">
+			<input type="number" id="winnerStanding{{$index}}" class="form-control" 
+			ng-model="data.winnerFinalStanding" placeholder="Umístění" 
+			ng-validate-final-standing="winnerNextStep" name="winnerStanding{{$index}}">
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="customValidation.matches[$index].winner.$error">
-			<div ng-include="ngMessagesFile"></div>
+		<div class="col-sm-2 formMsg">
+			<div ng-messages="newTour['winnerStep'+$index].$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+			<div ng-messages="newTour['winnerStanding'+$index].$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
 		</div>
 	</div>
 
@@ -89,16 +99,24 @@
 		<label class="form-control-label col-sm-2" for="looser{{$index}}">Postup poraženého:</label>
 		<div class="col-sm-4">
 			<select class="form-control" id="looserStep{{$index}}" ng-model="data.looserNextStep" name="looser{{$index}}"
-				ng-options="obj.identificator for obj in tour.matches | definedValue:'identificator'">
+				ng-options="match.ide as getSelectDescForField(match) for match in tour.matches | definedValue:'ide'"
+				ng-validate-next-step="looserFinalStanding" name="looserStep{{$index}}">
 				<option value="">Zápas</option>
 			</select>
 		</div>
 		<div class="col-sm-1 text-center formMsg">nebo</div>
 		<div class="col-sm-3">
-			<input type="number" id="winnerStanding{{$index}}" class="form-control" ng-model="data.looserFinalStanding" placeholder="Umístění">
+			<input type="number" id="looserStanding{{$index}}" class="form-control" 
+			ng-model="data.looserFinalStanding" placeholder="Umístění"
+			ng-validate-final-standing="looserNextStep" name="looserStanding{{$index}}">
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="customValidation.matches[$index].looser.$error">
-			<div ng-include="ngMessagesFile"></div>
+		<div class="col-sm-2 formMsg">
+			<div ng-messages="newTour['looserStep'+$index].$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+			<div ng-messages="newTour['looserStanding'+$index].$error">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
 		</div>
 	</div>
 

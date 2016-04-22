@@ -47,7 +47,9 @@
 			<h2>Seznam týmů</h2>
 		</div>
 		<div class="col-sm-3 text-right">
-			<button class="btn btn-primary" ng-click="create()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Přidat tým</button>
+			<button class="btn btn-primary" ng-click="create_team.show()">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Přidat tým
+			</button>
 		</div>
 	</div>
 	
@@ -56,6 +58,7 @@
 			<thead>
 				<tr>
 					<th>ID</th>
+					<th>Název</th>
 					<th>Divize</th>
 					<th>Skupina</th>
 					<th>Úpravy</th>
@@ -64,14 +67,15 @@
 			<tbody>
 				<tr ng-repeat="team in teams">
 					<td>{{ team.id }}</td>
-					<td>{{ getDivision(team.divisionId) }}</td>
+					<td>{{ team.name }}</td>
+					<td>{{ team.division.division }}</td>
 					<td>{{ team.degree }}</td>
 					<td class="col-sm-fix">
 						<div class="btn-group">
-							<button type="button" class="btn btn-success" aria-label="Upravit" ng-click="edit(team.id)">
+							<button type="button" class="btn btn-success" aria-label="Upravit" ng-click="edit_team.show(team.id)">
 								<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 							</button>
-							<button type="button" class="btn btn-danger" aria-label="Smazat" ng-click="delete(team.id)">
+							<button type="button" class="btn btn-danger" aria-label="Smazat" ng-click="deleteTeam(team.id)">
 								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 							</button>
 						</div>
@@ -79,6 +83,125 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+
+	<div id="createTeam" class="modal" data-replace="true" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Vytvořit tým <small></small></h4>
+				</div>
+				
+				<div class="modal-body">
+					
+					<form novalidate class="form margin-top-20" name="createTeam">
+						<div class="form-group row">
+							<label class="form-control-label col-sm-2" for="name">Název:</label>
+							<div class="col-sm-6">
+								<input class="form-control" type="text" id="name" ng-model="create_team.form.name" 
+								placeholder="Název" name="name" required>
+							</div>
+							<div class="col-sm-4 formMsg" ng-messages="createTeam.name.$error">
+								<div ng-include="ngMessagesFile"></div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label class="form-control-label col-sm-2" for="divisionId">Divize:</label>
+							<div class="col-sm-6">
+								<select class="form-control" id="divisionId" ng-model="create_team.form.divisionId" name="divisionId" required
+									ng-options="division.id as division.division for division in divisions">
+									<option value="">Vyberte divizi</option>
+								</select>
+							</div>
+							<div class="col-sm-4 formMsg" ng-messages="createTeam.divisionId.$error">
+								<div ng-include="ngMessagesFile"></div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label class="form-control-label col-sm-2" for="degree">Skupina:</label>
+							<div class="col-sm-6">
+								<input class="form-control" type="text" id="degree" ng-model="create_team.form.degree" 
+								placeholder="Skupina" name="degree" maxlength="1" required>
+							</div>
+							<div class="col-sm-4 formMsg" ng-messages="createTeam.degree.$error">
+								<div ng-include="ngMessagesFile"></div>
+							</div>
+						</div>
+					</form>
+
+				</div>
+
+				<div class="modal-footer">
+					<div class="row">
+						<div class="col-sm-offset-2 col-sm-6 text-left">
+							<input class="btn btn-primary" type="submit" ng-click="create_team.post(create_team.form)" value="Uložit">
+						</div>
+						<div class="col-sm-4">
+							<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="">Zrušit</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div id="editTeam" class="modal" data-replace="true" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Upravit tým <small>{{edit_team.master.name}}</small></h4>
+				</div>
+				
+				<div class="modal-body">
+					
+					<form novalidate class="form margin-top-20" name="editTeam">
+						<div class="form-group row">
+							<label class="form-control-label col-sm-2" for="divisionId">Divize:</label>
+							<div class="col-sm-6">
+								<select class="form-control" id="divisionId" ng-model="edit_team.form.divisionId" name="divisionId" required
+									ng-options="division.id as division.division for division in divisions">
+								</select>
+							</div>
+							<div class="col-sm-4 formMsg" ng-messages="editTeam.divisionId.$error">
+								<div ng-include="ngMessagesFile"></div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label class="form-control-label col-sm-2" for="degree">Skupina:</label>
+							<div class="col-sm-6">
+								<input class="form-control" type="text" id="degree" ng-model="edit_team.form.degree" 
+								placeholder="Skupina" name="degree" maxlength="1" required>
+							</div>
+							<div class="col-sm-4 formMsg" ng-messages="editTeam.degree.$error">
+								<div ng-include="ngMessagesFile"></div>
+							</div>
+						</div>
+					</form>
+
+				</div>
+
+				<div class="modal-footer">
+					<div class="row">
+						<div class="col-sm-offset-2 col-sm-6 text-left">
+							<input class="btn btn-primary" type="submit" ng-click="edit_team.put(edit_team.form)" value="Uložit">
+							<input class="btn btn-secondary" type="button" ng-click="edit_team.reset()" value="Obnovit původní údaje">
+						</div>
+						<div class="col-sm-4">
+							<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="">Zrušit</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
 	</div>
 
 </div>

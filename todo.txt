@@ -6,24 +6,24 @@
 - custom validations
 
 - pokryt funkcionalitu
-	- /user/{id}
+/	- /user/{id}
 		- put
 /	- /club/{id}
 		- put
 		- delete
 	- /club/{id}/players
-	- /club/{id}/teams
+/	- /club/{id}/teams
 	- /players
 		- post
 	- /player/{id}
 		- put
 		- delete
-	- /teams
+/	- /teams
 		- post
-	- /team/{id}
+/	- /team/{id}
 		- put
 		- delete
-	- /tournament/{id}
+/	- /tournament/{id}
 	 - put
 	- /tournament/{id}/players
 		- post

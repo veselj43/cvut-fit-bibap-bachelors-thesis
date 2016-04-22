@@ -289,6 +289,12 @@ app.controller('newTournament', function($scope, API, flash) {
 		return parts[2] + '-' + parts[1] + '-' + parts[0]
 	}
 
+	$scope.getSelectDescForField = function(obj) {
+		let r = obj.ide
+		if (obj.description) r += ' - ' + obj.description
+		return r
+	}
+
 	$scope.update = function(tour) {
 		$scope.master = angular.copy(tour)
 		$scope.master.dbDate = $scope.parseDate($scope.master.date)
@@ -362,6 +368,15 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 			flash('danger', 'Nebyl správně vybrán zápas.')
 		}
 	}
+
+})
+
+app.controller("MatchValidation", function($scope, $rootScope, flash) {
+
+	$scope.customValidation = {
+		matches: []
+	}
+
 
 })
 
@@ -596,6 +611,7 @@ app.controller("Profile", function($scope, $rootScope, $route, $location, API, A
 	}
 
 	$scope.putUser = function(data) {
+		console.log(data)
 		API.editUser({
 			id: $scope.user.id,
 			data: data,
@@ -658,7 +674,7 @@ app.controller("Admin", function($scope, $rootScope, $filter, $route, $routePara
 	let currentTab = ($routeParams.tab) ? $filter('getByKey')($scope.tabs, 'tab', $routeParams.tab)[0] : $scope.tabs[0]
 
 	let create = $location.search().create
-	let edit = $location.search().editTour
+	let edit = $location.search().edit
 
 	$scope.getHref = function(tab) {
 		return baseUrl + tab
@@ -687,7 +703,7 @@ app.controller("Admin", function($scope, $rootScope, $filter, $route, $routePara
 	}
 
 	$scope.edit = function(id) {
-		$location.search('editTour', id)
+		$location.search('edit', id)
 	}
 
 	$scope.delete = function(id) {
@@ -798,6 +814,8 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 	// edit
 	$scope.master = {} // load data if editing
 	$scope.edit = {}
+	$scope.divisions = []
+	$scope.teams = []
 
 	$scope.reset = function() {
 		$scope.edit = angular.copy($scope.master)
@@ -822,26 +840,20 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 				$scope.reset()
 			}
 		})
-	}
 
-	let divisions = []
-	$scope.teams = []
-
-	API.get({
-		what: 'division',
-		ok: function(response) {
-			divisions = response.data.items
-		}
-	})
-
-	$scope.getDivision = function(id) {
-		let res = searchAnObject(divisions, 'id', id)
-		return (res) ? res.division : ''
+		API.get({
+			what: 'division',
+			ok: function(response) {
+				$scope.divisions = response.data.items
+			}
+		})
 	}
 
 	$scope.updateList = function() {
 		API.get({
-			what: 'team',
+			what: 'club',
+			id: edit,
+			append: 'teams',
 			ok: function(response) {
 				$scope.teams = response.data.items
 			}
@@ -849,11 +861,64 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 	}
 	$scope.updateList()
 
+	$scope.create_team = {
+		form: {
+			clubId: edit
+		},
+		show: function() {
+			$('#createTeam').modal('show')
+		},
+		post: function(data) {
+			API.newTeam({
+				data: data,
+				ok: function(response) {
+					flash('success', 'Tým byl přidán.')
+					$scope.updateList()
+					$('#createTeam').modal('hide')
+				}
+			})
+		}
+	}
+
+	$scope.edit_team = {
+		form: {},
+		master: {},
+		show: function(id) {
+			API.get({
+				what: 'team',
+				id: id,
+				ok: function(response) {
+					$scope.edit_team.master = response.data
+					$scope.edit_team.reset()
+				}
+			})
+			$('#editTeam').modal('show')
+		},
+		reset: function() {
+			$scope.edit_team.form = angular.copy($scope.edit_team.master)
+		},
+		put: function(data) {
+			API.editTeam({
+				id: $scope.edit_team.master.id,
+				data: data,
+				ok: function(response) {
+					flash('success', 'Tým byl upraven.')
+					$scope.updateList()
+					$('#editTeam').modal('hide')
+				}
+			})
+		}
+	}
+
+	$scope.deleteTeam = function(id) {
+		// $scope.updateList()
+	}
+
 })
 
 app.controller('TourForm', function($scope, $location, $route, $filter, API, flash) {
 
-	let edit = $location.search().editTour
+	let edit = ($location.search().editTour) ? $location.search().editTour : $location.search().edit
 
 	// edit
 	$scope.master = {} // load data if editing

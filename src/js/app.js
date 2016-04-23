@@ -72,6 +72,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 	let partPath = "partials/"
 
 	$routeProvider
+		// Test
+		.when("/test", {
+			templateUrl: partPath + "_test.html"
+		})
 		// Home
 		.when("/", {
 			templateUrl: partPath + "home.html"
@@ -569,6 +573,15 @@ app.service('API', function($http, LS, flash) {
 	}
 	this.editTeam = function(req) {
 		req.uri = collectUri('team', req.id)
+		this.put(req)
+	}
+
+	this.newPlayer = function(req) {
+		req.uri = collectUri('player')
+		this.post(req)
+	}
+	this.editPlayer = function(req) {
+		req.uri = collectUri('player', req.id)
 		this.put(req)
 	}
 

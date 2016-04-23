@@ -1,0 +1,195 @@
+<div class="row nav-row">
+	<div class="col-sm-9">
+		<h2>Seznam hráčů</h2>
+	</div>
+	<div class="col-sm-3 text-right">
+		<button class="btn btn-primary" ng-click="clubPlayer.create.show()">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Přidat hráče
+		</button>
+	</div>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Jméno</th>
+				<th>Příjmení</th>
+				<th>Přezdívka</th>
+				<th>Číslo</th>
+				<th>Umístění</th>
+				<th>Úpravy</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="player in clubPlayer.list">
+				<td>{{ player.id }}</td>
+				<td>{{ player.firstname }}</td>
+				<td>{{ player.lastname }}</td>
+				<td>{{ player.nickname }}</td>
+				<td>{{ player.number }}</td>
+				<td>{{ player.ranking }}</td>
+				<td class="col-sm-fix">
+					<div class="btn-group">
+						<button type="button" class="btn btn-success" aria-label="Upravit" ng-click="clubPlayer.edit.show(player.id)">
+							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+						</button>
+						<button type="button" class="btn btn-danger" aria-label="Smazat" ng-click="clubPlayer.delete(player.id)">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div id="createPlayer" class="modal" data-replace="true" aria-hidden="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Nový hráč <small></small></h4>
+			</div>
+			
+			<div class="modal-body">
+				
+				<form novalidate class="form margin-top-20" name="createPlayer">
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="firstname">Jméno:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.create.data.firstname" id="firstname" name="firstname" 
+							class="form-control" type="text" required placeholder="Jméno">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="createPlayer.firstname.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="lastname">Příjmení:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.create.data.lastname" id="lastname" name="lastname" 
+							class="form-control" type="text" required placeholder="Příjmení">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="createPlayer.lastname.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="nickname">Přezdívka:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.create.data.nickname" id="nickname" name="nickname" 
+							class="form-control" type="text" placeholder="Přezdívka">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="createPlayer.nickname.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="number">Číslo:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.create.data.number" id="number" name="number" 
+							class="form-control" type="number" placeholder="Číslo dresu">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="createPlayer.number.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+				</form>
+
+			</div>
+
+			<div class="modal-footer">
+				<div class="row">
+					<div class="col-sm-offset-2 col-sm-6 text-left">
+						<button class="btn btn-primary" type="button" ng-click="clubPlayer.create.create(clubPlayer.create.data)">Uložit</button>
+					</div>
+					<div class="col-sm-4">
+						<button class="btn btn-default" type="button" data-dismiss="modal" ng-click="">Zrušit</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div id="editPlayer" class="modal" data-replace="true" aria-hidden="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Upravit hráče <small>{{edit_team.master.name}}</small></h4>
+			</div>
+			
+			<div class="modal-body">
+				
+				<form novalidate class="form margin-top-20" name="editPlayer">
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="firstname">Jméno:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.edit.data.firstname" id="firstname" name="firstname" 
+							class="form-control" type="text" required placeholder="Jméno">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="editPlayer.firstname.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="lastname">Příjmení:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.edit.data.lastname" id="lastname" name="lastname" 
+							class="form-control" type="text" required placeholder="Příjmení">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="editPlayer.lastname.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="nickname">Přezdívka:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.edit.data.nickname" id="nickname" name="nickname" 
+							class="form-control" type="text" placeholder="Přezdívka">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="editPlayer.nickname.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="form-control-label col-sm-2" for="number">Číslo:</label>
+						<div class="col-sm-6">
+							<input ng-model="clubPlayer.edit.data.number" id="number" name="number" 
+							class="form-control" type="number" placeholder="Číslo dresu">
+						</div>
+						<div class="col-sm-4 formMsg" ng-messages="editPlayer.number.$error">
+							<div ng-include="ngMessagesFile"></div>
+						</div>
+					</div>
+				</form>
+
+			</div>
+
+			<div class="modal-footer">
+				<div class="row">
+					<div class="col-sm-offset-2 col-sm-6 text-left">
+						<button class="btn btn-primary" type="submit" ng-click="clubPlayer.edit.edit(clubPlayer.edit.data)">Uložit</button>
+						<button class="btn btn-secondary" type="button" ng-click="clubPlayer.edit.reset()">Obnovit původní údaje</button>
+					</div>
+					<div class="col-sm-4">
+						<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="">Zrušit</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

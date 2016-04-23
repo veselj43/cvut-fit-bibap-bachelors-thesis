@@ -1,6 +1,8 @@
 - ukonceni zapasu
 - zobrazit informaci o prihlasenem uzivateli
 
+ ng-class="{ 'has-error': createTeam.name.$touched && createTeam.name.$invalid }"
+
 - zprovoznit formular pro novy turnaj
 
 - custom validations
@@ -11,11 +13,11 @@
 /	- /club/{id}
 		- put
 		- delete
-	- /club/{id}/players
+/	- /club/{id}/players
 /	- /club/{id}/teams
 	- /players
 		- post
-	- /player/{id}
+/	- /player/{id}
 		- put
 		- delete
 /	- /teams
@@ -24,7 +26,7 @@
 		- put
 		- delete
 /	- /tournament/{id}
-	 - put
+		- put
 	- /tournament/{id}/players
 		- post
 		- delete

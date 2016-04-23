@@ -811,6 +811,8 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 		})
 	}
 
+	if (!edit) return
+
 	// edit
 	$scope.master = {} // load data if editing
 	$scope.edit = {}
@@ -831,25 +833,23 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 		})
 	}
 
-	if (edit) {
-		API.get({
-			what: 'club',
-			id: edit,
-			ok: function(response) {
-				$scope.master = response.data
-				$scope.reset()
-			}
-		})
+	API.get({
+		what: 'club',
+		id: edit,
+		ok: function(response) {
+			$scope.master = response.data
+			$scope.reset()
+		}
+	})
 
-		API.get({
-			what: 'division',
-			ok: function(response) {
-				$scope.divisions = response.data.items
-			}
-		})
-	}
+	API.get({
+		what: 'division',
+		ok: function(response) {
+			$scope.divisions = response.data.items
+		}
+	})
 
-	$scope.updateList = function() {
+	$scope.updateTeamList = function() {
 		API.get({
 			what: 'club',
 			id: edit,
@@ -859,7 +859,34 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 			}
 		})
 	}
-	$scope.updateList()
+	$scope.updateTeamList()
+
+	$scope.clubEditTabs = {
+		basePath: 'partials/admin/clubEdit/',
+		tabs: [
+			{
+				title: 'Týmy',
+				file: 'teams.html'
+			},
+			{
+				title: 'Hráči',
+				file: 'players.html'
+			}
+		],
+		selected: {},
+		file: '',
+		getTabFileUrl: function() {
+			return $scope.clubEditTabs.basePath + $scope.clubEditTabs.selected.file
+		},
+		isActive: function(tab) {
+			return (tab == $scope.clubEditTabs.selected.file)
+		},
+		select: function(tab) {
+			$scope.clubEditTabs.selected = tab
+			$scope.clubEditTabs.file = $scope.clubEditTabs.getTabFileUrl()
+		}
+	}
+	$scope.clubEditTabs.select($scope.clubEditTabs.tabs[0])
 
 	$scope.create_team = {
 		form: {
@@ -873,7 +900,7 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 				data: data,
 				ok: function(response) {
 					flash('success', 'Tým byl přidán.')
-					$scope.updateList()
+					$scope.updateTeamList()
 					$('#createTeam').modal('hide')
 				}
 			})
@@ -903,7 +930,7 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 				data: data,
 				ok: function(response) {
 					flash('success', 'Tým byl upraven.')
-					$scope.updateList()
+					$scope.updateTeamList()
 					$('#editTeam').modal('hide')
 				}
 			})
@@ -911,8 +938,82 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 	}
 
 	$scope.deleteTeam = function(id) {
-		// $scope.updateList()
+		// $scope.updateTeamList()
 	}
+
+	$scope.clubPlayer = {
+		list: [],
+		update: function() {
+			API.get({
+				what: 'club',
+				id: edit,
+				append: 'players',
+				ok: function(response) {
+					$scope.clubPlayer.list = response.data.items
+				}
+			})
+		},
+		create: {
+			data: {
+				clubId: edit
+			},
+			show: function() {
+				$('#createPlayer').modal('show')
+			},
+			create: function(data) {
+				API.newPlayer({
+					data: data,
+					ok: function(response) {
+						flash('success', 'Hráč byl přidán.')
+						$scope.clubPlayer.update()
+						$('#createPlayer').modal('hide')
+					}
+				})
+			}
+		},
+		edit: {
+			master: {},
+			data: {},
+			show: function(id) {
+				API.get({
+					what: 'player',
+					id: id,
+					ok: function(response) {
+						$scope.clubPlayer.edit.master = response.data
+						$scope.clubPlayer.edit.reset()
+					}
+				})
+				$('#editPlayer').modal('show')
+			},
+			edit: function(data) {
+				API.editPlayer({
+					id: $scope.clubPlayer.edit.master.id,
+					data: data,
+					ok: function(response) {
+						flash('success', 'Hráč byl upraven.')
+						$('#editPlayer').modal('hide')
+						$scope.clubPlayer.update()
+					}
+				})
+			},
+			reset: function(data) {
+				$scope.clubPlayer.edit.data = angular.copy($scope.clubPlayer.edit.master)
+			}
+		},
+		delete: function(id) {
+			// TODO
+			return
+			API.delete({
+				what: 'player',
+				id: id,
+				ok: function(response) {
+					flash('success', 'Hráč byl smazán.')
+					$scope.clubPlayer.update()
+				}
+			})
+		}
+	}
+	$scope.clubPlayer.update()
 
 })
 

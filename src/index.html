@@ -59,6 +59,33 @@
 		<div ng-view></div>
 
 		<div ng-include='"templates/footer.html"'></div>
+
+		<div id="confirmYN" class="modal" data-replace="true" aria-hidden="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Kontrola</h4>
+					</div>
+					
+					<div class="modal-body">
+						<div id="text"></div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-4 text-left">
+								<button type="button" class="btn btn-primary" id="yes">Ano</button>
+							</div>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" id="no" ng-click="noCallback()" data-dismiss="modal">Ne</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
 		
 	</body>
 </html>

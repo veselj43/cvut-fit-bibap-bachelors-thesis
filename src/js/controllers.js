@@ -14,6 +14,24 @@ function searchAnObject(input, key, needle) {
 	return null
 }
 
+function confirmYN(text, yesCallback, noCallback) {
+	$('#confirmYN').modal('show')
+	$('#confirmYN #text').html(text)
+	if (yesCallback)
+		$('#confirmYN #yes').bind('click', function(){
+			yesCallback()
+			$('#confirmYN').modal('hide')
+			$('#confirmYN #yes').unbind()
+			$('#confirmYN #no').unbind()
+		})
+	if (noCallback)
+		$('#confirmYN #no').bind('click', function(){
+			noCallback()
+			$('#confirmYN #yes').unbind()
+			$('#confirmYN #no').unbind()
+		})
+}
+
 /**
  * Controllers
  */
@@ -663,12 +681,7 @@ app.controller("Admin", function($scope, $rootScope, $filter, $route, $routePara
 		}, {
 			tab: 'newUser',
 			title: 'Vytvořit oddílový účet'
-		}// , {
-		// 	tab: 'profile',
-		// 	file: '../profile',
-		// 	title: 'Upravit profil',
-		// 	class: 'navbar-right'
-		// }
+		}
 	]
 
 	let currentTab = ($routeParams.tab) ? $filter('getByKey')($scope.tabs, 'tab', $routeParams.tab)[0] : $scope.tabs[0]
@@ -706,17 +719,21 @@ app.controller("Admin", function($scope, $rootScope, $filter, $route, $routePara
 		$location.search('edit', id)
 	}
 
-	$scope.delete = function(id) {
+	$scope.delete = function(id, name) {
 		// overit smazani (y/n)
-		return
-		API.delete({
-			what: currentTab.delete,
-			id: id,
-			ok: function(response) {
-				flash('success', 'Smazáno.')
-				$route.reload()
+		confirmYN(
+			'Opravdu smazat <strong>' + name + '</strong>?', 
+			function(){
+				API.delete({
+					what: currentTab.delete,
+					id: id,
+					ok: function(response) {
+						flash('success', 'Smazáno.')
+						$route.reload()
+					}
+				})
 			}
-		})
+		)
 	}
 
 })
@@ -937,8 +954,21 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 		}
 	}
 
-	$scope.deleteTeam = function(id) {
-		// $scope.updateTeamList()
+	$scope.deleteTeam = function(id, name) {
+		// overit smazani (y/n)
+		confirmYN(
+			'Opravdu smazat <strong>' + name + '</strong>?', 
+			function(){
+				API.delete({
+					what: 'team',
+					id: id,
+					ok: function(response) {
+						flash('success', 'Smazáno.')
+						$scope.updateTeamList()
+					}
+				})
+			}
+		)
 	}
 
 	$scope.clubPlayer = {
@@ -1000,17 +1030,21 @@ app.controller('ClubForm', function($scope, $location, $route, API, flash) {
 				$scope.clubPlayer.edit.data = angular.copy($scope.clubPlayer.edit.master)
 			}
 		},
-		delete: function(id) {
-			// TODO
-			return
-			API.delete({
-				what: 'player',
-				id: id,
-				ok: function(response) {
-					flash('success', 'Hráč byl smazán.')
-					$scope.clubPlayer.update()
+		delete: function(id, name) {
+			// overit smazani (y/n)
+			confirmYN(
+				'Opravdu smazat <strong>' + name + '</strong>?', 
+				function(){
+					API.delete({
+						what: 'player',
+						id: id,
+						ok: function(response) {
+							flash('success', 'Hráč byl smazán.')
+							$scope.clubPlayer.update()
+						}
+					})
 				}
-			})
+			)
 		}
 	}
 	$scope.clubPlayer.update()

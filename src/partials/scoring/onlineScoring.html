@@ -7,7 +7,7 @@
 
 		<h1>{{ data.homeTeam.name }} <small>vs.</small> {{ data.awayTeam.name }} <small>Skórování</small></h1>
 
-		<!-- <pre>{{actualScore | json}}</pre> -->
+		<!-- <pre>{{data.points[0] | json}}</pre> -->
 
 		<form novalidate class="form">
 
@@ -17,10 +17,10 @@
 						<div class="panel-heading text-center">Domácí - {{data.homeTeam.name}}</div>
 						<div class="panel-body">
 							<div class="text-center">
-								<h2>{{actualScore.homeTeam}}</h2>
+								<h2>{{data.points[0].homeScore || 0}}</h2>
 							</div>
 							<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
-							ng-click="plus('home')" data-toggle="modal" data-target="#scorePoint">+</button>
+							ng-click="plus(true)" data-toggle="modal" data-target="#scorePoint">+</button>
 						</div>
 					</div>
 				</div>
@@ -29,32 +29,32 @@
 						<div class="panel-heading text-center">Hosté - {{data.awayTeam.name}}</div>
 						<div class="panel-body">
 							<div class="text-center">
-								<h2>{{actualScore.awayTeam}}</h2>
+								<h2>{{data.points[0].awayScore || 0}}</h2>
 							</div>
 							<button type="button" class="btn btn-success btn-lg btn-block score-btn" 
-							ng-click="plus('away')" data-toggle="modal" href="#scorePoint">+</button>
+							ng-click="plus(false)" data-toggle="modal" href="#scorePoint">+</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</form>
 
-		<!-- <pre>{{scored | json}}</pre>
-		<pre>{{db | json}}</pre>
+		<!-- <pre>{{scored | json}}</pre> -->
+		<!-- <pre>{{data.points | json}}</pre>
 		<pre>{{data[scored.team].players | json}}</pre> -->
 
 		<div class="row">
 			<div class="col-sm-4 col-sm-offset-4">
-				<input type="button" class="scoreHistory-btn btn btn-danger btn-lg btn-block" value="Ukončit zápas" 
-				ng-click="matchEnd()">
+				<button type="button" class="scoreHistory-btn btn btn-danger btn-lg btn-block" 
+				ng-click="matchEnd()">Ukončit zápas</button>
 			</div>
 		</div>
 
 		<div class="row scoreHistory">
 			<div class="scoreHistory-block col-sm-12 col-md-offset-1 col-md-10">
 				<div class="">
-					<input type="button" class="scoreHistory-btn btn btn-primary btn-lg btn-block" id="ScoreHistoryToggle" value="Zobrazit podrobnosti" 
-					ng-click="toggleScoreHistory()">
+					<button type="button" class="scoreHistory-btn btn btn-primary btn-lg btn-block" id="ScoreHistoryToggle" 
+					ng-click="toggleScoreHistory()">Zobrazit podrobnosti</button>
 				</div>
 
 				<div ng-if="detail" class="scoreHistory-list table-responzive">
@@ -81,7 +81,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-if="db.length === 0">
+							<tr ng-if="data.points.length === 0">
 								<td class="text-center sm-hide"></td>
 								<td class="text-center"></td>
 								<td class="text-right">0</td>
@@ -90,14 +90,17 @@
 								<td class="text-center"></td>
 								<td class="text-center sm-hide"></td>
 							</tr>
-							<tr ng-repeat="point in db" class="{{point.team}}Row">
-								<td class="text-center sm-hide">{{echoPlayer('home', point, 'assist')}}</td>
-								<td class="text-center">{{echoPlayer('home', point, 'point')}}</td>
-								<td class="text-right">{{point.actualScore.homeTeam}}</td>
+							<tr ng-repeat="point in data.points" ng-class="{
+								'homeTeamRow': (point.homePoint),
+								'awayTeamRow': (!point.homePoint)
+							}">
+								<td class="text-center sm-hide">{{ echoPlayer(point.assistPlayer, point.homePoint===1) }}</td>
+								<td class="text-center">{{ echoPlayer(point.scorePlayer, point.homePoint===1) }}</td>
+								<td class="text-right">{{ point.homeScore }}</td>
 								<td class="delimiter">:</td>
-								<td class="text-left">{{point.actualScore.awayTeam}}</td>
-								<td class="text-center">{{echoPlayer('away', point, 'point')}}</td>
-								<td class="text-center sm-hide">{{echoPlayer('away', point, 'assist')}}</td>
+								<td class="text-left">{{ point.awayScore }}</td>
+								<td class="text-center">{{ echoPlayer(point.scorePlayer, point.homePoint===0) }}</td>
+								<td class="text-center sm-hide">{{ echoPlayer(point.assistPlayer, point.homePoint===0) }}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -111,7 +114,7 @@
 					</div>
 					<div class="">
 						<ol>
-							<li ng-repeat="(i, point) in db" class="{{point.team}}">{{point.actualScore.home}}:{{point.actualScore.away}}</li>
+							<li ng-repeat="(i, point) in data.points" class="{{point.team}}">{{point.actualScore.home}}:{{point.actualScore.away}}</li>
 						</ol>
 					</div> -->
 				</div>
@@ -124,7 +127,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">{{ data[scored.team].name }} - přidat bod</h4>
+						<h4 class="modal-title">{{ data[(scored.homePoint) ? 'homeTeam' : 'awayTeam'].name }} - přidat bod</h4>
 					</div>
 					<div class="modal-body row">
 						<div class="col-sm-6">
@@ -134,13 +137,17 @@
 									<div class="form-group">
 										<div class="radio">
 											<label class="radio">
-												<input type="radio" ng-model="scored.assist" value="null">
+												<input ng-model="scored.assistPlayerId" type="radio" value="null">
 												Anonym
 											</label>
 										</div>
-										<div class="radio" ng-class="disabled(assistent.id, scored.point)" ng-repeat="assistent in data[scored.team].players">
+										<div class="radio" 
+											ng-repeat="assistent in players"
+											ng-class="disabled(assistent.id, scored.point)" 
+										>
 											<label class="radio">
-												<input type="radio" ng-model="scored.assist" value="{{assistent.id}}" ng-disabled="compare(assistent.id, scored.point)">
+												<input ng-model="scored.assistPlayerId" ng-disabled="compare(assistent.id, scored.scorePlayerId)" 
+												type="radio" value="{{assistent.id}}">
 												{{assistent.firstname}} {{assistent.lastname}}
 											</label>
 										</div>
@@ -155,14 +162,17 @@
 									<div class="form-group">
 										<div class="radio">
 											<label class="radio">
-												<input type="radio" ng-model="scored.point" value="null">
+												<input type="radio" ng-model="scored.scorePlayerId" value="null">
 												Anonym
 											</label>
 										</div>
-										<div class="radio" ng-class="disabled(pointer.id, scored.assist)" ng-repeat="pointer in data[scored.team].players">
+										<div class="radio" 
+											ng-repeat="scorer in players" 
+											ng-class="disabled(scorer.id, scored.assist)" 
+										>
 											<label class="radio">
-												<input type="radio" ng-model="scored.point" value="{{pointer.id}}" ng-disabled="compare(pointer.id, scored.assist)">
-												{{pointer.firstname}} {{pointer.lastname}}
+												<input type="radio" ng-model="scored.scorePlayerId" value="{{scorer.id}}" ng-disabled="compare(scorer.id, scored.assistPlayerId)">
+												{{scorer.firstname}} {{scorer.lastname}}
 											</label>
 										</div>
 									</div>
@@ -189,7 +199,9 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-9">
-					<div class="stepTitle">Zrušit poslední zapsaný bod - {{ data[db[db.length-1].team].name }}</div>
+					<div class="stepTitle">
+						Zrušit poslední zapsaný bod - {{ (data.points[0].homePoint) ? data.homeTeam.name : data.awayTeam.name }}
+					</div>
 				</div>
 				<div class="col-sm-offset-1 col-sm-2 text-right">
 					<button type="button" class="btn-stepBack" 

@@ -1,11 +1,9 @@
-- ukonceni zapasu
+- callahan ??
 - zobrazit informaci o prihlasenem uzivateli
 
  ng-class="{ 'has-error': createTeam.name.$touched && createTeam.name.$invalid }"
 
 - zprovoznit formular pro novy turnaj
-
-- custom validations
 
 - pokryt funkcionalitu
 /	- /user/{id}

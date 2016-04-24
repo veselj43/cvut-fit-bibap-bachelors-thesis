@@ -365,8 +365,10 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 	API.getMatchesForTour({
 		id: LS.TourID(), 
+		append: '?terminated=false',
 		ok: function(response) {
 			$scope.data.matches = response.data.items
+			if (response.data.count == 0) flash('warning', 'V tomto turnaji nejsou žádné zápasy ke skórvání.')
 		}
 	})
 
@@ -389,90 +391,105 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 
 })
 
-app.controller("MatchValidation", function($scope, $rootScope, flash) {
-
-	$scope.customValidation = {
-		matches: []
-	}
-
-
-})
-
 app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globals, API, LS, flash) {
 
-	if (LS.TourID() === -1 || LS.MatchID() === -1) return
+	let TourID = LS.TourID()
+	let MatchID = LS.MatchID()
 
-	$scope.data = []
-	//API.getPlayers
+	if (TourID === -1 || MatchID === -1) return
 
-	let TourID = LS.TourID();
+	$scope.data = {}
+	$scope.scored = {}
+	$scope.players = []
+	$scope.detail = false
+	
+	let activate = {
+		active: true
+	}
 
-	API.getMatchesForTour({
-		id: TourID, 
-		ok: function(response) {
-			let tmp = response.data.items // TODO predelat na /match/{id} ??
+	function setMatchData() {
+		API.get({
+			what: 'match',
+			id: MatchID, 
+			append: 'points',
+			ok: function(response) {
+				$scope.data = response.data
 
-			for (let i in tmp) {
-				if (tmp[i].id == LS.MatchID()) {
-					$scope.data = tmp[i]
-					break;
-				}
+				API.getPlayersForTour({
+					id: TourID,
+					append: '?teamId=' + $scope.data.homeTeam.id, 
+					ok: function(response) {
+						$scope.data.homeTeam.players = response.data.items
+
+						$scope.$watch(
+							'scored.homePoint', 
+							function() {
+								$scope.players = ($scope.scored.homePoint) ? $scope.data.homeTeam.players : $scope.data.awayTeam.players
+							}, true
+						)
+					},
+					err: function() {
+						$scope.data.homeTeam.players = []
+						// TODO log error
+					}
+				})
+
+				API.getPlayersForTour({
+					id: TourID, 
+					append: '?teamId=' + $scope.data.awayTeam.id, 
+					ok: function(response) {
+						$scope.data.awayTeam.players = response.data.items
+					},
+					err: function(response) {
+						$scope.data.awayTeam.players = []
+						// TODO log error
+					}
+				})
 			}
+		})
+	}
 
-			API.getPlayersForTour({
-				id: TourID,
-				append: '?teamId=' + $scope.data.homeTeam.id, 
-				ok: function(response) {
-					$scope.data.homeTeam.players = response.data.items
-				},
-				err: function() {
-					$scope.data.homeTeam.players = []
-					// TODO log error
-				}
-			})
-
-			API.getPlayersForTour({
-				id: TourID, 
-				append: '?teamId=' + $scope.data.awayTeam.id, 
-				ok: function(response) {
-					$scope.data.awayTeam.players = response.data.items
-				},
-				err: function(response) {
-					$scope.data.awayTeam.players = []
-					// TODO log error
-				}
-			})
+	API.edit({
+		what: 'match',
+		id: MatchID, 
+		data: activate,
+		ok: function(response) {
+			setMatchData()
+		},
+		err: function(response) {
+			if (response.status === 304) {
+				setMatchData()
+				return
+			}
 		}
 	})
 
-	$scope.db = []
-
-	$scope.actualScore = {
-		"homeTeam": 0,
-		"awayTeam": 0
-	}
-
-	$scope.scored = {}
-
-	$scope.detail = false
-
 	function emptyTemp() {
 		$scope.scored = {
-			"point": Globals.default,
-			"assist": Globals.default
+			"assistPlayerId": Globals.default,
+			"scorePlayerId": Globals.default,
+			"callahan": false
 		}
 	}
 
-	$scope.plus = function(team) {
-		$scope.scored.team = team + 'Team'
+	$scope.plus = function(isHome) {
+		$scope.scored.homePoint = isHome
 	}
 
 	$scope.score = function(opt) {
 		if (opt) {
-			$scope.actualScore[$scope.scored.team]++
-			$scope.scored.actualScore = angular.copy($scope.actualScore)
-			$scope.db.splice(0,0, angular.copy($scope.scored))
-			$scope.stepBack()
+			if ($scope.scored.assistPlayerId == Globals.default) $scope.scored.assistPlayerId = null
+			if ($scope.scored.scorePlayerId == Globals.default) $scope.scored.scorePlayerId = null
+			API.create({
+				what: 'match',
+				id: MatchID,
+				append: 'points',
+				data: $scope.scored,
+				ok: function(response) {
+					$scope.data.points.splice(0,0, angular.copy(response.data))
+					$scope.stepBack()
+				}
+			})
 		}
 		emptyTemp()
 	}
@@ -481,13 +498,20 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 		if (direction) { // show "cancel last action" option
 			$('#stepBack').show()
 		}
-		else if ($scope.db.length) { // cancel last action
-			$scope.actualScore[$scope.db[0].team]--
-			$scope.db.splice(0, 1)
-			$('#stepBack').hide()
+		else if ($scope.data.points.length) { // cancel last action
+			API.delete({
+				what: 'match',
+				id: MatchID,
+				append: 'points',
+				ok: function(response) {
+					$scope.data.points.splice(0, 1)
+					$('#stepBack').hide()
+				}
+			})
 		}
 	}
 
+	// 
 	$scope.compare = function(rid,sid) {
 		if (sid == "") return false
 		return rid == sid
@@ -498,14 +522,32 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 	}
 
 	$scope.toggleScoreHistory = function() {
-		document.getElementById('ScoreHistoryToggle').value = ($scope.detail) ? 'Zobrazit podrobnosti' : 'Skrýt podrobnosti'
+		$('#ScoreHistoryToggle').text(($scope.detail) ? 'Zobrazit podrobnosti' : 'Skrýt podrobnosti')
 		$scope.detail = !$scope.detail
 	}
 
-	$scope.echoPlayer = function(team, row, key) {
-		// TODO hrac[s id row[key]]
-		if (team + 'Team' === row.team) return (row[key] === "null") ? "Anonym" : row[key]
+	$scope.echoPlayer = function(player, show) {
+		if (show) 
+			return (player && player.firstname && player.lastname) ? player.firstname + ' ' + player.lastname : 'Anonym'
 		return "-"
+	}
+
+	$scope.matchEnd = function() {
+		// TODO prehled pred ukoncenim ??
+		// let terminated = { active: false }
+		let terminted = { terminated: true }
+		API.edit({
+			what: 'match',
+			id: MatchID,
+			data: terminated,
+			ok: function(response) {
+				flash('success', 'Zápas byl úspěšně ukončen')
+			},
+			err: function(response) {
+				let msg = handleError(response.status)
+				flash('danger', msg)
+			}
+		})
 	}
 
 	emptyTemp()
@@ -519,21 +561,19 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.selected = {}
-
-	$scope.data = []
+	$scope.data = 
+	$scope.spirit = {}
 
 	API.getMatchesForTour({
 		id: 1,
-		append: '?terminated=true', 
+		append: '?active=true', 
 		ok: function(response) {
 			$scope.data = response.data.items
 		}
 	})
 
-	$scope.spirit = {}
-
-	$scope.select = function(score) {
-		$scope.selected.score = score
+	$scope.select = function(what, score) {
+		$scope.spirit[what] = score
 	}
 
 	$scope.save = function() {
@@ -548,12 +588,24 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 	$scope.tours = []
 	$scope.matches = []
 
+	// TODO prozatim
 	API.getTour({
-		append: '?terminated=true', 
 		ok: function(response) {
-			$scope.tours = response.data.items
+			$scope.tours = $scope.tours.concat(response.data.items)
 		}
 	})
+	// API.getTour({
+	// 	append: '?terminated=true', 
+	// 	ok: function(response) {
+	// 		$scope.tours = $scope.tours.concat(response.data.items)
+	// 	}
+	// })
+	// API.getTour({
+	// 	append: '?active=true&terminated=false', 
+	// 	ok: function(response) {
+	// 		$scope.tours = $scope.tours.concat(response.data.items)
+	// 	}
+	// })
 
 	$scope.scoreData = {}
 

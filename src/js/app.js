@@ -31,8 +31,8 @@ app.run(function($rootScope, $route, $location, $templateCache, Auth) {
 
 	$rootScope.isEmpty = function(value) {
 		if (
-			value === undefined ||
 			typeof(value) === "undefined" ||
+			value === undefined ||
 			value === null ||
 			value === {} ||
 			value === "null" ||
@@ -73,9 +73,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 	$routeProvider
 		// Test
-		.when("/test", {
-			templateUrl: partPath + "_test.html"
-		})
+		// .when("/test", {
+		// 	templateUrl: partPath + "_test.html"
+		// })
 		// Home
 		.when("/", {
 			templateUrl: partPath + "home.html"
@@ -481,7 +481,7 @@ app.service('API', function($http, LS, flash) {
 	}
 	this.delete = function(req) {
 		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
-		processPromise($http.delete(collectUri(req.what, req.id), req.config), req.ok, req.err)
+		processPromise($http.delete(collectUri(req.what, req.id, req.append), req.config), req.ok, req.err)
 	}
 
 	this.getTour = function(req) {
@@ -590,9 +590,14 @@ app.service('API', function($http, LS, flash) {
 		this.put(req)
 	}
 
-	this.newXX = function(req) {
-		req.uri = collectUri(what, params, append)
+	this.create = function(req) {
+		req.uri = collectUri(req.what, req.id, req.append)
 		this.post(req)
+	}
+
+	this.edit = function(req) {
+		req.uri = collectUri(req.what, req.id, req.append)
+		this.put(req)
 	}
 
 })

@@ -7,3 +7,5 @@ user/{id} - put 502
 
 teams - post - name ?
 team{id} - put - name ?
+
+http://catcher.zlutazimnice.cz/api/club/1/players?teamId=<cokoliv> vraci vzdy to same

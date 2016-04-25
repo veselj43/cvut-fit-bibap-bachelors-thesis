@@ -54,17 +54,6 @@
 				
 				<form novalidate class="form margin-top-20" name="createTeam">
 					<div class="form-group row">
-						<label class="form-control-label col-sm-2" for="name">Název:</label>
-						<div class="col-sm-6">
-							<input class="form-control" type="text" id="name" ng-model="create_team.form.name" 
-							placeholder="Název" name="name" required>
-						</div>
-						<div class="col-sm-4 formMsg" ng-messages="createTeam.name.$error">
-							<div ng-include="ngMessagesFile"></div>
-						</div>
-					</div>
-
-					<div class="form-group row">
 						<label class="form-control-label col-sm-2" for="divisionId">Divize:</label>
 						<div class="col-sm-6">
 							<select class="form-control" id="divisionId" ng-model="create_team.form.divisionId" name="divisionId" required

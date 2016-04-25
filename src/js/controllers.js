@@ -415,9 +415,10 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 			ok: function(response) {
 				$scope.data = response.data
 
-				API.getPlayersForTour({
+				API.get({
+					what: 'tournament',
 					id: TourID,
-					append: '?teamId=' + $scope.data.homeTeam.id, 
+					append: 'players?teamId=' + $scope.data.homeTeam.id, 
 					ok: function(response) {
 						$scope.data.homeTeam.players = response.data.items
 
@@ -434,9 +435,10 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 					}
 				})
 
-				API.getPlayersForTour({
+				API.get({
+					what: 'tournament',
 					id: TourID, 
-					append: '?teamId=' + $scope.data.awayTeam.id, 
+					append: 'players?teamId=' + $scope.data.awayTeam.id, 
 					ok: function(response) {
 						$scope.data.awayTeam.players = response.data.items
 					},
@@ -535,18 +537,20 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 	$scope.matchEnd = function() {
 		// TODO prehled pred ukoncenim ??
 		// let terminated = { active: false }
-		let terminted = { terminated: true }
-		API.edit({
-			what: 'match',
-			id: MatchID,
-			data: terminated,
-			ok: function(response) {
-				flash('success', 'Zápas byl úspěšně ukončen')
-			},
-			err: function(response) {
-				let msg = handleError(response.status)
-				flash('danger', msg)
-			}
+		confirmYN('Opravdu chcete ukončit zápas?', function(){
+			let terminted = { terminated: true }
+			API.edit({
+				what: 'match',
+				id: MatchID,
+				data: terminated,
+				ok: function(response) {
+					flash('success', 'Zápas byl úspěšně ukončen')
+				},
+				err: function(response) {
+					let msg = handleError(response.status)
+					flash('danger', msg)
+				}
+			})
 		})
 	}
 
@@ -572,12 +576,28 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 		}
 	})
 
+	API.get({
+		what: 'tournament',
+		id: 1,
+		append: 'missing-spirits',
+		ok: function(response) {
+			console.log(response.data)
+		}
+	})
+
 	$scope.select = function(what, score) {
 		$scope.spirit[what] = score
 	}
 
 	$scope.save = function() {
-		flash('success', 'Uloženo')
+		API.create({
+			what: 'match',
+			id: $scope.selected.match,
+			append: 'spirits',
+			ok: function(response) {
+				flash('success', 'Uloženo.')
+			}
+		})
 	}
 
 })
@@ -587,6 +607,7 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 	$scope.selected = {}
 	$scope.tours = []
 	$scope.matches = []
+	$scope.show = {}
 
 	// TODO prozatim
 	API.getTour({
@@ -620,6 +641,16 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 			append: '?terminated=true', 
 			ok: function(response) {
 				$scope.scoreData = $scope.matches = response.data.items
+			}
+		})
+
+		API.get({
+			what: 'tournament',
+			id: $scope.selected.tournament.id, 
+			append: 'groups', 
+			ok: function(response) {
+				console.log(response.data.items)
+				$scope.show.groups = response.data.items
 			}
 		})
 	}
@@ -1147,6 +1178,7 @@ app.controller("ForgottenPass", function($scope, $rootScope, API, flash){
 
 	$scope.sendNewPass = function(data) {
 		API.forgottenPass({
+			email: data.email,
 			data: data,
 			ok: function(response) {
 				flash('success', 'Na email vám bylo odesláno nové heslo.')

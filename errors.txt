@@ -1,11 +1,2 @@
-club/{id} - put - zmena zkratky 304 z Tč1 na Tč1 + neco
- - zvlastni chyba, konkretni ... ??
 
-users - nefunguje vubec
-
-user/{id} - put 502
-
-teams - post - name ?
-team{id} - put - name ?
-
-http://catcher.zlutazimnice.cz/api/club/1/players?teamId=<cokoliv> vraci vzdy to same
+standidng vracet s team objektama

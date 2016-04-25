@@ -440,7 +440,11 @@ app.service('API', function($http, LS, flash) {
 	let basePath = 'http://catcher.zlutazimnice.cz/api/'
 
 	function defErrCallback(response) {
-		flash('danger', 'Nezdařilo se načíst data. \nChyba byla zaznamenána a bude opravena. \nKód chyby: ' + response.status)
+		flash(
+			'danger', 
+			'Nezdařilo se načíst data. \n' + 
+			'Chyba byla zaznamenána a bude opravena. \nKód chyby: ' + response.status + ' ' + response.statusText
+		)
 		// TODO log error
 		console.log(response)
 	}
@@ -477,7 +481,8 @@ app.service('API', function($http, LS, flash) {
 	 */
 
 	this.get = function(req) {
-		processPromise($http.get(collectUri(req.what, req.id, req.append)), req.ok, req.err)
+		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
+		processPromise($http.get(collectUri(req.what, req.id, req.append), req.config), req.ok, req.err)
 	}
 	this.delete = function(req) {
 		if (LS.getApiKey()) req.config = {headers: {'Authorization': LS.getApiKey()}}
@@ -538,7 +543,7 @@ app.service('API', function($http, LS, flash) {
 		this.post(req)
 	}
 	this.forgottenPass = function(req) {
-		req.uri = basePath + 'forgotten-password'
+		req.uri = basePath + 'forgotten-password?email=' + req.email
 		this.post(req)
 	}
 	this.register = function(req) {
@@ -554,8 +559,8 @@ app.service('API', function($http, LS, flash) {
 	}
 	this.editUser = function(req) {
 		if (!req.id) return
-		req.uri = collectUri('user')
-		this.post(req)
+		req.uri = collectUri('user', req.id)
+		this.put(req)
 	}
 
 	this.newClub = function(req) {

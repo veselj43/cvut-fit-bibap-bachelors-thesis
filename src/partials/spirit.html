@@ -5,7 +5,7 @@
 	<form novalidate class="form">		
 		<div class="form-group">
 			<select class="form-control" ng-model="selected.match" 
-				ng-options="obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in data">
+				ng-options="obj.id as obj.homeTeam.name + ' vs. ' + obj.awayTeam.name for obj in data">
 				<option value="">Vyberte zápas</option>
 			</select>
 		</div>

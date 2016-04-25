@@ -7,7 +7,7 @@
 		<div class="form-group row">
 			<label class="form-control-label col-sm-2" for="shortcut">Zkratka:</label>
 			<div class="col-sm-8">
-				<input class="form-control" type="text" id="shortcut" ng-model="edit.shortcut" placeholder="Zkratka" name="shotcut" required>
+				<input class="form-control" type="text" id="shortcut" ng-model="edit.shortcut" placeholder="Zkratka" name="shotcut" maxlength="3" required>
 			</div>
 			<div class="col-sm-2 formMsg" ng-messages="editClub.shotcut.$error">
 				<div ng-include="ngMessagesFile"></div>

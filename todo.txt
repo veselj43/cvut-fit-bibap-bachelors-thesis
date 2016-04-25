@@ -1,33 +1,9 @@
 - callahan ??
-- zobrazit informaci o prihlasenem uzivateli
 
- ng-class="{ 'has-error': createTeam.name.$touched && createTeam.name.$invalid }"
-
+must-have
 - zprovoznit formular pro novy turnaj
 
 - pokryt funkcionalitu
-/	- /user/{id}
-		- put
-/	- /club/{id}
-		- put
-		- delete
-/	- /club/{id}/players
-/	- /club/{id}/teams
-	- /players
-		- post
-/	- /player/{id}
-		- put
-		- delete
-/	- /teams
-		- post
-/	- /team/{id}
-		- put
-		- delete
-/	- /tournament/{id}
-		- put
-	- /tournament/{id}/players
-		- post
-		- delete
 	- /tournament/{id}/teams
 		- put
 	- /tournament/{id}/missing-spirits
@@ -41,19 +17,19 @@
 		- post
 		- put
 
-	- vysledky, samozrejme
+	- vysledky !!!
 
 
-- scenare !!!
-- text !!!
+nice-to-have
+- zobrazit informaci o prihlasenem uzivateli
+
+ ng-class="{ 'has-error': createTeam.name.$touched && createTeam.name.$invalid }"
+
 
 ===================================================================================================
 dohodnout:
 - pokryti funkcionality
 	- zmena funkcnich / nefunkcnich pozadavku ?
 	- cile uzivatele, persony
-
-- zapisovani probihajiciho hodnoceni, jak ukoncit zapas (=dohrano, popr. muze byt i jina situace ?)
-- jak se autorizovat na zapisovani dat (alespon prizatim)
 
 - zapasy k hodnoceni SOTG vs zobrazit vysledky ?

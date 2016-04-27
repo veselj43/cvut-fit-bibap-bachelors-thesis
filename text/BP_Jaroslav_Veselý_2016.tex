@@ -64,8 +64,15 @@
 
 \end{introduction}
 
-\chapter{Návrh a analýza}
-	Před vytvořením 
+\chapter{Analýza}
+	% TODO neco jsem zde chtel jeste uvest
+
+	\section{Proč nová aplikace}
+		Než se začnu zabývat analýzou, chtěl bych ještě zdůvodnit upřednostnění vývoje nové aplikace před upravením původní.
+
+		Aplikace Catcher byla vyvinuta jako mobilní aplikace za účelem jednoduššího skórování frisbee ultimate predevším pro soutěže ČALD. Slouží ke skórování za pomoci mobilního zařízení s OS Android a následném zpřístupnění výsledků na webu. Co se týče implementace, backend aplikace nemá žádné standardizované API, které by bylo možné upravit.
+
+		Z toho pro nás vyplynulo několik důvodů proč bychom chtěli vytvořit svou vlastní implementaci jak backendu tak frontendu. První důvod spočívá v komunikaci mezi backendem a frontendem, zde bychom chteli mít jasně daný styl komunikace (REST API), aby bylo možná implementace frontendu na různých platformách. Přepracování stávající aplikace by již z tohoto ohledu bylo pracné s ohledem na fakt, že bychom nejprve museli porozumnět cizímu kódu. Dalším důvodem je již zmiňované použití na různých zařízeních. Při rozhodnutí pro úpravu bychom museli upravit frontend aplikace, čímž by se zachovala pouze stávající mobilní aplikace a následně by bylo zapotřebí implementovat buďto desktopovou nebo webovou aplikaci pro pokrytí požadavků, které bychom chtěli splnit. Místo toho lze implementovat webovou službu jako backend (REST API) a webovou aplikaci jako frontend. Problém zobrazení na různých zařízeních lze alespoň dočasně řešit responzibilitou webu a pokud se aplikace osvědší v praxi, lze implementovat aplikace lépe optimalizované jednotlivým typům zařízení.
 	
 	\section{Problematika}
 		% TODO klasicky problem predelat vs nova aplikace ?
@@ -199,6 +206,7 @@
 	\item[UI] User interface
 	\item[HTML] HyperText markup language
 	\item[CSS] Cascading style sheets
+	\item[ČALD] Česká asociace létajícího disku
 \end{description}
 
 

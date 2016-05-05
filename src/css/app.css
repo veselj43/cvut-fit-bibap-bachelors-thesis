@@ -110,6 +110,17 @@ table.table.table-hover tbody tr:hover {
 	text-align: center;
 }
 
+.form-info-right {
+	float: right;
+	font-weight: normal;
+	font-size: initial;
+	color: #999;
+}
+
+label[data-toggle="tooltip"]:hover .form-info-right {
+	color: #666;
+}
+
 .text-validate-msg {
 	color: #c00;
 }

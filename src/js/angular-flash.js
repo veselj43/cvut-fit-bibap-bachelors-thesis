@@ -55,10 +55,13 @@
     }])
 
     .directive('flashMessages', [function() {
-      var directive = { restrict: 'EA', replace: true };
+      var directive = { restrict: 'EA', replace: false };
       directive.template =
         '<ol id="flash-messages">' +
-          '<li ng-repeat="m in messages" class="alert alert-dismissable alert-{{m.level}}">{{m.text}}</li>' +
+          '<li ng-repeat="m in messages" class="alert alert-dismissable alert-{{m.level}}">' + 
+          	'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + 
+          	'{{m.text}}' + 
+          '</li>' +
         '</ol>';
 
       directive.controller = ['$scope', '$rootScope', function($scope, $rootScope) {

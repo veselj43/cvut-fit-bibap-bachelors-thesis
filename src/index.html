@@ -12,6 +12,7 @@
 		<link href="css/bootstrap-theme.css" rel="stylesheet">
 		<link href="css/bootstrap-datepicker.css" rel="stylesheet">
 		<link href="css/jquery.timepicker.css" rel="stylesheet">
+		<link href="css/isteven-multi-select.css" rel="stylesheet">
 
 		<!-- Custom styles for this template -->
 		<link href="css/navbar-fixed-top.css" rel="stylesheet">
@@ -40,10 +41,8 @@
 		<script src="js/angular-translate.min.js"></script>
 		<script src="js/angular-messages.min.js"></script>
 		<script src="js/angular-flash.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/bootstrap-datepicker.min.js"></script>
+		<script src="js/isteven-multi-select.js"></script>
 		<script src="js/jquery.timepicker.min.js"></script>
-		<script src="locales/bootstrap-datepicker.cs.min.js"></script>
 		<!-- <script src="js/angular-strap.min.js"></script> -->
 		<script src="js/app.js"></script>
 		<script src="js/controllers.js"></script>
@@ -60,32 +59,11 @@
 
 		<div ng-include='"templates/footer.html"'></div>
 
-		<div id="confirmYN" class="modal" data-replace="true" aria-hidden="false">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Kontrola</h4>
-					</div>
-					
-					<div class="modal-body">
-						<div id="text"></div>
-					</div>
-
-					<div class="modal-footer">
-						<div class="row">
-							<div class="col-sm-offset-2 col-sm-4 text-left">
-								<button type="button" class="btn btn-primary" id="yes">Ano</button>
-							</div>
-							<div class="col-sm-4">
-								<button type="button" class="btn btn-default" id="no" ng-click="noCallback()" data-dismiss="modal">Ne</button>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
+		<div ng-include='"templates/confirmYN.html"'></div>
+		
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-datepicker.min.js"></script>
+		<script src="locales/bootstrap-datepicker.cs.min.js"></script>
 		
 	</body>
 </html>

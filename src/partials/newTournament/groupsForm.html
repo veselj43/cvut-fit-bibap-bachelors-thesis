@@ -1,0 +1,43 @@
+
+<div class="form-group-set" ng-repeat="data in tour.groups track by $index">
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="groupName{{$index}}">Identifikátor:</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="groupName{{$index}}" ng-model="data.ide" placeholder="Identifikátor" name="groupName{{$index}}" required>
+		</div>
+		<div class="col-sm-2 formMsg" ng-messages="newTour['groupName'+$index].$error">
+			<div ng-include="ngMessagesFile"></div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="teams">Týmy ve skupině:</label>
+	<div class="col-sm-8">
+		<div 
+			isteven-multi-select
+			input-model="tour.teams"
+			output-model="tour.groups[$index].teams"
+			button-label="name"
+			item-label="name"
+			tick-property="ticked"
+			output-properties="name id"
+			translation="multiple.teams.texts"
+			max-labels="5"
+			max-height="200px"
+			helper-elements="all none filter"
+		>
+		</div>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="multiple.teams.$validation">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
+
+</div>
+
+<div class="form-group row">
+	<div class="col-sm-offset-2 col-sm-10">
+		<button class="btn btn-secondary" ng-click="addGroup()">Přidat skupinu</button>
+	</div>
+</div>

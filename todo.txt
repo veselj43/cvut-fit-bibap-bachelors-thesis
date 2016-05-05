@@ -2,6 +2,7 @@
 
 must-have
 - zprovoznit formular pro novy turnaj
+	- domaci a hoste jako select z klubu
 
 - pokryt funkcionalitu
 	- /tournament/{id}/teams
@@ -18,7 +19,9 @@ must-have
 		- put
 
 	- vysledky !!!
+	- rozpisy !!!
 
+	- ikonka "+" prehodit na edit - uprava profilu
 
 nice-to-have
 - zobrazit informaci o prihlasenem uzivateli
@@ -29,7 +32,4 @@ nice-to-have
 ===================================================================================================
 dohodnout:
 - pokryti funkcionality
-	- zmena funkcnich / nefunkcnich pozadavku ?
 	- cile uzivatele, persony
-
-- zapasy k hodnoceni SOTG vs zobrazit vysledky ?

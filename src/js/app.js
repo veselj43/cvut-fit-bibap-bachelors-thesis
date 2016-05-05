@@ -16,6 +16,7 @@ let app = angular.module('ufss', [
 	'ngRoute',
 	'ngMessages',
 	'flash',
+	'isteven-multi-select',
 	// 'mgcrea.ngStrap',
 	// 'pascalprecht.translate'
 ])
@@ -73,9 +74,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 	$routeProvider
 		// Test
-		// .when("/test", {
-		// 	templateUrl: partPath + "_test.html"
-		// })
+		.when("/test", {
+			templateUrl: partPath + "_test.html"
+		})
 		// Home
 		.when("/", {
 			templateUrl: partPath + "home.html"

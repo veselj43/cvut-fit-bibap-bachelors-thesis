@@ -1358,9 +1358,10 @@ app.controller('TourForm', function($scope, $location, $route, $filter, API, fla
 		$scope.edit = angular.copy($scope.master)
 	}
 	$scope.put = function(data) {
-		API.editTour({
-			data: data,
+		API.edit({
+			what: 'tournament',
 			id: edit,
+			data: data,
 			ok: function(response) {
 				flash('success', 'Údaje klubu byly upraveny.')
 				$route.reload()

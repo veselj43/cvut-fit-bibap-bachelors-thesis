@@ -17,6 +17,7 @@ let app = angular.module('ufss', [
 	'ngMessages',
 	'flash',
 	'isteven-multi-select',
+	'checklist-model',
 	// 'mgcrea.ngStrap',
 	// 'pascalprecht.translate'
 ])
@@ -169,12 +170,15 @@ app.config(['$routeProvider', function ($routeProvider) {
  * Custom filters
  */
 app.filter('range', function() {
-	return function(input, total) {
-		total = parseInt(total)
-
-		for (let i = 0; i < total; i++) {
-			input.push(i)
-		}
+	return function(input, param) {
+		if (angular.isObject(param))
+			for (let i = param.from; i < param.to; i++) {
+				input.push(i)
+			}
+		else 
+			for (let i = 0; i < param; i++) {
+				input.push(i)
+			}
 
 		return input
 	}
@@ -199,7 +203,7 @@ app.filter('definedMatches', function() {
 		let filtered = []
 
 		angular.forEach(items, function(item) {
-			if(item.homeTeam.name !== null && item.awayTeam.name !== null){
+			if(item.homeTeam.name != null && item.awayTeam.name != null){
 				filtered.push(item)
 			}
 		})
@@ -287,7 +291,7 @@ app.directive('ngValidateNextStep', function(){
 		require: 'ngModel',
 		link: function($scope, $element, $attrs, ngModel) {
 			ngModel.$validators.consequence = function(modelValue) {
-				if (!ngModel.$isEmpty(modelValue)) $scope.data[$attrs.ngValidateNextStep] = ""
+				if (!ngModel.$isEmpty(modelValue)) $scope.data[$attrs.ngValidateNextStep].finalStanding = ""
 				return true
 			}
 		}
@@ -300,8 +304,8 @@ app.directive('ngValidateFinalStanding', function(){
 		require: 'ngModel',
 		link: function($scope, $element, $attrs, ngModel) {
 			ngModel.$validators.consequence = function(modelValue) {
-				if (!ngModel.$isEmpty(modelValue)) $scope.data[$attrs.ngValidateFinalStanding] = ""
-				return !(ngModel.$isEmpty(modelValue) && ngModel.$isEmpty($scope.data[$attrs.ngValidateFinalStanding]))
+				if (!ngModel.$isEmpty(modelValue)) $scope.data[$attrs.ngValidateFinalStanding].nextStepIde = ""
+				return !(ngModel.$isEmpty(modelValue) && ngModel.$isEmpty($scope.data[$attrs.ngValidateFinalStanding].nextStepIde))
 			}
 
 			ngModel.$validators.standing = function(modelValue) {

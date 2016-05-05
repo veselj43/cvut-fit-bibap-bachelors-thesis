@@ -1,0 +1,158 @@
+{
+    "country": "CZE",
+    "groups": [
+        {
+            "advancements": [
+                {
+                    "standing": 1,
+                    "nextStepIde": "FIN",
+                    "finalStanding": null
+                },
+                {
+                    "standing": 2,
+                    "nextStepIde": "3RD",
+                    "finalStanding": null
+                }
+            ],
+            "teams": [
+                {
+                    "id": 7,
+                    "name": "Dream Team A"
+                },
+                {
+                    "id": 8,
+                    "name": "Rektální vyšetření A"
+                }
+            ],
+            "ide": "A",
+            "matches": [
+                {
+                    "startTime": "2016-05-04T00:00:00",
+                    "winner": {
+                        "nextStepIde": null,
+                        "finalStanding": null
+                    },
+                    "looser": {
+                        "nextStepIde": null,
+                        "finalStanding": null
+                    },
+                    "ide": "A1",
+                    "homeSeed": 1,
+                    "awaySeed": 2,
+                    "endTime": "2016-05-04T00:30:00",
+                    "fieldId": 1
+                }
+            ]
+        },
+        {
+            "advancements": [
+                {
+                    "standing": 1,
+                    "nextStepIde": "FIN",
+                    "finalStanding": null
+                },
+                {
+                    "standing": 2,
+                    "nextStepIde": "3RD",
+                    "finalStanding": null
+                }
+            ],
+            "teams": [
+                {
+                    "id": 9,
+                    "name": "Left Overs A"
+                },
+                {
+                    "id": 10,
+                    "name": "Terrible Monkeys A"
+                }
+            ],
+            "ide": "B",
+            "matches": [
+                {
+                    "startTime": "2016-05-04T01:00:00",
+                    "winner": {
+                        "nextStepIde": null,
+                        "finalStanding": null
+                    },
+                    "looser": {
+                        "nextStepIde": null,
+                        "finalStanding": null
+                    },
+                    "ide": "B1",
+                    "homeSeed": 3,
+                    "awaySeed": 4,
+                    "endTime": "2016-05-04T01:30:00",
+                    "fieldId": 1
+                }
+            ]
+        }
+    ],
+    "fields": [
+        {
+            "id": 1,
+            "name": "První"
+        }
+    ],
+    "playoff": [
+        {
+            "startTime": "2016-05-04T05:30:00",
+            "winner": {
+                "nextStepIde": null,
+                "finalStanding": 1
+            },
+            "looser": {
+                "nextStepIde": null,
+                "finalStanding": 2
+            },
+            "homeSeed": null,
+            "awaySeed": null,
+            "ide": "FIN",
+            "endTime": "2016-05-04T06:00:00",
+            "fieldId": 1
+        },
+        {
+            "startTime": "2016-05-04T03:00:00",
+            "winner": {
+                "nextStepIde": null,
+                "finalStanding": 3
+            },
+            "looser": {
+                "nextStepIde": null,
+                "finalStanding": 4
+            },
+            "homeSeed": null,
+            "awaySeed": null,
+            "ide": "3RD",
+            "endTime": "2016-05-04T03:30:00",
+            "fieldId": 1
+        }
+    ],
+    "teams": [
+        {
+            "id": 7,
+            "name": "Dream Team A",
+            "seeding": 1
+        },
+        {
+            "id": 8,
+            "name": "Rektální vyšetření A",
+            "seeding": 2
+        },
+        {
+            "id": 9,
+            "name": "Left Overs A",
+            "seeding": 3
+        },
+        {
+            "id": 10,
+            "name": "Terrible Monkeys A",
+            "seeding": 4
+        }
+    ],
+    "name": "Test skórování",
+    "startDate": "2016-05-04",
+    "endDate": "2016-05-04",
+    "city": "Liberec",
+    "divisionId": 1
+}

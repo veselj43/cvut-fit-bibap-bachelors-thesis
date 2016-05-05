@@ -14,10 +14,9 @@
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="group{{$index}}">Skupina:</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="group{{$index}}" ng-model="data.group" name="group{{$index}}" required
-				ng-options="$index as group.ide for group in tour.groups | definedValue:'ide'">
+			<select class="form-control" id="group{{$index}}" ng-model="data.group" name="group{{$index}}" required>
 				<option value="">Vyberte skupinu</option>
-				<option value="playoff">Playoff</option>
+				<option ng-repeat="(key, group) in tour.groups | definedValue:'ide'" value="{{key}}">{{group.ide}}</option>
 			</select>
 		</div>
 		<div class="col-sm-2 formMsg" ng-messages="newTour['ide'+$index].$error">
@@ -34,7 +33,7 @@
 			</div>
 		</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="homeSeed{{$index}}" ng-model="data.homeSeed" name="homeSeed{{$index}}" required
+			<select class="form-control" id="homeSeed{{$index}}" ng-model="data.homeSeed" name="homeSeed{{$index}}"
 				ng-options="team.id as team.name for team in tour.groups[data.group].teams">
 				<option value="">TBA</option>
 			</select>
@@ -53,8 +52,8 @@
 			</div>
 		</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="awaySeed{{$index}}" ng-model="data.awaySeed" name="awaySeed{{$index}}" required
-				ng-options="team.id as team.name for team in tour.groups[data.group].teams"> <!--  | definedValue:'seeding' -->
+			<select class="form-control" id="awaySeed{{$index}}" ng-model="data.awaySeed" name="awaySeed{{$index}}"
+				ng-options="team.id as team.name for team in tour.groups[data.group].teams">
 				<option value="">TBA</option>
 			</select>
 		</div>
@@ -66,11 +65,15 @@
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="time{{$index}}">Čas začátku:</label>
 		<div class="col-sm-4">
-			<input type="text" id="time{{$index}}" class="form-control timepicker" ng-model="data.time.start.time" placeholder="Čas">
+			<div class="input-group">
+				<input type="text" id="time{{$index}}" class="form-control timepicker" ng-model="data.startTime.time" placeholder="Od">
+				<span class="input-group-addon no-side-borders"> - </span>
+				<input type="text" id="timeTo{{$index}}" class="form-control timepicker" ng-model="data.endTime" placeholder="Do">
+			</div>
 		</div>
 		<div class="col-sm-4">
 			<div class="input-group date">
-				<input class="form-control" type="text" id="startDate{{$index}}" ng-model="data.time.start.date" placeholder="Datum">
+				<input class="form-control dateInput" type="text" id="startDate{{$index}}" ng-model="data.startTime.date" placeholder="Datum">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 			</div>
 		</div>
@@ -82,7 +85,7 @@
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="field{{$index}}">Hřiště:</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="field{{$index}}" ng-model="data.field" name="field{{$index}}" required
+			<select class="form-control" id="field{{$index}}" ng-model="data.fieldId" name="field{{$index}}" required
 				ng-options="field.id as field.name for field in tour.fields | definedValue:'name'">
 				<option value="">Vyberte hřiště</option>
 			</select>
@@ -97,7 +100,7 @@
 		<div class="col-sm-8">
 			<select class="form-control" id="winnerStep{{$index}}" ng-model="data.winnerNextStep" 
 				ng-options="match.ide as getSelectDescForField(match) for match in tour.matches | definedValue:'ide'"
-				ng-validate-next-step="winnerFinalStanding" name="winnerStep{{$index}}">
+				ng-validate-next-step="winner" name="winnerStep{{$index}}">
 				<option value="">Zápas</option>
 			</select>
 		</div>
@@ -116,7 +119,7 @@
 		<div class="col-sm-8">
 			<select class="form-control" id="looserStep{{$index}}" ng-model="data.looserNextStep" name="looser{{$index}}"
 				ng-options="match.ide as getSelectDescForField(match) for match in tour.matches | definedValue:'ide'"
-				ng-validate-next-step="looserFinalStanding" name="looserStep{{$index}}">
+				ng-validate-next-step="looser" name="looserStep{{$index}}">
 				<option value="">Zápas</option>
 			</select>
 		</div>
@@ -144,7 +147,7 @@
 		$('.timepicker').timepicker({
 			'timeFormat': 'H:i'
 		})
-		$('.form-group .date').datepicker({
+		$('.form-group .date .dateInput').datepicker({
 			format: "yyyy-mm-dd",
 			language: "cs"
 		})

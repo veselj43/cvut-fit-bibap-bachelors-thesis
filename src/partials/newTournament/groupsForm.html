@@ -1,5 +1,5 @@
 
-<div class="form-group-set" ng-repeat="data in tour.groups track by $index">
+<div class="form-group-set" ng-repeat="(key, data) in tour.groups track by $index">
 
 	<div class="form-group row">
 		<label class="form-control-label col-sm-2" for="groupName{{$index}}">Identifikátor:</label>
@@ -12,27 +12,53 @@
 	</div>
 
 	<div class="form-group row">
-	<label class="form-control-label col-sm-2" for="teams">Týmy ve skupině:</label>
-	<div class="col-sm-8">
-		<div 
-			isteven-multi-select
-			input-model="tour.teams"
-			output-model="tour.groups[$index].teams"
-			button-label="name"
-			item-label="name"
-			tick-property="ticked"
-			output-properties="name id"
-			translation="multiple.teams.texts"
-			max-labels="5"
-			max-height="200px"
-			helper-elements="all none filter"
-		>
+		<label class="form-control-label col-sm-2" for="teams">Týmy ve skupině:</label>
+		<div class="col-sm-8">
+			<!-- <div class="checkbox" ng-repeat="team in tour.teams">
+				<label>
+					<input class="checkbox" type="checkbox" checklist-model="data.teams" checklist-value="team"> {{team.name}}
+				</label>
+			</div> -->
+			<div 
+				isteven-multi-select
+				input-model="teamCopies[$index]"
+				output-model="data.teams"
+				button-label="name"
+				item-label="name"
+				tick-property="ticked"
+				output-properties="name id"
+				translation="multiple.teams.texts"
+				max-labels="5"
+				max-height="200px"
+				helper-elements="all none filter"
+			>
+			</div>
+		</div>
+		<div class="col-sm-2 formMsg" ng-messages="multiple.teams.$validation">
+			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
-	<div class="col-sm-2 formMsg" ng-messages="multiple.teams.$validation">
-		<div ng-include="ngMessagesFile"></div>
+
+	<div class="form-group row">
+		<label class="form-control-label col-sm-2" for="">Postupy:</label>
+		<div class="col-sm-8">
+			<div ng-repeat="n in [] | range:{from:1, to:data.teams.length+1}">
+				<div class="form-group row">
+					<label class="form-control-label col-sm-2" for="adv{{key}}{{n}}">{{n}}:</label>
+					<div class="col-sm-10">
+						<select class="form-control" id="adv{{key}}{{n}}" ng-model="data.advancements[n-1]" name="adv{{key}}{{n}}"
+						ng-options="{'standing': n, 'nextStepIde': poff.ide, 'finalStanding': null} as poff.ide for poff in tour.playoff | definedValue:'ide'"
+							name="adv{{key}}{{n}}">
+							<option value="">Zápas playoff</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-2 formMsg" ng-messages="multiple.adv.$error">
+			<div ng-include="ngMessagesFile"></div>
+		</div>
 	</div>
-</div>
 
 </div>
 

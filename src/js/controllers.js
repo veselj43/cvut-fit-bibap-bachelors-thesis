@@ -232,7 +232,7 @@ app.controller('Login', function($scope, $location, API, flash) {
 
 })
 
-app.controller('newTournament', function($scope, $q, API, flash) {
+app.controller('newTournament', function($scope, $filter, API, flash) {
 
 	// Tabs
 	let tabsBaseUrl = 'partials/newTournament/'
@@ -249,14 +249,14 @@ app.controller('newTournament', function($scope, $q, API, flash) {
 			title: 'Hřiště',
 			url: 'fieldsForm.html'
 		}, {
+			title: 'Playoff zápasy',
+			url: 'matchesPlayoffForm.html'
+		}, {
 			title: 'Skupiny',
 			url: 'groupsForm.html'
 		}, {
 			title: 'Skupinové zápasy',
 			url: 'matchesForm.html'
-		}, {
-			title: 'Playoff zápasy',
-			url: 'matchesPlayoffForm.html'
 		}
 	]
 
@@ -264,19 +264,30 @@ app.controller('newTournament', function($scope, $q, API, flash) {
 		return tabsBaseUrl + tabUrl
 	}
 
+	$scope.currentTabIndex = 0
 	$scope.currentTab = $scope.getFullTabUrl($scope.tabs[0].url)
 
-	$scope.onClickTab = function(tab) {
-		$scope.currentTab = $scope.getFullTabUrl(tab.url)
+	$scope.onClickTab = function(index) {
+		$scope.currentTabIndex = index
+		$scope.currentTab = $scope.getFullTabUrl($scope.tabs[index].url)
 	}
 
 	$scope.isActiveTab = function(tabUrl) {
 		return $scope.getFullTabUrl(tabUrl) == $scope.currentTab
 	}
 
+	$scope.isNextTab = function() {
+		return ($scope.currentTabIndex < $scope.tabs.length-1)
+	}
+
+	$scope.nextTab = function() {
+		$scope.onClickTab($scope.currentTabIndex + 1)
+	}
+
 	// input data for forms
 	$scope.divisions = []
 	$scope.teams = []
+	$scope.teamCopies = []
 
 	$scope.tour = {
 		country: "CZE",
@@ -287,7 +298,7 @@ app.controller('newTournament', function($scope, $q, API, flash) {
 	$scope.tmpData = {
 		groupMatches: [newMatch()]
 	}
-	$scope.master = {} // load data if editing
+	let master = {}
 
 	$scope.multiple = {
 		teams: {
@@ -331,10 +342,22 @@ app.controller('newTournament', function($scope, $q, API, flash) {
 	function newGroup(last = 0) {
 		return {
 			//"id": last + 1 
+			"advancements": []
 		}
 	}
 	function newMatch(last = 0) {
 		return {
+			startTime: {
+				date: ($scope.tour && $scope.tour.startDate) ? $scope.tour.startDate : ""
+			},
+			winner: {
+				"nextStepIde": null,
+				"finalStanding": null
+			},
+			looser: {
+				"nextStepIde": null,
+				"finalStanding": null
+			}
 		}
 	}
 
@@ -354,11 +377,15 @@ app.controller('newTournament', function($scope, $q, API, flash) {
 		$scope.tour.playoff.push(newMatch($scope.tour.playoff.length))
 	}
 
-	$scope.parseDate = function(formDate) {
-		return formDate
+	let parseDate = function(date, time = '00:00') {
+		return date + 'T' + time + ':00'
 		// if (typeof(formDate) === "undefined") return
 		// let parts = formDate.split('. ')
 		// return parts[2] + '-' + parts[1] + '-' + parts[0]
+	}
+
+	let parseNull = function(variable) {
+		return (variable == "" || variable == "null") ? null : variable
 	}
 
 	$scope.getSelectDescForField = function(obj) {
@@ -367,48 +394,140 @@ app.controller('newTournament', function($scope, $q, API, flash) {
 		return r
 	}
 
+	let replaceIdWithSeeding = function(teamArr, id) {
+		for (let i in teamArr) {
+			if (teamArr[i].id == id) return teamArr[i].seeding
+		}
+		return null
+	}
+
 	$scope.update = function(tour) {
-		$scope.master = angular.copy(tour)
-		for (var i in $scope.master.teams) {
-			$scope.master.teams[i].seeding = $scope.master.teams[i].id
+		master = angular.copy(tour)
+
+		if (master.teams) {
+			for (let i = 0; i < master.teams.length; i++) {
+				master.teams[i].seeding = i+1
+			}
 		}
-		for (var i in $scope.tmpData.groupMatches) {
-			if (!$scope.master.groups[$scope.tmpData.groupMatches[i].group].matches) 
-				$scope.master.groups[$scope.tmpData.groupMatches[i].group].matches = []
-			$scope.master.groups[$scope.tmpData.groupMatches[i].group].matches.push($scope.tmpData.groupMatches[i])
+		if ($scope.tmpData.groupMatches.length) {
+			for (let i in $scope.tmpData.groupMatches) {
+				if (!master.groups[$scope.tmpData.groupMatches[i].group]) continue
+				if (!master.groups[$scope.tmpData.groupMatches[i].group].matches) 
+					master.groups[$scope.tmpData.groupMatches[i].group].matches = []
+				let tmp = angular.copy($scope.tmpData.groupMatches[i])
+				delete tmp.group
+				master.groups[$scope.tmpData.groupMatches[i].group].matches.push(tmp)
+			}
 		}
-		$scope.master.dbDate = $scope.parseDate($scope.master.date)
-		console.log($scope.master)
-		
-		return
+		if (master.playoff.length) {
+			for (let i in master.playoff) {
+				master.playoff[i].endTime = parseDate(master.playoff[i].startTime.date, master.playoff[i].endTime)
+				master.playoff[i].startTime = parseDate(master.playoff[i].startTime.date, master.playoff[i].startTime.time)
+				master.playoff[i].looser.nextStepIde = parseNull(master.playoff[i].looser.nextStepIde)
+				master.playoff[i].looser.FinalStanding = parseNull(master.playoff[i].looser.FinalStanding)
+				master.playoff[i].winner.nextStepIde = parseNull(master.playoff[i].winner.nextStepIde)
+				master.playoff[i].winner.FinalStanding = parseNull(master.playoff[i].winner.FinalStanding)
+				master.playoff[i].homeSeed = replaceIdWithSeeding(master.teams, master.playoff[i].homeSeed)
+				master.playoff[i].awaySeed = replaceIdWithSeeding(master.teams, master.playoff[i].awaySeed)
+			}
+		}
+		if (master.groups.length) {
+			for (let i in master.groups) {
+				for (let j in master.groups[i].matches) {
+					master.groups[i].matches[j].endTime = parseDate(
+						master.groups[i].matches[j].startTime.date, 
+						master.groups[i].matches[j].endTime
+					)
+					master.groups[i].matches[j].startTime = parseDate(
+						master.groups[i].matches[j].startTime.date, 
+						master.groups[i].matches[j].startTime.time
+					)
+
+					master.groups[i].matches[j].homeSeed = replaceIdWithSeeding(master.teams, master.groups[i].matches[j].homeSeed)
+					master.groups[i].matches[j].awaySeed = replaceIdWithSeeding(master.teams, master.groups[i].matches[j].awaySeed)
+				}
+				// for (let j in master.groups[i].teams) {
+				// 	master.groups[i].teams[j].id = replaceIdWithSeeding(master.teams, master.groups[i].teams[j].id)
+				// }
+			}
+		}
+
+		// $scope.x = master
+
 		API.create({
 			what: 'tournament',
-			data: $scope.master,
+			data: master,
 			ok: function(response) {
 				flash('success', 'Turnaj byl vytvořen.')
+				API.edit({
+					what: 'tournament',
+					id: response.data.id,
+					data: { ready: true },
+					ok: function(response) {
+					}
+				})
+			},
+			err: function(response) {
+				flash('danger', response.data.title + ": \n" + response.data.description)
 			}
 		})
 	}
 
-	$scope.reset = function() {
-		$scope.tour = angular.copy($scope.master)
-	}
+
+	$scope.$watch('tour.divisionId', function() {
+		if ($scope.tour.divisionId)
+			$scope.filteredTeams = $filter('getByKey')($scope.teams, 'divisionId', $scope.tour.divisionId)
+		else 
+			$scope.filteredTeams = []
+	}, true)
 
 	$scope.$watch('tour.teams', function() {
-		if ($scope.tour.teams)
+		if ($scope.tour.teams) {
 			$scope.multiple.teams.$validation = {
 				required: ($scope.tour.teams.length == 0)
 			}
+			for (let i = 0; i < $scope.tour.groups.length; i++) {
+				$scope.teamCopies[i] = angular.copy($scope.tour.teams)
+			}
+		}
+		else 
+			$scope.tour.teams = []
 	}, true)
+
+	$scope.$watch('tour.groups.length', function() {
+		for (let i = 0; i < $scope.tour.groups.length; i++) {
+			if (!$scope.teamCopies[i])
+				$scope.teamCopies[i] = angular.copy($scope.tour.teams)
+		}
+	}, true)
+
+	// function setDatepicker(id) {
+	// 	$(id).datepicker('setStartDate', $scope.tour.startDate)
+	// 	$(id).datepicker('setEndDate', $scope.tour.endDate)
+	// 	$(id).datepicker('setDate', $scope.tour.startDate)
+	// }
+
+	// $scope.$watch('tmpData.groupMatches.length', function() {
+	// 	if ($scope.tour.startDate) {
+	// 		setDatepicker('#startDate'+$scope.tmpData.groupMatches.length-1)
+	// 	}
+	// }, true)
+	// $scope.$watch('tour.playoff.length', function() {
+	// 	if ($scope.tour.startDate) {
+	// 		setDatepicker('#po_startDate'+$scope.tour.playoff.length-1)
+	// 	}
+	// }, true)
 
 })
 
-app.controller("SelectTournament", function($scope, $location, LS, API, flash) {
+app.controller("SelectTournament", function($scope, $location, LS, API, Auth, flash) {
 
 	$scope.selected = {}
 	$scope.data = []
 
-	API.getTour({
+	API.get({
+		what: 'tournament',
+		append: (Auth.check(4)) ? null : '?userId=' + Auth.getData().id,
 		ok: function(response) {
 			$scope.data = response.data.items
 		}
@@ -426,7 +545,7 @@ app.controller("SelectTournament", function($scope, $location, LS, API, flash) {
 
 })
 
-app.controller("SelectMatch", function($scope, $rootScope, $location, $routeParams, LS, API, flash) {
+app.controller("SelectMatch", function($scope, $rootScope, $location, $filter, $routeParams, LS, API, flash) {
 
 	if (LS.TourID() === -1) return
 
@@ -444,7 +563,7 @@ app.controller("SelectMatch", function($scope, $rootScope, $location, $routePara
 		id: LS.TourID(), 
 		append: '?terminated=false',
 		ok: function(response) {
-			$scope.data.matches = response.data.items
+			$scope.data.matches = $filter('definedMatches')(response.data.items)
 			if (response.data.count == 0) flash('warning', 'V tomto turnaji nejsou žádné zápasy ke skórvání.')
 		}
 	})
@@ -762,6 +881,7 @@ app.controller("Profile", function($scope, $rootScope, $route, $location, API, A
 	$scope.updateList = function() {
 		API.get({
 			what: 'tournament',
+			append: '?userId=' + Auth.getData().id,
 			ok: function(response) {
 				$scope.tours = response.data.items
 			}
@@ -788,8 +908,23 @@ app.controller("Profile", function($scope, $rootScope, $route, $location, API, A
 		$location.search('editTour', id)
 	}
 
+	$scope.deleteTour = function(id, name) {
+		confirmYN(
+			'Opravdu smazat <strong>' + name + '</strong>?', 
+			function(){
+				API.delete({
+					what: 'tournament',
+					id: id,
+					ok: function(response) {
+						flash('success', 'Smazáno.')
+						$route.reload()
+					}
+				})
+			}
+		)
+	}
+
 	$scope.putUser = function(data) {
-		console.log(data)
 		API.editUser({
 			id: $scope.user.id,
 			data: data,

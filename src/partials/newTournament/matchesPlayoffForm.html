@@ -2,17 +2,17 @@
 <div class="form-group-set" ng-repeat="data in tour.playoff">
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="ide{{$index}}">Identifikátor:</label>
+		<label class="form-control-label col-sm-2" for="po_ide{{$index}}">Identifikátor:</label>
 		<div class="col-sm-8">
-			<input class="form-control" type="text" id="ide{{$index}}" name="ide{{$index}}" ng-model="data.ide" placeholder="Identifikátor" required>
+			<input class="form-control" type="text" id="po_ide{{$index}}" name="po_ide{{$index}}" ng-model="data.ide" placeholder="Identifikátor" required>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour['ide'+$index].$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['po_ide'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="homeSeed{{$index}}" 
+		<label class="form-control-label col-sm-2" for="po_homeSeed{{$index}}" 
 			data-toggle="tooltip" data-placement="bottom" title="{{tooltips.tba}}">
 			Domácí:
 			<div class="form-info-right">
@@ -20,18 +20,19 @@
 			</div>
 		</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="homeSeed{{$index}}" ng-model="data.homeSeed" name="homeSeed{{$index}}" required
-				ng-options="team.id as team.name for team in tour.teams">
+			<select class="form-control" id="po_homeSeed{{$index}}" ng-model="data.homeSeed" name="po_homeSeed{{$index}}"
+				ng-options="team.id as team.name for team in tour.teams"
+				ng-init="data.homeSeed = null">
 				<option value="">TBA</option>
 			</select>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour['homeSeed'+$index].$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['po_homeSeed'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="awaySeed{{$index}}" 
+		<label class="form-control-label col-sm-2" for="po_awaySeed{{$index}}" 
 			data-toggle="tooltip" data-placement="bottom" title="{{tooltips.tba}}">
 			Hosté:
 			<div class="form-info-right">
@@ -39,112 +40,117 @@
 			</div>
 		</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="awaySeed{{$index}}" ng-model="data.awaySeed" name="awaySeed{{$index}}" required
-				ng-options="team.id as team.name for team in tour.teams"> <!--  | definedValue:'seeding' -->
+			<select class="form-control" id="po_awaySeed{{$index}}" ng-model="data.awaySeed" name="po_awaySeed{{$index}}"
+				ng-options="team.id as team.name for team in tour.teams"
+				ng-init="data.awaySeed = null">
 				<option value="">TBA</option>
 			</select>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour['awaySeed'+$index].$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['po_awaySeed'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="time{{$index}}">Čas začátku:</label>
+		<label class="form-control-label col-sm-2" for="po_time{{$index}}">Čas zápasu:</label>
 		<div class="col-sm-4">
-			<input type="text" id="time{{$index}}" class="form-control timepicker" ng-model="data.time.start.time" placeholder="Čas">
+			<div class="input-group">
+				<input type="text" id="po_time{{$index}}" class="form-control timepicker" ng-model="data.startTime.time" placeholder="Od">
+				<span class="input-group-addon no-side-borders"> - </span>
+				<input type="text" id="po_timeTo{{$index}}" class="form-control timepicker" ng-model="data.endTime" placeholder="Do">
+			</div>
 		</div>
 		<div class="col-sm-4">
 			<div class="input-group date">
-				<input class="form-control" type="text" id="startDate{{$index}}" ng-model="data.time.start.date" placeholder="Datum">
+				<input class="form-control dateInput" type="text" id="po_startDate{{$index}}" ng-model="data.startTime.date" placeholder="Datum">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 			</div>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour['startDate'+$index].$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['po_startDate'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="field{{$index}}">Hřiště:</label>
+		<label class="form-control-label col-sm-2" for="po_field{{$index}}">Hřiště:</label>
 		<div class="col-sm-8">
-			<select class="form-control" id="field{{$index}}" ng-model="data.field" name="field{{$index}}" required
+			<select class="form-control" id="po_field{{$index}}" ng-model="data.fieldId" name="po_field{{$index}}" required
 				ng-options="field.id as field.name for field in tour.fields | definedValue:'name'">
 				<option value="">Vyberte hřiště</option>
 			</select>
 		</div>
-		<div class="col-sm-2 formMsg" ng-messages="newTour['field'+$index].$error">
+		<div class="col-sm-2 formMsg" ng-messages="newTour['po_field'+$index].$error">
 			<div ng-include="ngMessagesFile"></div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="winnerStep{{$index}}">Postup vítěze:</label>
+		<label class="form-control-label col-sm-2" for="po_winnerStep{{$index}}">Postup vítěze:</label>
 		<div class="col-sm-4">
-			<select class="form-control" id="winnerStep{{$index}}" ng-model="data.winnerNextStep" 
-				ng-options="match.ide as getSelectDescForField(match) for match in tour.matches | definedValue:'ide'"
-				ng-validate-next-step="winnerFinalStanding" name="winnerStep{{$index}}">
+			<select class="form-control" id="po_winnerStep{{$index}}" ng-model="data.winner.nextStepIde" 
+				ng-options="match.ide as getSelectDescForField(match) for match in tour.playoff | definedValue:'ide'"
+				ng-validate-next-step="winner" name="po_winnerStep{{$index}}">
 				<option value="">Zápas</option>
 			</select>
 		</div>
 		<div class="col-sm-1 text-center formMsg">nebo</div>
 		<div class="col-sm-3">
-			<input type="number" id="winnerStanding{{$index}}" class="form-control" 
-			ng-model="data.winnerFinalStanding" placeholder="Umístění" 
-			ng-validate-final-standing="winnerNextStep" name="winnerStanding{{$index}}">
+			<input type="number" id="po_winnerStanding{{$index}}" class="form-control" 
+			ng-model="data.winner.finalStanding" placeholder="Umístění" 
+			ng-validate-final-standing="winner" name="po_winnerStanding{{$index}}">
 		</div>
 		<div class="col-sm-2 formMsg">
-			<div ng-messages="newTour['winnerStep'+$index].$error">
+			<div ng-messages="newTour['po_winnerStep'+$index].$error">
 				<div ng-include="ngMessagesFile"></div>
 			</div>
-			<div ng-messages="newTour['winnerStanding'+$index].$error">
+			<div ng-messages="newTour['po_winnerStanding'+$index].$error">
 				<div ng-include="ngMessagesFile"></div>
 			</div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="looser{{$index}}">Postup poraženého:</label>
+		<label class="form-control-label col-sm-2" for="po_looserStep{{$index}}">Postup poraženého:</label>
 		<div class="col-sm-4">
-			<select class="form-control" id="looserStep{{$index}}" ng-model="data.looserNextStep" name="looser{{$index}}"
-				ng-options="match.ide as getSelectDescForField(match) for match in tour.matches | definedValue:'ide'"
-				ng-validate-next-step="looserFinalStanding" name="looserStep{{$index}}">
+			<select class="form-control" id="po_looserStep{{$index}}" ng-model="data.looser.nextStepIde" 
+				ng-options="match.ide as getSelectDescForField(match) for match in tour.playoff | definedValue:'ide'"
+				ng-validate-next-step="looser" name="po_looserStep{{$index}}">
 				<option value="">Zápas</option>
 			</select>
 		</div>
 		<div class="col-sm-1 text-center formMsg">nebo</div>
 		<div class="col-sm-3">
-			<input type="number" id="looserStanding{{$index}}" class="form-control" 
-			ng-model="data.looserFinalStanding" placeholder="Umístění"
-			ng-validate-final-standing="looserNextStep" name="looserStanding{{$index}}">
+			<input type="number" id="po_looserStanding{{$index}}" class="form-control" 
+			ng-model="data.looser.finalStanding" placeholder="Umístění"
+			ng-validate-final-standing="looser" name="po_looserStanding{{$index}}">
 		</div>
 		<div class="col-sm-2 formMsg">
-			<div ng-messages="newTour['looserStep'+$index].$error">
+			<div ng-messages="newTour['po_looserStep'+$index].$error">
 				<div ng-include="ngMessagesFile"></div>
 			</div>
-			<div ng-messages="newTour['looserStanding'+$index].$error">
+			<div ng-messages="newTour['po_looserStanding'+$index].$error">
 				<div ng-include="ngMessagesFile"></div>
 			</div>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="form-control-label col-sm-2" for="description{{$index}}">Popis:</label>
+		<label class="form-control-label col-sm-2" for="po_description{{$index}}">Popis:</label>
 		<div class="col-sm-8">
-			<input class="form-control" type="text" id="description{{$index}}" ng-model="data.description" placeholder="Popis">
+			<input class="form-control" type="text" id="po_description{{$index}}" ng-model="data.description" placeholder="Popis">
 		</div>
 	</div>
 
 	<script>
 		$(function () {
 			$('[data-toggle="tooltip"]').tooltip()
-		})
-		$('.timepicker').timepicker({
-			'timeFormat': 'H:i'
-		})
-		$('.form-group .date').datepicker({
-			format: "yyyy-mm-dd",
-			language: "cs"
+			$('.timepicker').timepicker({
+				'timeFormat': 'H:i'
+			})
+			$('.form-group .date .dateInput').datepicker({
+				format: "yyyy-mm-dd",
+				language: "cs"
+			})
 		})
 	</script>
 

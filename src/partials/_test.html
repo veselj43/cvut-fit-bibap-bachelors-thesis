@@ -1,54 +1,125 @@
-<div class="container">
-	<!-- <ol id="flash-messages">
-		<li class="alert alert-dismissable alert-success">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			Úspěšná akce.
-		</li>
-		<li class="alert alert-dismissable alert-info">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			Informační zpráva.
-		</li>
-		<li class="alert alert-dismissable alert-warning">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			Varování.
-		</li>
-		<li class="alert alert-dismissable alert-danger">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			Nezdařená akce.
-		</li>
-	</ol> -->
 
-	<!-- Button trigger modal -->
-	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-		Launch demo modal
-	</button>
-	<br>
-	<br>
-	<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left">Tooltip on left</button>
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="name">Název:</label>
+	<div class="col-sm-8">
+		<input class="form-control" type="text" id="name" name="name" ng-model="tour.name" placeholder="Název" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.name.$error">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
 
-	<script type="text/javascript">
-		$(function () {
-			$('[data-toggle="tooltip"]').tooltip()
-		})
-	</script>
-
-	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">Název okna</h4>
-				</div>
-				<div class="modal-body">
-					Tělo okna ...
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
-					<button type="button" class="btn btn-primary">Prtvrdit</button>
-				</div>
-			</div>
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="startDate">Datum zahájení:</label>
+	<div class="col-sm-8">
+		<div class="input-group date">
+			<input class="form-control from-date" type="text" id="startDate" name="startDate" ng-model="tour.startDate" placeholder="Datum zahájení" required>
+			<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 		</div>
 	</div>
-
+	<div class="col-sm-2 formMsg" ng-messages="newTour.startDate.$error">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
 </div>
+
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="endDate">Datum ukončení:</label>
+	<div class="col-sm-8">
+		<div class="input-group date">
+			<input class="form-control to-date" type="text" id="endDate" name="endDate" ng-model="tour.endDate" placeholder="Datum ukončení" required>
+			<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+		</div>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.endDate.$error">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="place">Místo:</label>
+	<div class="col-sm-8">
+		<input class="form-control" type="text" id="place" name="place" ng-model="tour.place" placeholder="Místo" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.place.$error">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="country">Země:</label>
+	<div class="col-sm-8">
+		<input class="form-control" type="text" id="country" name="country" ng-model="tour.country" placeholder="Země" required>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.country.$error">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="division">Kategorie:</label> <!-- select -->
+	<div class="col-sm-8">
+		<select class="form-control" id="division" name="division" ng-model="tour.divisionId" required 
+			ng-options="obj.id as obj.division for obj in divisions">
+			<option value="">Vyberte kategorii</option>
+		</select>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="newTour.division.$error">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label class="form-control-label col-sm-2" for="teams">Týmy:</label>
+	<div class="col-sm-8">
+		<div 
+			isteven-multi-select
+			input-model="teams"
+			output-model="tour.teams"
+			button-label="name"
+			item-label="name"
+			tick-property="ticked"
+			output-properties="name id"
+			translation="multiple.teams.texts"
+			max-labels="5"
+			max-height="200px"
+			helper-elements="all none filter"
+		>
+		</div>
+	</div>
+	<div class="col-sm-2 formMsg" ng-messages="multiple.teams.$validation">
+		<div ng-include="ngMessagesFile"></div>
+	</div>
+</div>
+
+<script>
+	$(function(){
+		let fromDate = ""
+		let toDate = ""
+
+		$('#startDate').datepicker({
+			language: "cs",
+			format: "yyyy-mm-dd",
+			autoclose: true
+		}).change(function(selected){
+			if (!selected.target.value) return
+			let tmp = fromDate
+			fromDate = selected.target.value
+			if (tmp != fromDate) {
+				$('#endDate').datepicker('setStartDate', fromDate)
+			}
+		})
+		$('#endDate').datepicker({
+			language: "cs",
+			format: "yyyy-mm-dd",
+			autoclose: true
+		})
+		.change(function(selected){
+			if (!selected.target.value) return
+			let tmp = toDate
+			toDate = selected.target.value
+			if (tmp != toDate) {
+				$('#startDate').datepicker('setEndDate', toDate)
+			}
+		})
+	})
+</script>

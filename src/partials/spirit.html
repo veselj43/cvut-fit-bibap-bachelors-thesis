@@ -20,7 +20,7 @@
 			</div>
 
 			<div class="form-group row">
-				<label class="form-control-label col-sm-2" for="rules">Pravidla:</label>
+				<label class="form-control-label col-sm-2" for="rules">Pravidla *:</label>
 				<div class="col-sm-8 btn-group">
 					<button ng-repeat="n in [] | range:4" 
 						type="button" class="btn" 
@@ -32,7 +32,7 @@
 			</div>
 
 			<div class="form-group row">
-				<label class="form-control-label col-sm-2" for="fouls">Fauly:</label>
+				<label class="form-control-label col-sm-2" for="fouls">Fauly *:</label>
 				<div class="col-sm-8 btn-group">
 					<button ng-repeat="n in [] | range:4" 
 						type="button" class="btn" 
@@ -44,7 +44,7 @@
 			</div>
 
 			<div class="form-group row">
-				<label class="form-control-label col-sm-2" for="fair">Férovost:</label>
+				<label class="form-control-label col-sm-2" for="fair">Férovost *:</label>
 				<div class="col-sm-8 btn-group">
 					<button ng-repeat="n in [] | range:4" 
 						type="button" class="btn" 
@@ -56,7 +56,7 @@
 			</div>
 
 			<div class="form-group row">
-				<label class="form-control-label col-sm-2" for="positive">Positivnost:</label>
+				<label class="form-control-label col-sm-2" for="positive">Pozitivnost *:</label>
 				<div class="col-sm-8 btn-group">
 					<button ng-repeat="n in [] | range:4" 
 						type="button" class="btn" 
@@ -68,7 +68,7 @@
 			</div>
 
 			<div class="form-group row">
-				<label class="form-control-label col-sm-2" for="communication">Komunikace</label>
+				<label class="form-control-label col-sm-2" for="communication">Komunikace *:</label>
 				<div class="col-sm-8 btn-group">
 					<button ng-repeat="n in [] | range:4" 
 						type="button" class="btn" 
@@ -82,10 +82,8 @@
 
 		<div class="form-group">
 			<input class="btn btn-primary" type="button" value="Uložit hodnocení" 
-			ng-disabled="isEmpty(selected.match)" ng-click="save()">
+			ng-disabled="isEmpty(selected.match) || invalid" ng-click="save(spirit)">
 		</div>
 	</form>
-
-	<!-- <pre>{{selected | json}}</pre> -->
 
 </div>

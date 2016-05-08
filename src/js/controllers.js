@@ -21,23 +21,21 @@ function confirmYN(text, yesCallback, noCallback) {
 		$('#confirmYN #yes').unbind()
 		$('#confirmYN #no').unbind()
 		$('#confirmYN').unbind()
+		if (noCallback) noCallback()
 	})
-	if (yesCallback)
-		$('#confirmYN #yes').bind('click', function(){
-			yesCallback()
-			$('#confirmYN').modal('hide')
-		})
-	if (noCallback)
-		$('#confirmYN #no').bind('click', function(){
-			noCallback()
-		})
+	$('#confirmYN #yes').bind('click', function(){
+		if (yesCallback) yesCallback()
+		$('#confirmYN').modal('hide')
+	})
+	$('#confirmYN #no').bind('click', function(){
+		$('#confirmYN').modal('hide')
+	})
 }
 
 /**
  * Controllers
  */
 app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, flash) {
-	console.log("User auth level is: " + Auth.getAuthLvl())
 
 	$scope.getActiveClass = function (path) {
 		// let current = $location.path().substr(0, path.length)
@@ -222,13 +220,6 @@ app.controller('Home', function($scope, $location, $http, API, flash) {
 app.controller('Login', function($scope, $location, API, flash) {
 
 	$scope.form = {}
-	$scope.tournaments = []
-
-	API.getTour({
-		ok: function(response) {
-			$scope.tournaments = response.data.items
-		}
-	})
 
 })
 
@@ -734,17 +725,14 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 		// TODO prehled pred ukoncenim ??
 		// let terminated = { active: false }
 		confirmYN('Opravdu chcete ukončit zápas?', function(){
-			let terminted = { terminated: true }
+			let terminated = { terminated: true }
 			API.edit({
 				what: 'match',
 				id: MatchID,
 				data: terminated,
 				ok: function(response) {
 					flash('success', 'Zápas byl úspěšně ukončen')
-				},
-				err: function(response) {
-					let msg = handleError(response.status)
-					flash('danger', msg)
+					$location.path('/scoring/selectMatch')
 				}
 			})
 		})
@@ -761,20 +749,22 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.selected = {}
-	$scope.data = 
+	$scope.data = []
 	$scope.spirit = {}
+	$scope.invalid = true
 
-	API.getMatchesForTour({
-		id: 1,
-		append: '?active=true', 
+	API.get({
+		what: 'match',
+		id: 9,
+		append: '', 
 		ok: function(response) {
-			$scope.data = response.data.items
+			$scope.data = [response.data]
 		}
 	})
 
 	// API.get({
-	// 	what: 'tournament',
-	// 	id: 1,
+	// 	what: 'club',
+	// 	id: LS.getData().clubId,
 	// 	append: 'missing-spirits',
 	// 	ok: function(response) {
 	// 		console.log(response.data)
@@ -783,17 +773,33 @@ app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.select = function(what, score) {
 		$scope.spirit[what] = score
+		$scope.invalid = !$scope.isValid($scope.spirit)
 	}
 
-	$scope.save = function() {
-		API.create({
-			what: 'match',
-			id: $scope.selected.match,
-			append: 'spirits',
-			ok: function(response) {
-				flash('success', 'Uloženo.')
-			}
-		})
+	$scope.isValid = function(data) {
+		return (
+			data.rules > 0 &&
+			data.fouls > 0 &&
+			data.fair > 0 &&
+			data.positive > 0 &&
+			data.communication > 0
+		)
+	}
+
+	$scope.save = function(data) {
+		// API.create({
+		// 	what: 'match',
+		// 	id: $scope.selected.match,
+		// 	append: 'spirits',
+		// 	data: data,
+		// 	ok: function(response) {
+		// 		flash('success', 'Uloženo.')
+		// 	}
+		// })
+		if ($scope.isValid(data))
+			flash('success', 'Uloženo.')
+		else
+			flash('danger', 'Označte všechny body hodnocení.')
 	}
 
 })
@@ -870,8 +876,10 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
  */
 app.controller("Profile", function($scope, $rootScope, $route, $location, API, Auth, flash) {
 
-	// TODO jen vlastni vytvorene turnaje
-	$scope.tours = []
+	$scope.tours = {
+		terminated: [],
+		active: []
+	}
 	$scope.user = Auth.getData()
 	$scope.editUser = {}
 
@@ -881,9 +889,16 @@ app.controller("Profile", function($scope, $rootScope, $route, $location, API, A
 	$scope.updateList = function() {
 		API.get({
 			what: 'tournament',
-			append: '?userId=' + Auth.getData().id,
+			append: '?terminated=true&userId=' + Auth.getData().id,
 			ok: function(response) {
-				$scope.tours = response.data.items
+				$scope.tours.terminated = response.data.items
+			}
+		})
+		API.get({
+			what: 'tournament',
+			append: '?terminated=false&userId=' + Auth.getData().id,
+			ok: function(response) {
+				$scope.tours.active = response.data.items
 			}
 		})
 	}
@@ -908,15 +923,16 @@ app.controller("Profile", function($scope, $rootScope, $route, $location, API, A
 		$location.search('editTour', id)
 	}
 
-	$scope.deleteTour = function(id, name) {
+	$scope.terminateTour = function(id, name) {
 		confirmYN(
-			'Opravdu smazat <strong>' + name + '</strong>?', 
+			'Opravdu ukončit turnaj <strong>' + name + '</strong>?', 
 			function(){
-				API.delete({
+				API.edit({
 					what: 'tournament',
 					id: id,
+					data: { terminated: true },
 					ok: function(response) {
-						flash('success', 'Smazáno.')
+						flash('success', 'Turnaj ukončen.')
 						$route.reload()
 					}
 				})

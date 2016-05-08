@@ -1,19 +1,11 @@
 - callahan ??
 
 must-have
-- zprovoznit formular pro novy turnaj
-	- domaci a hoste jako select z klubu
 
 - pokryt funkcionalitu
-	- /tournament/{id}/teams
+	- /tournament/{id}/teams !!!
 		- put
-	- /tournament/{id}/missing-spirits
-	- /match/{id}
-		- put
-	- /match/{id}/points
-		- post
-		- put
-		- delete
+	- /tournament/{id}/missing-spirits (odkomentovat)
 	- /match/{id}/spirits
 		- post
 		- put
@@ -25,11 +17,17 @@ must-have
 
 nice-to-have
 - zobrazit informaci o prihlasenem uzivateli
+- u hodnoceni spiritu vysvetlivka 1-4 = body
+
+- /match/{id}/points
+	- put
+- /match/{id}
+	- put
 
  ng-class="{ 'has-error': createTeam.name.$touched && createTeam.name.$invalid }"
 
 
 ===================================================================================================
-dohodnout:
-- pokryti funkcionality
-	- cile uzivatele, persony
+
+pro realne pouziti:
+- dodelat api GET zapasy / souperove, kterym ma klub ohodnotit spirit

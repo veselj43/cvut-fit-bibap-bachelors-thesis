@@ -17,7 +17,6 @@ let app = angular.module('ufss', [
 	'ngMessages',
 	'flash',
 	'isteven-multi-select',
-	'checklist-model',
 	// 'mgcrea.ngStrap',
 	// 'pascalprecht.translate'
 ])

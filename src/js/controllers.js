@@ -122,13 +122,13 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 			data: data,
 			ok: function(response) {
 				flash('success', 'Registrace proběhla v pořádku.')
+			},
+			err: function(response) {
+				if (response.status === 400)
+					flash('danger', 'Tento e-mail je již registrován.')
+				else
+					flash('danger', 'Chyba serveru.\nKód: ' + response.status)
 			}
-			// TODO
-			// ,
-			// err: function(response) {
-			// 	console.log(response)
-			// 	flash('danger', 'Tento e-mail je již registrován.')
-			// }
 		})
 	}
 
@@ -136,7 +136,7 @@ app.controller('PageCtrl', function ($scope, $rootScope, $location, Auth, API, f
 		let baseGravatarUrl = 'http://www.gravatar.com/avatar/'
 		if ($scope.logged()) {
 			let email = Auth.getData().email
-			return baseGravatarUrl + CryptoJS.MD5(email.trim().toLowerCase()).toString()
+			return baseGravatarUrl + md5(email.trim().toLowerCase()).toString()
 		}
 		return null
 	}
@@ -209,7 +209,7 @@ app.controller('Home', function($scope, $location, $http, API, flash) {
 	})
 
 	API.getTour({
-		append: '?active=false&terminated=false', 
+		append: '?terminated=false', 
 		ok: function(response) {
 			$scope.data.upcomming = response.data.items
 		}
@@ -653,6 +653,16 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 		}
 	})
 
+	API.edit({
+		what: 'tournament',
+		id: TourID, 
+		data: activate,
+		ok: function(response) {
+		},
+		err: function(response) {
+		}
+	})
+
 	function emptyTemp() {
 		$scope.scored = {
 			"assistPlayerId": Globals.default,
@@ -746,6 +756,115 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 
 })
 
+app.controller("Roster", function($scope, $filter, Auth, API, flash) {
+
+	$scope.selected = {
+		tour: null,
+		players: []
+	}
+
+	$scope.data= {
+		filteredTours: [],
+		tours: [],
+		players: []
+	}
+
+	$scope.multiple = {
+		texts: {
+			selectAll       : "Vybrat vše",
+			selectNone      : "Zrušit výběr",
+			reset           : "Obnovit",
+			search          : "Vyhledávání...",
+			nothingSelected : "Nevybráno"
+		},
+		settings: {
+			scrollable: true
+		}
+	}
+
+	let clubID = Auth.getData().clubId
+	let teamID = null
+
+	let readyCount = {
+		all: null,
+		ready: 0
+	}
+
+	function ready() {
+		readyCount.ready++
+		if (readyCount.all > readyCount.ready) return
+
+		angular.forEach($scope.data.tours, function(item) {
+			for (let i in item.teams) {
+				if (item.teams[i].clubId == clubID) {
+					item.currentTeamID = item.teams[i].teamId
+					$scope.data.filteredTours.push(angular.copy(item))
+					break;
+				}
+			}
+		})
+	}
+
+	API.get({
+		what: 'tournament',
+		append: '?terminated=false',
+		ok: function(response) {
+			$scope.data.tours = response.data.items
+			readyCount.all = response.data.count
+
+			angular.forEach($scope.data.tours, function(item) {
+				API.get({
+					what: 'tournament',
+					id: item.id,
+					append: 'teams',
+					ok: function(response) {
+						item.teams = response.data.items
+						ready()
+					}
+				})
+				API.get({
+					what: 'tournament',
+					id: item.id,
+					append: 'players',
+					ok: function(response) {
+						item.players = response.data.items
+					}
+				})
+			})
+		}
+	})
+
+	API.get({
+		what: 'club',
+		id: clubID,
+		append: 'players',
+		ok: function(response) {
+			$scope.data.players = response.data.items
+			// $scope.data.players = $filter('getByKey')(response.data.items, 'clubId', clubID)
+		}
+	})
+
+	$scope.actions = {
+		save: function() {
+			angular.forEach($scope.data.players, function(player) {
+				if (player.ticked) {
+					// console.log({playerId: player.id, teamId: $scope.selected.tour.currentTeamID})
+					API.create({
+						what: 'tournament',
+						id: $scope.selected.tour.id,
+						append: 'players',
+						data: {playerId: player.id, teamId: $scope.selected.tour.currentTeamID},
+						ok: function(response) {
+							flash('Uloženo.')
+						}
+					})
+				}
+			})
+		}
+	}
+
+})
+
 app.controller("Spirit", function($scope, Auth, API, flash) {
 
 	$scope.selected = {}
@@ -812,23 +931,23 @@ app.controller("Scores", function($scope, $rootScope, API, flash) {
 	$scope.show = {}
 
 	// TODO prozatim
+	// API.getTour({
+	// 	ok: function(response) {
+	// 		$scope.tours = $scope.tours.concat(response.data.items)
+	// 	}
+	// })
 	API.getTour({
+		append: '?terminated=true', 
 		ok: function(response) {
 			$scope.tours = $scope.tours.concat(response.data.items)
 		}
 	})
-	// API.getTour({
-	// 	append: '?terminated=true', 
-	// 	ok: function(response) {
-	// 		$scope.tours = $scope.tours.concat(response.data.items)
-	// 	}
-	// })
-	// API.getTour({
-	// 	append: '?active=true&terminated=false', 
-	// 	ok: function(response) {
-	// 		$scope.tours = $scope.tours.concat(response.data.items)
-	// 	}
-	// })
+	API.getTour({
+		append: '?active=true&terminated=false', 
+		ok: function(response) {
+			$scope.tours = $scope.tours.concat(response.data.items)
+		}
+	})
 
 	$scope.scoreData = {}
 

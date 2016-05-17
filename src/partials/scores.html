@@ -2,7 +2,7 @@
 
 	<h1>Výsledky</h1>
 
-	<form novalidate class="form">
+	<form novalidate class="form" ng-show="tours.length">
 		<div class="form-group">
 			<select class="form-control" ng-model="selected.tournament"
 				ng-options="obj.name for obj in tours">
@@ -22,6 +22,9 @@
 			ng-disabled="isEmpty(selected.tournament)" ng-click="show()">
 		</div> -->
 	</form>
+	<div class="text-muted" ng-hide="tours.length">
+		Nebyly nalezeny žádné výsledky zápasů.
+	</div>
 
 	<div class="table-responzive" ng-hide="isEmpty(scoreData.length)">
 		<table class="table table-striped">

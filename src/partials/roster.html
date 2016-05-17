@@ -1,0 +1,44 @@
+<div class="container" ng-controller="Roster">
+
+	<h1>Hodnotit spirit of the game</h1>
+
+	<form novalidate class="form" name="rosterForm">		
+		<div class="form-group">
+			<select class="form-control" ng-model="selected.tour" 
+				ng-options="obj.name for obj in data.filteredTours" name="tour" required>
+				<option value="">Vyberte turnaj</option>
+			</select>
+		</div>
+
+		<div class="form-group row">
+			<label class="form-control-label col-sm-2" for="teams">Vyberte hráče:</label>
+			<div class="col-sm-8">
+				<div 
+					isteven-multi-select
+					input-model="data.players"
+					output-model="selected.players"
+					button-label="lastname"
+					item-label="firstname lastname (nickname)"
+					tick-property="ticked"
+					output-properties="id"
+					translation="multiple.texts"
+					max-labels="5"
+					max-height="250px"
+					helper-elements="all none filter renew"
+				>
+				</div>
+			</div>
+			<div class="col-sm-2 formMsg" ng-messages="multiple.teams.$validation">
+				<div ng-include="ngMessagesFile"></div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<input class="btn btn-primary" type="button" value="Uložit hodnocení" 
+			ng-disabled="rosterForm.$invalid" ng-click="actions.save()">
+		</div>
+	</form>
+
+	<!-- <pre> {{data.filteredTours | json}} </pre> -->
+
+</div>

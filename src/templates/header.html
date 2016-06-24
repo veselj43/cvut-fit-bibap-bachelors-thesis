@@ -12,7 +12,7 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li ng-class="getActiveClass('/')"><a href="#/">Hlavní stánka</a></li>
-				<!-- <li ng-show="logged(3)" ng-class="getActiveClass('newTournament')"><a href="#/newTournament">Nový turnaj</a></li> -->
+				<li ng-show="logged(3)" ng-class="getActiveClass('myTournaments')"><a href="#/myTournaments">Správa turnajů</a></li>
 				<li ng-show="logged(2)" ng-class="getActiveClass('scoring')"><a href="#/scoring">Skórovat</a></li>
 				<li ng-show="logged(1, true)" ng-class="getActiveClass('spirit')"><a href="#/spirit">Hodnotit spirit</a></li>
 				<li ng-show="logged(1, true)" ng-class="getActiveClass('roster')"><a href="#/roster">Soupiska</a></li>
@@ -21,6 +21,7 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li ng-show="logged(4, true)" ng-class="getActiveClass('admin')"><a href="#/admin">Administrace</a></li>
 				<li ng-show="logged(1, true) || logged(3, true) || logged(4, true)" ng-class="getActiveClass('profile')"><a class="profile-img" href="#/profile"><img src="{{gravatar()}}?s=30"></a></li>
+				<li ng-show="logged(1, true) || logged(3, true) || logged(4, true)" ng-class="getActiveClass('profile')"><a href="#/profile">Profil</a></li>
 				<li ng-hide="logged()" ng-class="getActiveClass('login')"><a href="#/login">Přihlásit se</a></li>
 				<li ng-show="logged()" ng-click="logout()"><a class="cursor-pointer">Odhlásit se</a></li>
 			</ul>

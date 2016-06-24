@@ -44,9 +44,15 @@
 		<pre>{{data[scored.team].players | json}}</pre> -->
 
 		<div class="row">
-			<div class="col-sm-4 col-sm-offset-4">
+			<div class="col-sm-5 col-sm-offset-1">
 				<button type="button" class="scoreHistory-btn btn btn-danger btn-lg btn-block" 
 				ng-click="matchEnd()">Ukončit zápas</button>
+			</div>
+
+			<div id="stepBack" class="undo col-sm-5">
+				<button type="button" class="btn btn-secondary btn-lg btn-block btn-undo" ng-click="stepBack(false)">
+					Zrušit poslední bod - {{ (data.points[0].homePoint) ? data.homeTeam.name : data.awayTeam.name }}
+				</button>
 			</div>
 		</div>
 
@@ -61,14 +67,14 @@
 					<table class="table table-striped">
 						<thead>
 							<tr class="sm-hide">
-								<th style="width: 45%" colspan="3">Domácí</th>
+								<th style="" colspan="3">Domácí</th>
 								<th class="delimiter">:</th>
-								<th style="width: 45%" colspan="3">Hosté</th>
+								<th style="" colspan="3">Hosté</th>
 							</tr>
 							<tr class="sm-show">
-								<th style="width: 45%" colspan="2">Domácí</th>
+								<th style="" colspan="2">Domácí</th>
 								<th class="delimiter">:</th>
-								<th style="width: 45%" colspan="2">Hosté</th>
+								<th style="" colspan="2">Hosté</th>
 							</tr>
 							<tr>
 								<th class="name sm-hide">Asistence</th>
@@ -195,7 +201,7 @@
 
 	</div>
 
-	<div id="stepBack" class="stepBack">
+	<!-- <div id="stepBack" class="stepBack">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-9">
@@ -209,5 +215,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </div>

@@ -123,6 +123,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 		.when("/scores", {
 			templateUrl: partPath + "scores.html"
 		})
+		.when("/myTournaments", {
+			templateUrl: partPath + "myTournaments.html", 
+			access: ['admin', 'organizer']
+		})
 		.when("/profile", {
 			templateUrl: partPath + "profile.html", 
 			access: ['admin', 'organizer', 'club']

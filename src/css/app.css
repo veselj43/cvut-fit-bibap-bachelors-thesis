@@ -104,6 +104,7 @@ table.table.table-hover tbody tr:hover {
 
 .profile-img {
 	padding: 10px !important;
+	padding-right: 0px !important;
 }
 
 .score-btn {
@@ -259,6 +260,15 @@ ol.steps li.disabled {
 	padding: 7px 3em;
 }
 
+.undo {
+	display: none;
+}
+
+.undo .btn-undo {
+	border-width: 1px;
+	border-color: #999;
+}
+
 .scoreHistory {
 	margin-top: 10px;
 }
@@ -302,7 +312,7 @@ ol.steps li.disabled {
 }
 
 .scoreHistory table .name {
-	width: 20.5%;
+	width: 19%;
 }
 
 .scoreHistory table .score {

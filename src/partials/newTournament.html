@@ -11,7 +11,7 @@
 			<div class="col-sm-4">
 				<button class="btn btn-default" type="button" 
 				ng-click="onClickTab(currentTabIndex - 1)"
-				ng-disabled="currentTabIndex == 0">
+				ng-hide="currentTabIndex == 0">
 					<span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Předchozí
 				</button>
 			</div>
@@ -23,7 +23,7 @@
 			<div class="col-sm-2 text-right">
 				<button class="btn btn-default" type="button" 
 				ng-click="onClickTab(currentTabIndex + 1)"
-				ng-disabled="!isNextTab()">
+				ng-hide="!isNextTab()">
 					Následující <span class="glyphicon glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 				</button>
 			</div>
@@ -35,7 +35,7 @@
 			<div class="col-sm-4">
 				<button class="btn btn-default" type="button" 
 				ng-click="onClickTab(currentTabIndex - 1)"
-				ng-disabled="currentTabIndex == 0">
+				ng-hide="currentTabIndex == 0">
 					<span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Předchozí
 				</button>
 			</div>
@@ -47,7 +47,7 @@
 			<div class="col-sm-2 text-right">
 				<button class="btn btn-default" type="button" 
 				ng-click="onClickTab(currentTabIndex + 1)"
-				ng-disabled="!isNextTab()">
+				ng-hide="!isNextTab()">
 					Následující <span class="glyphicon glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 				</button>
 			</div>

@@ -653,16 +653,6 @@ app.controller("OnlineScoring", function($scope, $rootScope, $routeParams, Globa
 		}
 	})
 
-	API.edit({
-		what: 'tournament',
-		id: TourID, 
-		data: activate,
-		ok: function(response) {
-		},
-		err: function(response) {
-		}
-	})
-
 	function emptyTemp() {
 		$scope.scored = {
 			"assistPlayerId": Globals.default,
@@ -1004,6 +994,16 @@ app.controller("Profile", function($scope, $rootScope, $route, $location, API, A
 
 	let basePath = 'partials/profile/'
 	let params = $location.search()
+	let roles = {
+		1: "klub",
+		2: "hodnotitel turnaje",
+		3: "organizátor",
+		4: "správce"
+	}
+
+	$scope.getRoleName = function() {
+		return roles[Auth.getAuthLvl()]
+	}
 
 	$scope.updateList = function() {
 		API.get({

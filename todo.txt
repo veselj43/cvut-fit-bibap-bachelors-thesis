@@ -1,15 +1,15 @@
 must-have
 
 - pokryt funkcionalitu
-	- /tournament/{id}/teams !!!
+	- /tournament/{id}/teams
 		- put
 	- /tournament/{id}/missing-spirits (odkomentovat)
 	- /match/{id}/spirits
 		- post
 		- put
 
-	- vysledky !!!
-	- rozpisy !!!
+	- vysledky
+	- rozpisy
 
 nice-to-have
 - zobrazit informaci o prihlasenem uzivateli
